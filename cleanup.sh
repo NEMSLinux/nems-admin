@@ -30,6 +30,11 @@ else
   # Remove system-specific NEMS configuration
   echo 'version='$ver > /usr/local/share/nems/nems.conf # Create a base config file for this version of NEMS
   chown www-data:www-data /usr/local/share/nems/nems.conf # Make it writeable by NEMS SST
+  rm /usr/local/share/nems/nems.conf~ # the backup file created by fixes.sh
+
+  # Remove nano search history and such
+  rm -rf /root/.nano
+  rm -rf /home/pi/nano
 
   sudo apt-get clean
   sudo apt-get autoclean
