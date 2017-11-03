@@ -15,6 +15,8 @@ else
   
   echo "Did you cp the database? This script will restore from Migrator. CTRL-C to abort."
   sleep 5
+
+  ver=$(/usr/local/bin/nems-info nemsver) 
   
   # Stop services which may be using these files
   systemctl stop webmin
@@ -24,6 +26,10 @@ else
   systemctl stop nagios3
   
   touch /tmp/nems.freeze
+
+  # Remove system-specific NEMS configuration
+  echo 'version='$ver > /usr/local/share/nems/nems.conf # Create a base config file for this version of NEMS
+  chown www-data:www-data /usr/local/share/nems/nems.conf # Make it writeable by NEMS SST
 
   sudo apt-get clean
   sudo apt-get autoclean
