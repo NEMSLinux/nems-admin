@@ -24,6 +24,7 @@ else
   systemctl stop monitorix
   systemctl stop apache2
   systemctl stop nagios3
+  systemctl stop smbd
   
   touch /tmp/nems.freeze
 
@@ -160,6 +161,7 @@ else
 
   # System still running: Restart services
   service networking restart
+  systemctl start smbd
   systemctl start webmin
   systemctl start rpimonitor
   systemctl start monitorix
