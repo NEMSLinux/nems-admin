@@ -43,6 +43,9 @@ else
   echo "Don't forget to remove the old kernels:"
   dpkg --get-selections | grep linux-image
 
+  # Delete all Samba users
+  pdbedit -L | while read USER; do pdbedit -x -u $(echo $USER | cut -d: -f1); done
+
   # Empty old logs
   find /var/log/ -type f -exec cp /dev/null {} \;
   find /var/log/ -iname "*.gz" -type f -delete
