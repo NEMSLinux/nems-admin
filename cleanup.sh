@@ -35,7 +35,7 @@ else
 
   # Remove nano search history and such
   rm -rf /root/.nano
-  rm -rf /home/pi/nano
+  rm -rf /home/nemsadmin/.nano
 
   sudo apt-get clean
   sudo apt-get autoclean
@@ -76,7 +76,7 @@ else
   rm .nano_history
   rm .bash_history
 
-  cd /home/pi
+  cd /home/nemsadmin
   rm .nano_history
   rm .bash_history
 
@@ -146,7 +146,7 @@ else
 
   # Sync the current running version as the current available version
   # Will be overwritten on first boot
-  /home/pi/nems-scripts/info.sh nemsver > /var/www/html/inc/ver-available.txt
+  /usr/local/share/nems/nems-scripts/info.sh nemsver > /var/www/html/inc/ver-available.txt
   
   # Replace installed certs with defaults
   rm -rf /var/www/certs/
