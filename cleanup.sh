@@ -144,6 +144,13 @@ else
   # Remove nconf history, should it exist
   mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 
+  # Remove NagVis user accounts
+  if [ -f /etc/nagvis/etc/auth.db ]; then
+    rm /etc/nagvis/etc/auth.db
+  fi
+  cp /root/nems/nems-migrator/data/nagvis/auth.db /etc/nagvis/etc/
+  chown www-data:www-data /etc/nagvis/etc/auth.db
+
   # Sync the current running version as the current available version
   # Will be overwritten on first boot
   /usr/local/share/nems/nems-scripts/info.sh nemsver > /var/www/html/inc/ver-available.txt
