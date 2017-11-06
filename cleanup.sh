@@ -28,6 +28,7 @@ else
   
   touch /tmp/nems.freeze
 
+  /usr/local/bin/nems-push # Ensure all changes are saved to github before continuing
 
   if [ ! -d /home/nemsadmin ]; then
     # Create the nemsadmin user
