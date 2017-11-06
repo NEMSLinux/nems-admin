@@ -29,14 +29,19 @@ else
   touch /tmp/nems.freeze
 
 
-  # Create the nemsadmin user
-  adduser --disabled-password --gecos "" nemsadmin
-  # Allow user to become super-user
-  usermod -aG sudo nemsadmin
-  # Set the user password
-  echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
+  if [ ! -d /home/nemsadmin ]; then
+    # Create the nemsadmin user
+    adduser --disabled-password --gecos "" nemsadmin
+    # Allow user to become super-user
+    usermod -aG sudo nemsadmin
+    # Set the user password
+    echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
+  fi
 
-  userdel -r robbie
+  if [ -d /home/robbie ]; then
+    # Delete Robbie's development/test account
+    userdel -r robbie
+  fi
 
   # Replace RPi-Monitor conf file with default
   rm /etc/rpimonitor/daemon.conf 
