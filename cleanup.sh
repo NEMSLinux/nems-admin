@@ -28,6 +28,10 @@ else
   
   touch /tmp/nems.freeze
 
+  # Replace RPi-Monitor conf file with default
+  rm /etc/rpimonitor/daemon.conf 
+  cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor/
+
   # Remove system-specific NEMS configuration
   echo 'version='$ver > /usr/local/share/nems/nems.conf # Create a base config file for this version of NEMS
   chown www-data:www-data /usr/local/share/nems/nems.conf # Make it writeable by NEMS SST
