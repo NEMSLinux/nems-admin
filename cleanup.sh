@@ -39,11 +39,6 @@ else
     echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
   fi
 
-  if [ -d /home/robbie ]; then
-    # Delete Robbie's development/test account
-    userdel -r robbie
-  fi
-
   # Replace RPi-Monitor conf file with default
   rm /etc/rpimonitor/daemon.conf 
   cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor/
@@ -179,6 +174,12 @@ else
   rm -rf /var/www/certs/
   cp -R /root/nems/nems-migrator/data/certs /var/www
   chown -R root:root /var/www/certs
+
+  if [ -d /home/robbie ]; then
+    # Delete Robbie's development/test account
+    userdel -f robbie
+  fi
+
 
   sync
   
