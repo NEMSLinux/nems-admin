@@ -11,6 +11,25 @@ else
   
   if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution or the reboot option to reboot."; echo ""; fi;
   
+  # Check if nemsadmin exists, and create it if not
+  if [ ! -d /home/nemsadmin ]; then
+    # Create the nemsadmin user
+    adduser --disabled-password --gecos "" nemsadmin
+    # Allow user to become super-user
+    usermod -aG sudo nemsadmin
+    # Set the user password
+    echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
+  fi
+
+  usercount=$(find /home/* -maxdepth 0 -type d | wc -l)
+  if (( $usercount == 1)); then
+    echo "Looks like user accounts are ready to go."
+  else
+    echo "You have not removed your test users. Aborting."
+    exit
+  fi
+
+
   sync
   
   echo "Did you cp the database? This script will restore from Migrator. CTRL-C to abort."
@@ -28,16 +47,7 @@ else
   
   touch /tmp/nems.freeze
 
-  /usr/local/bin/nems-push # Ensure all changes are saved to github before continuing
-
-  if [ ! -d /home/nemsadmin ]; then
-    # Create the nemsadmin user
-    adduser --disabled-password --gecos "" nemsadmin
-    # Allow user to become super-user
-    usermod -aG sudo nemsadmin
-    # Set the user password
-    echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
-  fi
+#  /usr/local/bin/nems-push # Ensure all changes are saved to github before continuing
 
   # Replace RPi-Monitor conf file with default
   rm /etc/rpimonitor/daemon.conf 
@@ -174,11 +184,6 @@ else
   rm -rf /var/www/certs/
   cp -R /root/nems/nems-migrator/data/certs /var/www
   chown -R root:root /var/www/certs
-
-  if [ -d /home/robbie ]; then
-    # Delete Robbie's development/test account
-    userdel -f robbie
-  fi
 
 
   sync
