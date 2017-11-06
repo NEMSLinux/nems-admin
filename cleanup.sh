@@ -28,6 +28,16 @@ else
   
   touch /tmp/nems.freeze
 
+
+  # Create the nemsadmin user
+  adduser --disabled-password --gecos "" nemsadmin
+  # Allow user to become super-user
+  usermod -aG sudo nemsadmin
+  # Set the user password
+  echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
+
+  userdel -r robbie
+
   # Replace RPi-Monitor conf file with default
   rm /etc/rpimonitor/daemon.conf 
   cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor/
