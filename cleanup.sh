@@ -47,6 +47,9 @@ else
   
   touch /tmp/nems.freeze
 
+  # Delete system email
+  rm /var/spool/mail/mail
+
 #  /usr/local/bin/nems-push # Ensure all changes are saved to github before continuing
 
   # Replace RPi-Monitor conf file with default
