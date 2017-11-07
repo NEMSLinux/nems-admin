@@ -26,6 +26,8 @@ else
   # Reset the RPi-Monitor users
   cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor
 
+  # Reset Samba users
+  cp /root/nems/nems-migrator/data/samba/smb.conf /etc/samba
 
   usercount=$(find /home/* -maxdepth 0 -type d | wc -l)
   if (( $usercount == 1)); then
@@ -56,10 +58,6 @@ else
   rm /var/spool/mail/mail
 
 #  /usr/local/bin/nems-push # Ensure all changes are saved to github before continuing
-
-  # Replace RPi-Monitor conf file with default
-  rm /etc/rpimonitor/daemon.conf 
-  cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor/
 
   # Remove system-specific NEMS configuration
   echo 'version='$ver > /usr/local/share/nems/nems.conf # Create a base config file for this version of NEMS
