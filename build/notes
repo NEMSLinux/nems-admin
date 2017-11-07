@@ -1,0 +1,8 @@
+- change nemsadmin password to default
+- add nemsadmin to sudoers
+- restore rpimonitor's daemon.conf to reset user
+- reboot (to let that take effect)
+- Login as nemsadmin and ensure sudo su works
+- clear samba users
+- delete other users
+- run cleanup script

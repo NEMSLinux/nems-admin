@@ -29,6 +29,8 @@ else
     exit
   fi
 
+  # Reset the RPi-Monitor users
+  cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor
 
   sync
   
