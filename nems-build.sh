@@ -1,6 +1,10 @@
 #!/bin/bash
 
 ####
+# This script is *DESTRUCTIVE*
+# This is how I build NEMS distros from scratch
+# This is *NOT* meant to be run by users - please do not run it unless you understand clearly what you're doing.
+#
 # Some of the ideas in this process come from DietPi - https://github.com/Fourdee/DietPi/blob/master/PREP_SYSTEM_FOR_DIETPI.sh
 ####
 
@@ -62,11 +66,12 @@ cd /var/www
 rm -rf html && git clone https://github.com/Cat5TV/nems-www && mv nems-www html && chown -R www-data:www-data html
 git clone https://github.com/Cat5TV/nems-nconf && mv nems-nconf nconf && chown -R www-data:www-data nconf
 
-# Point Nagios to the NEMS Nagios Theme in nems-www
+# Point Nagios to the NEMS Nagios Theme in nems-www and import the config
 if [[ -d /usr/share/nagios3/htdocs ]]; then
   rm -rf /usr/share/nagios3/htdocs
 fi
 ln -s /var/www/html/share/nagios3/ /usr/share/nagios3/htdocs
+cp -R /root/nems/nems-migrator/data/nagios/conf/* /etc/nagios3/
 
 # Import the apache2 config (must come after nems-migrator)
 rm -rf /etc/apache2 && cp /root/nems/nems-migrator/data/apache2 /etc/
