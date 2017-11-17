@@ -4,6 +4,10 @@
 # Some of the ideas in this process come from DietPi - https://github.com/Fourdee/DietPi/blob/master/PREP_SYSTEM_FOR_DIETPI.sh
 ####
 
+echo "Usage before build:"
+df -hT /etc
+sleep 5
+
 # Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
   if ! grep -q "nomodeset" /etc/default/grub; then
     sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset /g' /etc/default/grub
@@ -58,3 +62,5 @@ git clone https://github.com/Cat5TV/nems-scripts
 # Integrate crontab
 
 
+echo "Usage after build:"
+df -hT /etc
