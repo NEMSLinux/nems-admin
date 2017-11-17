@@ -17,6 +17,12 @@ echo "Usage before build:"
 df -hT /etc
 sleep 5
 
+# Add repositories needed for deployment of apps
+echo "deb http://download.webmin.com/download/repository sarge contrib\
+deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib" > /etc/apt/sources.list.d/webmin.list
+wget -qO - http://www.webmin.com/jcameron-key.asc | sudo apt-key add -
+
+
 # Remove cruft
 apt update
 apt --yes --force-yes clean
@@ -106,6 +112,9 @@ git clone https://github.com/Cat5TV/nems-scripts
 # Import package configurations from NEMS-Migrator
 
 # Import default data from NEMS-Migrator
+
+# Enable systemd items
+systemctl enable webmin
 
 echo "Usage after build:"
 df -hT /etc
