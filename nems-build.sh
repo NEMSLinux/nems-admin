@@ -1,10 +1,13 @@
 #!/bin/bash
-version=1.3.1
-echo "NOT SAFE"
-exit
+
 ####
 # Some of the ideas in this process come from DietPi - https://github.com/Fourdee/DietPi/blob/master/PREP_SYSTEM_FOR_DIETPI.sh
 ####
+
+# Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
+# GRUB_CMDLINE_LINUX_DEFAULT="quiet splash nomodeset" <-- add nomodeset to /etc/default/grub
+# then run update-grub
+
 
 # Remove cruft
 apt update
@@ -26,7 +29,7 @@ userdel -f pi
 userdel -f test #armbian
 userdel -f odroid
 userdel -f rock64
-userdel -f linaro #ASUS TB
+userdel -f linaro # ASUS TinkerBoard
 userdel -f dietpi
 
 # Disable firstrun
@@ -34,6 +37,19 @@ systemctl disable firstrun
 rm /etc/init.d/firstrun # ARMbian
 
 # Add NEMS packages
+cd /root/nems # this was created with nems-prep.sh
+git clone https://github.com/Cat5TV/nems-admin
+git clone https://github.com/Cat5TV/nems-migrator
+git clone https://github.com/zorkian/nagios-api
+
+cd /usr/local/share/
+mkdir nems
+printf "version=" > /usr/local/share/nems.conf && cat /root/nems/nems-migrator/data/nems/ver-current.txt >> /usr/local/share/nems.conf
+git clone https://github.com/Cat5TV/nems-scripts
+
+# Create symlinks, etc.
+/usr/local/share/nems/nems-scripts/fixes.sh
 
 # Import package configurations from NEMS-Migrator
+
 

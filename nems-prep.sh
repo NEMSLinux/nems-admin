@@ -14,7 +14,5 @@ mkdir nems
 cd nems
 
 git clone https://github.com/Cat5TV/nems-admin
-git clone https://github.com/Cat5TV/nems-migrator
-git clone https://github.com/zorkian/nagios-api
 
 cd nems-admin
