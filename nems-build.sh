@@ -17,12 +17,6 @@ echo "Usage before build:"
 df -hT /etc
 sleep 5
 
-# Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
-  if ! grep -q "nomodeset" /etc/default/grub; then
-    sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset /g' /etc/default/grub
-    /usr/sbin/update-grub
-  fi
-
 # Remove cruft
 apt update
 apt --yes --force-yes clean
@@ -30,10 +24,19 @@ apt --yes --force-yes --purge remove $(grep -vE "^\s*#" build/packages.remove | 
 apt autoremove --purge -y
 rm -R /usr/share/fonts/*
 rm -R /usr/share/icons/*
-apt --yes --force-yes --no-install-recommends install $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
+
+for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
+do
+  apt --yes --force-yes --no-install-recommends install $pkg
+done
 
 # Add packages from repositories
-apt --yes --force-yes install $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
+for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
+do
+  apt --yes --force-yes --no-install-recommends install $pkg
+done
+
+apt --yes --force-yes  install -f
 
 # Be up to date
 apt --yes --force-yes upgrade && apt --yes --force-yes dist-upgrade
@@ -64,7 +67,7 @@ crontab /root/nems/nems-migrator/data/nems/crontab
 # Web Interface
 cd /var/www
 rm -rf html && git clone https://github.com/Cat5TV/nems-www && mv nems-www html && chown -R www-data:www-data html
-git clone https://github.com/Cat5TV/nems-nconf && mv nems-nconf nconf && chown -R www-data:www-data nconf
+git clone https://github.com/Cat5TV/nconf && chown -R www-data:www-data nconf
 
 # Point Nagios to the NEMS Nagios Theme in nems-www and import the config
 if [[ -d /usr/share/nagios3/htdocs ]]; then
@@ -82,11 +85,19 @@ systemctl restart nagios3
 
 cd /usr/local/share/
 mkdir nems
-printf "version=" > /usr/local/share/nems.conf && cat /root/nems/nems-migrator/data/nems/ver-current.txt >> /usr/local/share/nems.conf
+cd nems
+printf "version=" > nems.conf && cat /root/nems/nems-migrator/data/nems/ver-current.txt >> nems.conf
 git clone https://github.com/Cat5TV/nems-scripts
 
 # Create symlinks, apply patches/fixes, etc.
 /usr/local/share/nems/nems-scripts/fixes.sh
+
+# Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
+  if ! grep -q "nomodeset" /etc/default/grub; then
+    sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset /g' /etc/default/grub
+    /usr/sbin/update-grub
+  fi
+
 
 # Install apps from tar like Check-MK, NConf
 
