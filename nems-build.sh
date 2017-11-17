@@ -77,7 +77,7 @@ ln -s /var/www/html/share/nagios3/ /usr/share/nagios3/htdocs
 cp -R /root/nems/nems-migrator/data/nagios/conf/* /etc/nagios3/
 
 # Import the apache2 config (must come after nems-migrator)
-rm -rf /etc/apache2 && cp /root/nems/nems-migrator/data/apache2 /etc/
+rm -rf /etc/apache2 && cp -R /root/nems/nems-migrator/data/apache2 /etc/
 
 # Restart related services
 systemctl restart apache2
