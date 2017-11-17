@@ -47,20 +47,40 @@ systemctl disable firstrun
 rm /etc/init.d/firstrun # ARMbian
 
 # Add NEMS packages
+
+# System
 cd /root/nems # this was created with nems-prep.sh
 git clone https://github.com/Cat5TV/nems-admin
 git clone https://github.com/Cat5TV/nems-migrator
 git clone https://github.com/zorkian/nagios-api
+
+# Import NEMS crontab (must happen after nems-migrator but before fixes.sh)
+crontab /root/nems/nems-migrator/data/nems/crontab
+
+# Web Interface
 cd /var/www
 rm -rf html && git clone https://github.com/Cat5TV/nems-www && mv nems-www html && chown -R www-data:www-data html
 git clone https://github.com/Cat5TV/nems-nconf && mv nems-nconf nconf && chown -R www-data:www-data nconf
+
+# Point Nagios to the NEMS Nagios Theme in nems-www
+if [[ -d /usr/share/nagios3/htdocs ]]; then
+  rm -rf /usr/share/nagios3/htdocs
+fi
+ln -s /var/www/html/share/nagios3/ /usr/share/nagios3/htdocs
+
+# Import the apache2 config (must come after nems-migrator)
+rm -rf /etc/apache2 && cp /root/nems/nems-migrator/data/apache2 /etc/
+
+# Restart related services
+systemctl restart apache2
+systemctl restart nagios3
 
 cd /usr/local/share/
 mkdir nems
 printf "version=" > /usr/local/share/nems.conf && cat /root/nems/nems-migrator/data/nems/ver-current.txt >> /usr/local/share/nems.conf
 git clone https://github.com/Cat5TV/nems-scripts
 
-# Create symlinks, etc.
+# Create symlinks, apply patches/fixes, etc.
 /usr/local/share/nems/nems-scripts/fixes.sh
 
 # Install apps from tar like Check-MK, NConf
@@ -68,12 +88,8 @@ git clone https://github.com/Cat5TV/nems-scripts
 # Migrate NEMS' customizations such as Nagios theme and icons
 
 # Import package configurations from NEMS-Migrator
-rm -rf /etc/apache2 && cp /root/nems/nems-migrator/data/apache2 /etc/
 
 # Import default data from NEMS-Migrator
-
-# Import NEMS crontab
-crontab /root/nems/nems-migrator/data/nems/crontab
 
 echo "Usage after build:"
 df -hT /etc
