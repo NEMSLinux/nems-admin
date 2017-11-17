@@ -53,4 +53,8 @@ git clone https://github.com/Cat5TV/nems-scripts
 
 # Import package configurations from NEMS-Migrator
 
+# Import default data from NEMS-Migrator
+
+# Integrate crontab
+
 
