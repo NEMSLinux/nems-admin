@@ -4,6 +4,11 @@
 # Some of the ideas in this process come from DietPi - https://github.com/Fourdee/DietPi/blob/master/PREP_SYSTEM_FOR_DIETPI.sh
 ####
 
+if [[ $EUID -ne 0 ]]; then
+  echo "ERROR: This script must be run as root" 2>&1
+  exit 1
+else
+
 echo "Usage before build:"
 df -hT /etc
 sleep 5
@@ -46,6 +51,9 @@ cd /root/nems # this was created with nems-prep.sh
 git clone https://github.com/Cat5TV/nems-admin
 git clone https://github.com/Cat5TV/nems-migrator
 git clone https://github.com/zorkian/nagios-api
+cd /var/www
+rm -rf html && git clone https://github.com/Cat5TV/nems-www && mv nems-www html && chown -R www-data:www-data html
+git clone https://github.com/Cat5TV/nems-nconf && mv nems-nconf nconf && chown -R www-data:www-data nconf
 
 cd /usr/local/share/
 mkdir nems
@@ -55,12 +63,19 @@ git clone https://github.com/Cat5TV/nems-scripts
 # Create symlinks, etc.
 /usr/local/share/nems/nems-scripts/fixes.sh
 
+# Install apps from tar like Check-MK, NConf
+
+# Migrate NEMS' customizations such as Nagios theme and icons
+
 # Import package configurations from NEMS-Migrator
+rm -rf /etc/apache2 && cp /root/nems/nems-migrator/data/apache2 /etc/
 
 # Import default data from NEMS-Migrator
 
-# Integrate crontab
-
+# Import NEMS crontab
+crontab /root/nems/nems-migrator/data/nems/crontab
 
 echo "Usage after build:"
 df -hT /etc
+
+fi
