@@ -56,3 +56,7 @@ w3m
 webmin
 wpasupplicant
 ntp
+
+# for pnp4nagios
+rrdtool
+librrds-perl

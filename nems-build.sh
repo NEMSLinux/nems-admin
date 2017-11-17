@@ -18,7 +18,7 @@ df -hT /etc
 sleep 5
 
 # Add repositories needed for deployment of apps
-echo "deb http://download.webmin.com/download/repository sarge contrib\
+echo "deb http://download.webmin.com/download/repository sarge contrib
 deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib" > /etc/apt/sources.list.d/webmin.list
 wget -qO - http://www.webmin.com/jcameron-key.asc | sudo apt-key add -
 
@@ -106,6 +106,15 @@ git clone https://github.com/Cat5TV/nems-scripts
 
 
 # Install apps from tar like Check-MK, NConf
+cd /tmp
+
+  # pnp4nagios
+  git clone https://github.com/lingej/pnp4nagios
+  cd pnp4nagios
+  ./configure
+  make
+  make all
+  make install
 
 # Migrate NEMS' customizations such as Nagios theme and icons
 
@@ -115,6 +124,9 @@ git clone https://github.com/Cat5TV/nems-scripts
 
 # Enable systemd items
 systemctl enable webmin
+
+# clean it up!
+apt autoremove
 
 echo "Usage after build:"
 df -hT /etc
