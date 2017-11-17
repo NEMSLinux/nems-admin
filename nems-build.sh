@@ -5,9 +5,10 @@
 ####
 
 # Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
-# GRUB_CMDLINE_LINUX_DEFAULT="quiet splash nomodeset" <-- add nomodeset to /etc/default/grub
-# then run update-grub
-
+  if ! grep -q "nomodeset" /etc/default/grub; then
+    sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset /g' /etc/default/grub
+    /usr/sbin/update-grub
+  fi
 
 # Remove cruft
 apt update

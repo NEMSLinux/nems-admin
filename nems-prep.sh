@@ -10,6 +10,11 @@
 cd /root
 apt update
 apt install git
+
+# Setup default account info
+git config --global user.email "nems@baldnerd.com"
+git config --global user.name "NEMS Linux"
+
 mkdir nems
 cd nems
 
