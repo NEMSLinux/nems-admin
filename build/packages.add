@@ -48,7 +48,6 @@ samba
 screen
 sendemail
 sqlite3
-tcl
 traceroute
 tzdata
 unzip
@@ -60,3 +59,7 @@ ntp
 # for pnp4nagios
 rrdtool
 librrds-perl
+
+# For MOTD
+tcl
+hddtemp
