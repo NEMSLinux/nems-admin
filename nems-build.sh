@@ -18,10 +18,15 @@ df -hT /etc
 sleep 5
 
 # Add repositories needed for deployment of apps
+
+# Webmin
 echo "deb http://download.webmin.com/download/repository sarge contrib
 deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib" > /etc/apt/sources.list.d/webmin.list
 wget -qO - http://www.webmin.com/jcameron-key.asc | sudo apt-key add -
 
+# Monitorix
+echo "deb http://apt.izzysoft.de/ubuntu generic universe" > /etc/apt/sources.list.d/monitorix.list
+wget -qO - http://apt.izzysoft.de/izzysoft.asc | sudo apt-key add -
 
 # Remove cruft
 apt update
