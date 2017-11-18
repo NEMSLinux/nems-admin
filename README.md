@@ -16,7 +16,7 @@ Install Debian on your hardware with the following settings:
 wget -O /tmp/nems-prep.sh https://raw.githubusercontent.com/Cat5TV/nems-admin/master/nems-prep.sh && chmod +x /tmp/nems-prep.sh && /tmp/nems-prep.sh
 ```
 
-- Deploy NEMS (as root):
+- Convert Debian to NEMS Linux (as root):
 ```bash
 /root/nems/nems-admin/nems-build.sh
 ```
