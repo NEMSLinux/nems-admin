@@ -1,7 +1,6 @@
 # NEMS Linux - nemslinux.com
 # This is the package list to install on all platforms
 apache2
-avahi-daemon
 avahi-dnsconfd
 avahi-utils
 build-essential
@@ -66,3 +65,7 @@ nagios-images
 nagios-nrpe-plugin
 nagios-nrpe-server
 nagios-plugins
+
+# *.local Resolution
+avahi-daemon
+libnss-mdns
