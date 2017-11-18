@@ -64,3 +64,6 @@ librrds-perl
 # For MOTD
 tcl
 hddtemp
+
+# For Nagios Core
+libgd-dev
