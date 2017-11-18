@@ -27,10 +27,6 @@ mariadb-server
 monit
 monitoring-plugins
 monitorix
-nagios-images
-nagios-nrpe-plugin
-nagios-nrpe-server
-nagios-plugins
 openssl
 perl
 perl-base
@@ -66,3 +62,7 @@ hddtemp
 
 # For Nagios Core
 libgd-dev
+nagios-images
+nagios-nrpe-plugin
+nagios-nrpe-server
+nagios-plugins
