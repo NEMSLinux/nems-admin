@@ -23,7 +23,7 @@ else
   " > /etc/apt/sources.list
   
   apt update
-  apt install --yes git
+  apt install --yes git screen
 
   # Setup default account info
   git config --global user.email "nems@baldnerd.com"
@@ -35,6 +35,7 @@ else
 
   git clone https://github.com/Cat5TV/nems-admin
 
-  cd nems-admin
+  cd /root/nems/nems-admin
 
+  echo System Prepped... run screen, then /root/nems/nems-admin/nems-build.sh
 fi
