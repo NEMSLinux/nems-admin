@@ -36,6 +36,10 @@ apt autoremove --purge -y
 rm -R /usr/share/fonts/*
 rm -R /usr/share/icons/*
 
+echo "Usage after cruft removal:"
+df -hT /etc
+sleep 5
+
 for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
 do
   apt --yes --force-yes --no-install-recommends install $pkg
