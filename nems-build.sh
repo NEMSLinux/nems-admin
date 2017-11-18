@@ -59,6 +59,21 @@ userdel -f dietpi
 systemctl disable firstrun
 rm /etc/init.d/firstrun # ARMbian
 
+# Install Nagios 3.5.1
+cd /tmp
+tar xzf /root/nems/nems-admin/packages/nagios-3.5.1.tar.gz
+cd nagios-3.5.1
+./configure
+make all
+useradd nagios
+usermod -a -G nagios www-data
+make install
+make install-init
+systemctl enable nagios.service
+make install-commandmode
+a2enmod rewrite
+a2enmod cgi
+
 # Add NEMS packages
 
 # System
@@ -87,7 +102,7 @@ rm -rf /etc/apache2 && cp -R /root/nems/nems-migrator/data/apache2 /etc/
 
 # Restart related services
 systemctl restart apache2
-systemctl restart nagios3
+systemctl start nagios3
 
 cd /usr/local/share/
 mkdir nems
@@ -124,6 +139,11 @@ cd /tmp
 
 # Enable systemd items
 systemctl enable webmin
+
+# Allow ports 80 and 443 in the firewall
+iptables -I INPUT -p tcp --destination-port 80 -j ACCEPT
+iptables -I INPUT -p tcp --destination-port 443 -j ACCEPT
+apt-get install -y iptables-persistent
 
 # clean it up!
 apt autoremove
