@@ -37,8 +37,6 @@ perl-base
 php7.0-sqlite3
 phpmyadmin
 php-net-socket
-php-rrd
-pnp4nagios
 python
 python3-openssl
 python-dev
@@ -59,6 +57,8 @@ ntp
 # for pnp4nagios
 rrdtool
 librrds-perl
+php-rrd
+pnp4nagios
 
 # For MOTD
 tcl
