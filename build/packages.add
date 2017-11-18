@@ -1,5 +1,6 @@
 # NEMS Linux - nemslinux.com
 # This is the package list to install on all platforms
+apache2
 avahi-daemon
 avahi-dnsconfd
 avahi-utils
