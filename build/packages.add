@@ -27,7 +27,6 @@ mariadb-server
 monit
 monitoring-plugins
 monitorix
-nagios3
 nagios-images
 nagios-nrpe-plugin
 nagios-nrpe-server
