@@ -71,7 +71,7 @@ rm /etc/init.d/firstrun # ARMbian
 # Install Nagios 3.5.1
 cd /tmp
 tar xzf /root/nems/nems-admin/packages/nagios-3.5.1.tar.gz
-cd nagios-3.5.1
+cd nagios
 ./configure
 make all
 useradd nagios
@@ -149,13 +149,8 @@ cd /tmp
 # Enable systemd items
 systemctl enable webmin
 
-# Allow ports 80 and 443 in the firewall
-iptables -I INPUT -p tcp --destination-port 80 -j ACCEPT
-iptables -I INPUT -p tcp --destination-port 443 -j ACCEPT
-apt-get install -y iptables-persistent
-
 # clean it up!
-apt autoremove
+apt --yes autoremove
 
 echo "Usage after build:"
 df -hT /etc
