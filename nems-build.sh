@@ -86,11 +86,22 @@ rm /etc/init.d/firstrun # ARMbian
   make install-commandmode
   make install-webconf
 
+  cd /tmp
+  wget https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+  tar -zxvf /tmp/nagios-plugins-2.2.1.tar.gz
+  cd /tmp/nagios-plugins-2.2.1/
+  ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+  make
+  make install
+
   a2enmod rewrite
   a2enmod cgi
   a2enconf nagios
 
-  systemctl enable nagios.service
+  systemctl start nagios
+  systemctl enable nagios
+
+# Finished installing Nagios Core
 
 # Add NEMS packages
 
