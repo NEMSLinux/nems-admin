@@ -68,20 +68,29 @@ userdel -f dietpi
 systemctl disable firstrun
 rm /etc/init.d/firstrun # ARMbian
 
-# Install Nagios 3.5.1
-cd /tmp
-tar xzf /root/nems/nems-admin/packages/nagios-3.5.1.tar.gz
-cd nagios
-./configure
-make all
-useradd nagios
-usermod -a -G nagios www-data
-make install
-make install-init
-systemctl enable nagios.service
-make install-commandmode
-a2enmod rewrite
-a2enmod cgi
+# Install Nagios Core
+  useradd nagios
+  groupadd nagcmd
+  usermod -a -G nagios www-data
+  usermod -a -G nagcmd nagios
+  usermod -a -G nagcmd www-data
+  cd /tmp
+  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.3.4.tar.gz
+  tar -zxvf nagios-4.3.4.tar.gz
+  cd /tmp/nagios-4.3.4/
+  ./configure --with-nagios-group=nagios --with-command-group=nagcmd --with-httpd_conf=/etc/apache2/conf-available/
+  make all
+  make install
+  make install-init
+  make install-config
+  make install-commandmode
+  make install-webconf
+
+  a2enmod rewrite
+  a2enmod cgi
+  a2enconf nagios
+
+  systemctl enable nagios.service
 
 # Add NEMS packages
 
