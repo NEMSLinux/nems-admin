@@ -22,6 +22,9 @@ wget -O /tmp/nems-prep.sh https://raw.githubusercontent.com/Cat5TV/nems-admin/ma
 ```
 
 - Reboot
+- Go about testing/configuring your system.
+- Migrate data to /root/nems/nems-migrator/data folder where applicable.
+- Run nems-cleanup.sh to remove confidential data and restore all settings to defaults (from nems-migrator), preparing your NEMS build for distribution.
 
 This is 100% destructive. NEVER run this on an existing system. This is for new builds ONLY (eg., porting NEMS to a new piece of hardware).
 
