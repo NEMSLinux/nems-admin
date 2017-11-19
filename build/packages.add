@@ -65,7 +65,6 @@ php7.0-gd
 nagios-images
 nagios-nrpe-plugin
 nagios-nrpe-server
-nagios-plugins
 
 # *.local Resolution
 avahi-daemon
