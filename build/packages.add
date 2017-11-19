@@ -61,6 +61,7 @@ hddtemp
 
 # For Nagios Core
 libgd-dev
+php7.0-gd
 nagios-images
 nagios-nrpe-plugin
 nagios-nrpe-server
