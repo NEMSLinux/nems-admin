@@ -30,8 +30,8 @@ wget -qO - http://apt.izzysoft.de/izzysoft.asc | apt-key add -
 
 # Remove cruft
 apt update
-apt --yes --force-yes clean
-apt --yes --force-yes --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
+apt --yes --allow-remove-essential clean
+apt --yes --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
 apt autoremove --purge -y
 rm -R /usr/share/fonts/*
 rm -R /usr/share/icons/*
@@ -42,19 +42,19 @@ sleep 5
 
 for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
 do
-  apt --yes --force-yes --no-install-recommends install $pkg
+  apt --yes --no-install-recommends install $pkg
 done
 
 # Add packages from repositories
 for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
 do
-  apt --yes --force-yes --no-install-recommends install $pkg
+  apt --yes --no-install-recommends install $pkg
 done
 
-apt --yes --force-yes  install -f
+apt --yes install -f
 
 # Be up to date
-apt --yes --force-yes upgrade && apt --yes --force-yes dist-upgrade
+apt --yes upgrade && apt --yes dist-upgrade
 
 # Delete any non-root user (eg: pi)
 userdel -f pi
