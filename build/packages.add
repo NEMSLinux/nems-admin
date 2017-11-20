@@ -73,3 +73,10 @@ libnss-mdns
 # Apache2 dependencies
 libapache2-modsecurity
 modsecurity-crs
+
+# NEMS
+
+# Allow nems-info checkport to function
+netcat
+
+# /NEMS
