@@ -180,6 +180,9 @@ echo "/etc/motd.tcl" >> /etc/profile
 # clean it up!
 apt --yes autoremove
 
+# Add nemsadmin to sudoers and disable root login if that's successful
+usermod -aG sudo nemsadmin && passwd -l root
+
 echo "Usage after build:"
 df -hT /etc
 
