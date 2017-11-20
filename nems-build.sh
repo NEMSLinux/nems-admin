@@ -171,6 +171,12 @@ cd /tmp
 # Enable systemd items
 systemctl enable webmin
 
+# Enable NEMS MOTD
+echo > /etc/motd
+cp /root/nems/nems-migrator/data/nems/motd.tcl /etc/
+chmod 755 /etc/motd.tcl
+echo "/etc/motd.tcl" >> /etc/profile
+
 # clean it up!
 apt --yes autoremove
 
