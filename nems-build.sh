@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TO DO
+# Add removal of swap
+
 ####
 # This script is *DESTRUCTIVE*
 # This is how I build NEMS distros from scratch

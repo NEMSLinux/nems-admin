@@ -80,3 +80,7 @@ modsecurity-crs
 netcat
 
 # /NEMS
+
+# Device-specific stuff
+  # CL100
+  firmware-realtek
