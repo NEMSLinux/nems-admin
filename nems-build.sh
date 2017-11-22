@@ -189,4 +189,6 @@ usermod -aG sudo nemsadmin && passwd -l root
 echo "Usage after build:"
 df -hT /etc
 
+echo "Don't forget to run: echo DEVID > /etc/.nems_hw_model_identifier"
+
 fi
