@@ -186,6 +186,11 @@ apt --yes autoremove
 # Add nemsadmin to sudoers and disable root login if that's successful
 usermod -aG sudo nemsadmin && passwd -l root
 
+# Add files to nemsadmin home folder (which later get moved to NEMS user account at init)
+cd /home/nemsadmin
+wget https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+cp /root/nems/nems-migrator/data/nems/changelog.txt .
+
 echo "Usage after build:"
 df -hT /etc
 
