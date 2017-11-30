@@ -16,6 +16,8 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+echo "" > /tmp/errors.log
+
 echo "Usage before build:"
 df -hT /etc
 sleep 5
@@ -121,6 +123,18 @@ crontab /root/nems/nems-migrator/data/nems/crontab
 cd /var/www
 rm -rf html && git clone https://github.com/Cat5TV/nems-www && mv nems-www html && chown -R www-data:www-data html
 git clone https://github.com/Cat5TV/nconf && chown -R www-data:www-data nconf
+# Create NEMS configuration folder
+  mkdir -p /etc/nems/conf
+# Copy sample data
+  cp -R /root/nems/nems-migrator/data/nagios/conf/global /etc/nems/conf/
+  cp -R /root/nems/nems-migrator/data/nagios/conf/Default_collector /etc/nems/conf/
+# tell Nagios to use nconf configs
+if [[ -f /usr/local/nagios/etc/nagios.cfg ]]; then
+  echo "cfg_dir=/etc/nems/conf/global" >> /usr/local/nagios/etc/nagios.cfg
+  echo "cfg_dir=/etc/nems/conf/Default_collector" >> /usr/local/nagios/etc/nagios.cfg
+else
+  echo "/usr/local/nagios/etc/nagios.cfg was not found. Could not activate nConf." >> /tmp/errors.log
+fi
 
 # Point Nagios to the NEMS Nagios Theme in nems-www and import the config
 if [[ -d /usr/share/nagios3/htdocs ]]; then
@@ -188,12 +202,15 @@ usermod -aG sudo nemsadmin && passwd -l root
 
 # Add files to nemsadmin home folder (which later get moved to NEMS user account at init)
 cd /home/nemsadmin
-wget https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 cp /root/nems/nems-migrator/data/nems/changelog.txt .
 
 echo "Usage after build:"
 df -hT /etc
 
 echo "Don't forget to run: echo DEVID > /etc/.nems_hw_model_identifier"
+
+# Output any errors encountered along the way.
+cat /tmp/errors.log
 
 fi

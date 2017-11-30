@@ -30,7 +30,6 @@ openssl
 perl
 perl-base
 php7.0-sqlite3
-phpmyadmin
 php-net-socket
 python
 python3-openssl
@@ -48,6 +47,10 @@ w3m
 webmin
 wpasupplicant
 ntp
+locate
+
+# Tool to view disk usage of the NEMS server and find usage hogs
+ncdu
 
 # for pnp4nagios
 rrdtool
@@ -62,7 +65,7 @@ hddtemp
 # For Nagios Core
 libgd-dev
 php7.0-gd
-nagios-images
+# nagios-images -- part of nems-www now
 nagios-nrpe-plugin
 nagios-nrpe-server
 
