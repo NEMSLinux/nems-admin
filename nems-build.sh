@@ -128,6 +128,12 @@ git clone https://github.com/Cat5TV/nconf && chown -R www-data:www-data nconf
 # Copy sample data
   cp -R /root/nems/nems-migrator/data/nagios/conf/global /etc/nems/conf/
   cp -R /root/nems/nems-migrator/data/nagios/conf/Default_collector /etc/nems/conf/
+  chmod 775 /etc/nems/conf/global
+  chmod 775 /etc/nems/conf/Default_collector
+# Import nConf Configuration
+  cp /root/nems/nems-migrator/data/nconf/deployment.ini /var/www/nconf/config/
+# Allow www-data to reload Nagios configs
+  echo 'www-data ALL=NOPASSWD: /bin/systemctl reload nagios' | sudo EDITOR='tee -a' visudo
 # tell Nagios to use nconf configs
 if [[ -f /usr/local/nagios/etc/nagios.cfg ]]; then
   echo "cfg_dir=/etc/nems/conf/global" >> /usr/local/nagios/etc/nagios.cfg
