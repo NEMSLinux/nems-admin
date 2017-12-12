@@ -55,7 +55,7 @@ else
   touch /tmp/nems.freeze
 
   # Delete system email
-  rm /var/spool/mail/mail
+  rm /var/spool/mail/*
 
 #  /usr/local/bin/nems-push # Ensure all changes are saved to github before continuing
 
