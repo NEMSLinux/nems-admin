@@ -173,6 +173,10 @@ git clone https://github.com/Cat5TV/nems-scripts
     /usr/sbin/update-grub
   fi
 
+# Disable swap
+  sed -i '/ swap / s/^/#/' /etc/fstab
+  swapoff -a
+
 
 # Install apps from tar like Check-MK, NConf
 cd /tmp
