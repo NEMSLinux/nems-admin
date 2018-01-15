@@ -76,7 +76,7 @@ libnss-mdns
 # Apache2 dependencies
 libapache2-modsecurity
 modsecurity-crs
-php-7.0
+php7.0
 php-curl
 
 # NEMS
