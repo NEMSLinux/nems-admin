@@ -215,10 +215,6 @@ cd /home/nemsadmin
 wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 cp /root/nems/nems-migrator/data/nems/changelog.txt .
 
-# Hide grub menu
-echo "GRUB_HIDDEN_TIMEOUT_QUIET=true" >> /etc/default/grub
-update-grub
-
 echo "Usage after build:"
 df -hT /etc
 

@@ -1,0 +1,8 @@
+#!/bin/bash
+sed -i '/GRUB_HIDDEN_TIMEOUT/d' /etc/default/grub
+sed -i '/GRUB_TIMEOUT/d' /etc/default/grub
+echo "
+# Hide GRUB Menu
+GRUB_HIDDEN_TIMEOUT=0
+GRUB_TIMEOUT=0" >> /etc/default/grub
+update-grub 
