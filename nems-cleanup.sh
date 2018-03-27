@@ -134,7 +134,7 @@ else
   echo -e "$pipassword\n$pipassword" | passwd pi >/tmp/init 2>&1
   
   # Reset Nagios Core User
-  cp -f /root/nems/nems-migrator/data/nagios/cgi.cfg /etc/nagios3/
+  cp -f /root/nems/nems-migrator/data/nagios/conf/cgi.cfg /etc/nagios3/
   
   # Reset Check_MK User
   cp -f /root/nems/nems-migrator/data/check_mk/users.mk /etc/check_mk/multisite.d/wato/users.mk
