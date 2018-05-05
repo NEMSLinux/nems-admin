@@ -1,7 +1,6 @@
 #!/bin/bash
-apt install apt-transport-https
-apt-key adv --recv --keyserver hkp://keyserver.ubuntu.com 1148DA8E
-echo 'deb https://packages.openitcockpit.com/repositories/stretch stretch main' > /etc/apt/sources.list.d/openitcockpit.list
-apt update
-apt --yes install openitcockpit{,-common,-nagios,-statusengine-nagios,-message}
-/usr/share/openitcockpit/app/SETUP.sh
+#apt-key adv --recv --keyserver hkp://keyserver.ubuntu.com 1148DA8E
+#echo 'deb https://packages.openitcockpit.com/repositories/stretch stretch main' > /etc/apt/sources.list.d/openitcockpit.list
+#apt update
+#apt --yes install openitcockpit{,-common,-nagios,-statusengine-nagios,-message}
+#/usr/share/openitcockpit/app/SETUP.sh
