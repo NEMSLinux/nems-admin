@@ -61,6 +61,13 @@ apt --yes install -f
 # Be up to date
 apt --yes upgrade && apt --yes dist-upgrade
 
+# Create nemsadmin user
+adduser --disabled-password --gecos "" nemsadmin
+# Allow user to become super-user
+usermod -aG sudo nemsadmin
+# Set the user password
+echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
+
 # Delete any non-root user (eg: pi)
 userdel -f pi
 userdel -f test #armbian
