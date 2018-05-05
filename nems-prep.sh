@@ -11,22 +11,19 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
-/* Breaks raspberry pi - fix this
-Pi:
-deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi firmware
+# NEED TO ADD REPOS MANUALLY FOR NOW
+# Pi:
+#deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi firmware
 
-Debian:
-  echo "deb http://deb.debian.org/debian/ stretch non-free main
-        deb-src http://deb.debian.org/debian/ stretch non-free main
-
-        deb http://security.debian.org/debian-security stretch/updates non-free main contrib
-        deb-src http://security.debian.org/debian-security stretch/updates non-free main contrib
-
+#Debian:
+#  echo "deb http://deb.debian.org/debian/ stretch non-free main
+#        deb-src http://deb.debian.org/debian/ stretch non-free main
+#        deb http://security.debian.org/debian-security stretch/updates non-free main contrib
+#        deb-src http://security.debian.org/debian-security stretch/updates non-free main contrib
         # stretch-updates, previously known as 'volatile'
-        deb http://deb.debian.org/debian/ stretch-updates non-free main contrib
-        deb-src http://deb.debian.org/debian/ stretch-updates non-free main contrib
-  " > /etc/apt/sources.list
-  */
+#        deb http://deb.debian.org/debian/ stretch-updates non-free main contrib
+#       deb-src http://deb.debian.org/debian/ stretch-updates non-free main contrib
+#  " > /etc/apt/sources.list
   
   apt update
   apt install --yes git screen
