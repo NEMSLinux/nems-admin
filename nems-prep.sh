@@ -11,6 +11,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+/* Breaks raspberry pi - fix this
   echo "deb http://deb.debian.org/debian/ stretch non-free main
         deb-src http://deb.debian.org/debian/ stretch non-free main
 
@@ -21,6 +22,7 @@ else
         deb http://deb.debian.org/debian/ stretch-updates non-free main contrib
         deb-src http://deb.debian.org/debian/ stretch-updates non-free main contrib
   " > /etc/apt/sources.list
+  */
   
   apt update
   apt install --yes git screen
