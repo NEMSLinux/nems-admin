@@ -12,6 +12,10 @@ if [[ $EUID -ne 0 ]]; then
 else
 
 /* Breaks raspberry pi - fix this
+Pi:
+deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi firmware
+
+Debian:
   echo "deb http://deb.debian.org/debian/ stretch non-free main
         deb-src http://deb.debian.org/debian/ stretch non-free main
 
