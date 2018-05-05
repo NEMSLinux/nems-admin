@@ -30,8 +30,8 @@ deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib" >
 wget -qO - http://www.webmin.com/jcameron-key.asc | apt-key add -
 
 # Monitorix
-echo "deb http://apt.izzysoft.de/ubuntu generic universe" > /etc/apt/sources.list.d/monitorix.list
-wget -qO - http://apt.izzysoft.de/izzysoft.asc | apt-key add -
+echo "deb https://apt.izzysoft.de/ubuntu generic universe" > /etc/apt/sources.list.d/monitorix.list
+wget -qO - https://apt.izzysoft.de/izzysoft.asc | apt-key add -
 
 # Remove cruft
 apt update
