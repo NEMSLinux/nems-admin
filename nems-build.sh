@@ -119,67 +119,9 @@ rm /etc/init.d/firstrun # ARMbian
   ./build/110-cockpit
 
 exit
-# NEED TO ENSURE nagios3 REFERENCES ARE GONE AND WORKING (New File Locations)
 
-
-# Add NEMS packages
-
-# System
-cd /root/nems # this was created with nems-prep.sh
-git clone https://github.com/Cat5TV/nems-admin
-git clone https://github.com/Cat5TV/nems-migrator
-git clone https://github.com/zorkian/nagios-api
-
-# Import NEMS crontab (must happen after nems-migrator but before fixes.sh)
-crontab /root/nems/nems-migrator/data/nems/crontab
-
-# Web Interface
-cd /var/www
-rm -rf html && git clone https://github.com/Cat5TV/nems-www && mv nems-www html && chown -R www-data:www-data html
-git clone https://github.com/Cat5TV/nconf && chown -R www-data:www-data nconf
-# Create NEMS configuration folder
-  mkdir -p /etc/nems/conf
-# Copy sample data
-  cp -R /root/nems/nems-migrator/data/nagios/conf/global /etc/nems/conf/
-  cp -R /root/nems/nems-migrator/data/nagios/conf/Default_collector /etc/nems/conf/
-  chmod 775 /etc/nems/conf/global
-  chmod 775 /etc/nems/conf/Default_collector
-# Import nConf Configuration
-  cp /root/nems/nems-migrator/data/nconf/deployment.ini /var/www/nconf/config/
-# Allow www-data to reload Nagios configs
-  echo 'www-data ALL=NOPASSWD: /bin/systemctl reload nagios' | sudo EDITOR='tee -a' visudo
-# tell Nagios to use nconf configs
-if [[ -f /usr/local/nagios/etc/nagios.cfg ]]; then
-  echo "cfg_dir=/etc/nems/conf/global" >> /usr/local/nagios/etc/nagios.cfg
-  echo "cfg_dir=/etc/nems/conf/Default_collector" >> /usr/local/nagios/etc/nagios.cfg
-else
-  echo "/usr/local/nagios/etc/nagios.cfg was not found. Could not activate nConf." >> /tmp/errors.log
-fi
-
-# Point Nagios to the NEMS Nagios Theme in nems-www and import the config
-if [[ -d /usr/share/nagios3/htdocs ]]; then
-  rm -rf /usr/share/nagios3/htdocs
-fi
-ln -s /var/www/html/share/nagios3/ /usr/share/nagios3/htdocs
-cp -R /root/nems/nems-migrator/data/nagios/conf/* /etc/nagios3/
-
-# Import the apache2 config (must come after nems-migrator)
-# FIRST NEED TO DETERMINE WHICH MODS NEED INSTALLING
-# DO THESE ONE AT A TIME UNTIL WORKING
-# rm -rf /etc/apache2 && cp -R /root/nems/nems-migrator/data/apache2 /etc/
-
-# Restart related services
-systemctl restart apache2
-systemctl start nagios3
-
-cd /usr/local/share/
-mkdir nems
-cd nems
-printf "version=" > nems.conf && cat /root/nems/nems-migrator/data/nems/ver-current.txt >> nems.conf
-git clone https://github.com/Cat5TV/nems-scripts
-
-# Create symlinks, apply patches/fixes, etc.
-/usr/local/share/nems/nems-scripts/fixes.sh
+# Setup NEMS software
+  ./build/150-nems
 
 # Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
   if ! grep -q "nomodeset" /etc/default/grub; then
