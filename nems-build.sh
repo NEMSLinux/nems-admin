@@ -114,6 +114,10 @@ rm /etc/init.d/firstrun # ARMbian
   systemctl enable nagios
 
 # Finished installing Nagios Core
+
+# Install cockpit
+  ./build/110-cockpit
+
 exit
 # NEED TO ENSURE nagios3 REFERENCES ARE GONE AND WORKING (New File Locations)
 
