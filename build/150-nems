@@ -44,6 +44,12 @@ git clone https://github.com/Cat5TV/nems-scripts
 # Create symlinks, apply patches/fixes, etc.
 /usr/local/share/nems/nems-scripts/fixes.sh
 
+# Enable NEMS MOTD
+echo > /etc/motd
+cp /root/nems/nems-migrator/data/nems/motd.tcl /etc/
+chmod 755 /etc/motd.tcl
+echo "/etc/motd.tcl" >> /etc/profile
+
 
 exit
 

@@ -69,12 +69,12 @@ usermod -aG sudo nemsadmin
 echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
 
 # Delete any non-root user (eg: pi)
-userdel -f pi
-userdel -f test #armbian
-userdel -f odroid
-userdel -f rock64
-userdel -f linaro # ASUS TinkerBoard
-userdel -f dietpi
+userdel -f -r pi
+userdel -f -r test #armbian
+userdel -f -r odroid
+userdel -f -r rock64
+userdel -f -r linaro # ASUS TinkerBoard
+userdel -f -r dietpi
 
 # Disable firstrun
 systemctl disable firstrun
@@ -153,12 +153,6 @@ cd /tmp
 
 # Enable systemd items
 systemctl enable webmin
-
-# Enable NEMS MOTD
-echo > /etc/motd
-cp /root/nems/nems-migrator/data/nems/motd.tcl /etc/
-chmod 755 /etc/motd.tcl
-echo "/etc/motd.tcl" >> /etc/profile
 
 # clean it up!
 apt --yes autoremove
