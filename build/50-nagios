@@ -1,0 +1,15 @@
+#!/bin/bash
+
+/bin/sed -i -- 's/nagiosadmin/'"nemsadmin"'/g' /usr/local/nagios/etc/cgi.cfg
+
+# Compatibility with older versions of NEMS
+mkdir /etc/nagios3
+
+echo "This folder contains symlinks to the Nagios 4 configs to allow compatibility with older versions of NEMS" > /etc/nagios3/README
+
+ln -s /usr/local/nagios/etc/cgi.cfg /etc/nagios3/cgi.cfg
+
+ln -s /etc/nems/conf/global /etc/nagios3/global
+ln -s /etc/nems/conf/Default_collector /etc/nagios3/Default_collector
+
+ln -s /etc/nems/conf/import /etc/nagios3/import
