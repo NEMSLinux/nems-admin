@@ -6,7 +6,6 @@
 
 # System
 cd /root/nems # this was created with nems-prep.sh
-git clone https://github.com/Cat5TV/nems-admin
 git clone https://github.com/Cat5TV/nems-migrator
 git clone https://github.com/zorkian/nagios-api
 
@@ -36,6 +35,18 @@ else
   echo "/usr/local/nagios/etc/nagios.cfg was not found. Could not activate nConf." >> /tmp/errors.log
 fi
 
+cd /usr/local/share/
+mkdir nems
+cd nems
+printf "version=" > nems.conf && cat /root/nems/nems-migrator/data/nems/ver-current.txt >> nems.conf
+git clone https://github.com/Cat5TV/nems-scripts
+
+# Create symlinks, apply patches/fixes, etc.
+/usr/local/share/nems/nems-scripts/fixes.sh
+
+
+exit
+
 # Point Nagios to the NEMS Nagios Theme in nems-www and import the config
 if [[ -d /usr/share/nagios3/htdocs ]]; then
   rm -rf /usr/share/nagios3/htdocs
@@ -52,11 +63,3 @@ cp -R /root/nems/nems-migrator/data/nagios/conf/* /etc/nagios3/
 systemctl restart apache2
 systemctl start nagios3
 
-cd /usr/local/share/
-mkdir nems
-cd nems
-printf "version=" > nems.conf && cat /root/nems/nems-migrator/data/nems/ver-current.txt >> nems.conf
-git clone https://github.com/Cat5TV/nems-scripts
-
-# Create symlinks, apply patches/fixes, etc.
-/usr/local/share/nems/nems-scripts/fixes.sh
