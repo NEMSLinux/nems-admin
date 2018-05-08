@@ -123,6 +123,9 @@ exit
 # Setup NEMS software
   ./build/150-nems
 
+# Change hostname to nems
+  ./build/200-hostname
+
 # Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
   if ! grep -q "nomodeset" /etc/default/grub; then
     sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset /g' /etc/default/grub
