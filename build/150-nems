@@ -1,13 +1,17 @@
 #!/bin/bash
-# NEED TO ENSURE nagios3 REFERENCES ARE GONE AND WORKING (New File Locations)
 
-
-# Add NEMS packages
+# Add and configure NEMS packages
 
 # System
 cd /root/nems # this was created with nems-prep.sh
-git clone https://github.com/Cat5TV/nems-migrator
-git clone https://github.com/zorkian/nagios-api
+
+if [[ ! -d nems-migrator ]]; then
+  git clone https://github.com/Cat5TV/nems-migrator
+fi
+
+if [[ ! -d nagios-api ]]; then
+  git clone https://github.com/zorkian/nagios-api
+fi
 
 # Import NEMS crontab (must happen after nems-migrator but before fixes.sh)
 crontab /root/nems/nems-migrator/data/nems/crontab
@@ -19,21 +23,14 @@ git clone https://github.com/Cat5TV/nconf && chown -R www-data:www-data nconf
 # Create NEMS configuration folder
   mkdir -p /etc/nems/conf
 # Copy sample data
-  cp -R /root/nems/nems-migrator/data/nagios/conf/global /etc/nems/conf/
-  cp -R /root/nems/nems-migrator/data/nagios/conf/Default_collector /etc/nems/conf/
+  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/global /etc/nems/conf/
+  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/Default_collector /etc/nems/conf/
   chmod 775 /etc/nems/conf/global
   chmod 775 /etc/nems/conf/Default_collector
 # Import nConf Configuration
   cp /root/nems/nems-migrator/data/nconf/deployment.ini /var/www/nconf/config/
 # Allow www-data to reload Nagios configs
   echo 'www-data ALL=NOPASSWD: /bin/systemctl reload nagios' | sudo EDITOR='tee -a' visudo
-# tell Nagios to use nconf configs
-if [[ -f /usr/local/nagios/etc/nagios.cfg ]]; then
-  echo "cfg_dir=/etc/nems/conf/global" >> /usr/local/nagios/etc/nagios.cfg
-  echo "cfg_dir=/etc/nems/conf/Default_collector" >> /usr/local/nagios/etc/nagios.cfg
-else
-  echo "/usr/local/nagios/etc/nagios.cfg was not found. Could not activate nConf." >> /tmp/errors.log
-fi
 
 cd /usr/local/share/
 mkdir nems
@@ -51,14 +48,13 @@ chmod 755 /etc/motd.tcl
 echo "/etc/motd.tcl" >> /etc/profile
 
 
-exit
-
 # Point Nagios to the NEMS Nagios Theme in nems-www and import the config
-if [[ -d /usr/share/nagios3/htdocs ]]; then
-  rm -rf /usr/share/nagios3/htdocs
+if [[ -d /usr/local/nagios/share ]]; then
+  rm -rf /usr/local/nagios/share
 fi
-ln -s /var/www/html/share/nagios3/ /usr/share/nagios3/htdocs
-cp -R /root/nems/nems-migrator/data/nagios/conf/* /etc/nagios3/
+ln -s /var/www/html/share/nagios/ /usr/local/nagios/share
+# Restore NEMS versions of Nagios config
+cp -R /root/nems/nems-migrator/data/1.4/nagios/etc/* /usr/local/nagios/etc/
 
 # Import the apache2 config (must come after nems-migrator)
 # FIRST NEED TO DETERMINE WHICH MODS NEED INSTALLING
@@ -67,5 +63,5 @@ cp -R /root/nems/nems-migrator/data/nagios/conf/* /etc/nagios3/
 
 # Restart related services
 systemctl restart apache2
-systemctl start nagios3
+systemctl restart nagios
 

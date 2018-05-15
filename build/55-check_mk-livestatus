@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Install and configure check-mk-livestatus
+apt install --yes check-mk-livestatus php-net-socket php7.0-sqlite sqlite3 graphviz php7.0-gd
+
+# /usr/local/nagios/var/rw
