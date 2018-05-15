@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Create nemsadmin user
+  adduser --disabled-password --gecos "" nemsadmin
+
+# Allow user to become super-user
+  usermod -aG sudo nemsadmin
+
+# Set the user password
+  echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
+
+# Add nemsadmin to sudoers and disable root login if that's successful
+  usermod -aG sudo nemsadmin && passwd -l root
+
+# Add files to nemsadmin home folder (which later get moved to NEMS user account at init)
+  cd /home/nemsadmin
+  wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+  cp /root/nems/nems-migrator/data/nems/changelog.txt .
+
+
+# Delete any non-root user and remove their home folder (eg: pi)
+  userdel -f -r pi
+  userdel -f -r test #armbian
+  userdel -f -r odroid
+  userdel -f -r rock64
+  userdel -f -r linaro # ASUS TinkerBoard
+  userdel -f -r dietpi
+

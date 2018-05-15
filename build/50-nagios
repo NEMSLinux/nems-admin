@@ -1,5 +1,41 @@
 #!/bin/bash
 
+# Install Nagios Core
+  useradd nagios
+  groupadd nagcmd
+  usermod -a -G nagios www-data
+  usermod -a -G nagcmd nagios
+  usermod -a -G nagcmd www-data
+  cd /tmp
+  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.3.4.tar.gz
+  tar -zxvf nagios-4.3.4.tar.gz
+  cd /tmp/nagios-4.3.4/
+  ./configure --with-nagios-group=nagios --with-command-group=nagcmd --with-httpd_conf=/etc/apache2/conf-available/
+  make all
+  make install
+  make install-init
+  make install-config
+  make install-commandmode
+  make install-webconf
+
+  cd /tmp
+  wget https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+  tar -zxvf /tmp/nagios-plugins-2.2.1.tar.gz
+  cd /tmp/nagios-plugins-2.2.1/
+  ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+  make
+  make install
+
+  a2enmod rewrite
+  a2enmod cgi
+  a2enconf nagios
+
+  systemctl start nagios
+  systemctl enable nagios
+
+# Finished installing Nagios Core
+
+# Install some needed extras
 apt install nagios-plugins nagios-nrpe-plugin nagios-nrpe-server nagios-images
 
 # Set the nagios user shell
