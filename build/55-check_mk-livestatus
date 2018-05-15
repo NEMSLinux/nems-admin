@@ -1,7 +1,9 @@
 #!/bin/bash
 
+systemctl stop nagios
+
 # Install and configure check-mk-livestatus
-apt install --yes php-net-socket php7.0-sqlite sqlite3 graphviz php7.0-gd rrdtool librrd-dev libboost-dev
+apt install --yes php-net-socket php7.0-sqlite sqlite3 graphviz php7.0-gd rrdtool librrd-dev libboost-all-dev
 
 # Need to determine the lib directory for boost to compile correctly
 if [[ -d /usr/lib/arm-linux-gnueabihf ]]; then
@@ -30,3 +32,8 @@ make
 make install
 
 # /usr/local/nagios/var/rw
+
+systemctl start nagios
+sleep 5
+systemctl status nagios
+

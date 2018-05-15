@@ -1,5 +1,7 @@
 #!/bin/bash
 
+apt install nagios-plugins nagios-nrpe-plugin nagios-nrpe-server nagios-images
+
 # Set the nagios user shell
 usermod -s /bin/bash nagios
 
