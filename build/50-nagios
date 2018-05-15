@@ -9,6 +9,11 @@ if [[ ! -d /var/log/nagios ]]; then
   mkdir /var/log/nagios
 fi
 
+if [[ ! -d /var/cache/nagios/ ]]; then
+  mkdir /var/cache/nagios/
+  chown nagios:nagios /var/cache/nagios/
+fi
+
 /bin/sed -i -- 's/nagiosadmin/'"nemsadmin"'/g' /usr/local/nagios/etc/cgi.cfg
 
 # Compatibility with older versions of NEMS
