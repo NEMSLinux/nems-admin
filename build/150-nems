@@ -38,6 +38,9 @@ cd nems
 printf "version=" > nems.conf && cat /root/nems/nems-migrator/data/nems/ver-current.txt >> nems.conf
 git clone https://github.com/Cat5TV/nems-scripts
 
+# Add nems-init
+ln -s /usr/local/share/nems/nems-scripts/init.sh /usr/local/bin/nems-init
+
 # Create symlinks, apply patches/fixes, etc.
 /usr/local/share/nems/nems-scripts/fixes.sh
 
