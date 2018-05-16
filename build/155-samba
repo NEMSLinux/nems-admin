@@ -1,0 +1,5 @@
+#!/bin/bash
+systemctl stop smbd
+cp /root/nems/nems-migrator/data/samba/smb.conf /etc/samba/
+systemctl start smbd
+

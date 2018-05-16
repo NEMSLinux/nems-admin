@@ -81,6 +81,9 @@ rm /etc/init.d/firstrun # ARMbian
 # Setup NEMS software
   ./build/150-nems
 
+# Activate Samba Config from Migrator
+  ./build/155-samba
+
 # Change hostname to nems
   ./build/200-hostname
 
