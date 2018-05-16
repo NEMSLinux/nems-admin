@@ -45,7 +45,9 @@ git clone https://github.com/Cat5TV/nems-scripts
 echo > /etc/motd
 cp /root/nems/nems-migrator/data/nems/motd.tcl /etc/
 chmod 755 /etc/motd.tcl
-echo "/etc/motd.tcl" >> /etc/profile
+if ! grep -q "/etc/motd.tcl" /etc/profile; then
+  echo "/etc/motd.tcl" >> /etc/profile
+fi
 
 
 # Point Nagios to the NEMS Nagios Theme in nems-www and import the config
