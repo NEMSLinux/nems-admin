@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# STILL NEED TO ADD TEMPLATE FOR NEMS 1.4
+
+printf "Installing rpimonitor... "
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why we have to do this after 150-nems
+
+if [[ $platform = "0" ]] || [[ $platform = "1" ]] || [[ $platform = "2" ]] || [[ $platform = "3" ]]; then
+  echo "deb http://giteduberger.fr rpimonitor/" > /etc/apt/sources.list.d/rpimonitor.list
+  echo ""
+  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
+  apt update
+  apt -y install rpimonitor
+  /etc/init.d/rpimonitor update
+  systemctl stop rpimonitor
+  cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor/
+  systemctl start rpimonitor
+  echo "Done."
+else
+  echo "This is not a Pi, skipping."
+fi

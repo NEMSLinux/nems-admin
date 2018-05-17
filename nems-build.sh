@@ -84,6 +84,9 @@ rm /etc/init.d/firstrun # ARMbian
 # Activate Samba Config from Migrator
   ./build/155-samba
 
+# Install rpimonitor
+  ./build/160-rpimonitor
+
 # Change hostname to nems
   ./build/200-hostname
 
