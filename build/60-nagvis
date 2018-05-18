@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# The conf gets imported by nems-init, so only need to install.
+
 # Go git 'er
 wget -O /tmp/nagvis.tar.gz http://www.nagvis.org/share/nagvis-1.9.8.tar.gz
 cd /tmp
