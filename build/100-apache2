@@ -1,2 +1,3 @@
 #!/bin/bash
 a2enmod ssl
+apt -y install php7.0-xml php7.0-mbstring

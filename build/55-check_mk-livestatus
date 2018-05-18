@@ -34,6 +34,10 @@ make install
 # /usr/local/nagios/var/rw
 
 systemctl start nagios
+
+# Allow nagvis to read the socket
+chmod 666 /usr/local/nagios/var/rw/live.sock
+
 sleep 5
 systemctl status nagios
 

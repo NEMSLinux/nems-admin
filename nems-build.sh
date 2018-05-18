@@ -66,6 +66,12 @@ apt --yes upgrade && apt --yes dist-upgrade
 systemctl disable firstrun
 rm /etc/init.d/firstrun # ARMbian
 
+# Replace TTY screen
+  ./build/10-tty
+
+# Configure grub
+  ./build/20-grub
+
 # Setup Linux user
   ./build/30-user
 
@@ -89,12 +95,6 @@ rm /etc/init.d/firstrun # ARMbian
 
 # Change hostname to nems
   ./build/200-hostname
-
-# Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
-  if ! grep -q "nomodeset" /etc/default/grub; then
-    sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset /g' /etc/default/grub
-    /usr/sbin/update-grub
-  fi
 
 # Disable swap
   sed -i '/ swap / s/^/#/' /etc/fstab
