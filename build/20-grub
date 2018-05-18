@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Delete current settings
+sed -i '/GRUB_HIDDEN_TIMEOUT/d' /etc/default/grub
+sed -i '/GRUB_TIMEOUT/d' /etc/default/grub
+
+# Add NEMS settings
+echo "
+# Hide GRUB Menu
+GRUB_HIDDEN_TIMEOUT=0
+GRUB_TIMEOUT=0" >> /etc/default/grub
+
+# Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
+if ! grep -q "nomodeset" /etc/default/grub; then
+  sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset /g' /etc/default/grub
+fi
+
+# Update grub
+/usr/sbin/update-grub
