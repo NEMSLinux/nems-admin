@@ -1,0 +1,4 @@
+#!/bin/bash
+apt -y install monitorix
+systemctl start monitorix
+systemctl enable monitorix
