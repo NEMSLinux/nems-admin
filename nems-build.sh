@@ -75,11 +75,17 @@ rm /etc/init.d/firstrun # ARMbian
 # Setup Linux user
   ./build/30-user
 
+# Install and activate Monitorix
+  ./build/40-monitorix
+
 # Install Nagios Core
   ./build/50-nagios
 
 # Install Check_MK livestatus
   ./build/55-check_mk-livestatus
+
+# Install NagVis
+  ./build/60-nagvis
 
 # Install cockpit
   ./build/110-cockpit
