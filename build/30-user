@@ -26,3 +26,5 @@
   userdel -f -r linaro # ASUS TinkerBoard
   userdel -f -r dietpi
 
+# Remove sudo message
+echo "Defaults lecture = never" > /etc/sudoers.d/privacy
