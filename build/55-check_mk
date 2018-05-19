@@ -35,9 +35,52 @@ cd ..
 mkdir check_mk-multisite
 cd check_mk-multisite
 tar xzf ../web.tar.gz
-cd ..
-mv check_mk-multisite /var/www/
+echo "
+bindir='/usr/bin'
+confdir='/etc/check_mk'
+sharedir='/usr/share/check_mk'
+docdir='/usr/share/doc/check_mk'
+checkmandir='/usr/share/doc/check_mk/checks'
+vardir='/var/lib/check_mk'
+python_lib_dir='/usr/lib/python2.7'
+agentslibdir='/usr/lib/check_mk_agent'
+agentsconfdir='/etc/check_mk'
+nagiosuser='nagios'
+wwwuser='www-data'
+wwwgroup='nagios'
+nagios_binary='/usr/local/nagios/bin/nagios'
+nagios_config_file='/usr/local/nagios/etc/nagios.cfg'
+nagconfdir='/etc/nems/conf/global'
+nagios_startscript='/etc/init.d/nagios'
+nagpipe='/var/log/nagios/rw/nagios.cmd'
+check_result_path='/usr/local/nagios/var/spool/checkresults'
+nagios_status_file='/var/cache/nagios/status.dat'
+check_icmp_path='/usr/local/nagios/libexec/check_icmp'
+url_prefix='/'
+apache_config_dir='/etc/apache2/conf-available'
+htpasswd_file='/var/www/htpasswd'
+nagios_auth_name='Nagios Access'
+pnptemplates='/usr/share/check_mk/pnp-templates'
+rrd_path='/var/lib/nagios/rrd'
+rrdcached_socket='/tmp/rrdcached.sock'
+enable_livestatus='no'
+enable_mkeventd='yes'
+mkeventdstatedir='/var/lib/mkeventd'
+" > ~/.check_mk_setup.conf
+if [[ ! -f /var/www/htpasswd ]]; then
+  touch /var/www/htpasswd
+fi
+./setup.sh --yes
+
+#cd ..
+#mkdir -p /usr/share/check_mk/web
+#mv check_mk-multisite/htdocs /usr/share/check_mk/web/
+#mv check_mk-multisite/plugins /usr/share/check_mk/web/
+
 # Add to Apache2
+#cp /root/nems/nems-migrator/data/apache2/conf-available/zzz_check_mk.conf /etc/apache2/conf-available/
+a2enconf zzz_check_mk.conf
+systemctl restart apache2
 
 # /usr/local/nagios/var/rw
 
