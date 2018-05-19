@@ -87,9 +87,6 @@ rm /etc/init.d/firstrun # ARMbian
 # Install NagVis
   ./build/60-nagvis
 
-# Install cockpit
-  ./build/110-cockpit
-
 # Setup NEMS software
   ./build/150-nems
 
@@ -98,6 +95,9 @@ rm /etc/init.d/firstrun # ARMbian
 
 # Install rpimonitor
   ./build/160-rpimonitor
+
+# Install cockpit
+  ./build/170-cockpit
 
 # Change hostname to nems
   ./build/200-hostname
