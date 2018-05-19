@@ -5,6 +5,13 @@ systemctl stop nagios
 # Install and configure check-mk-livestatus
 apt install --yes php-net-socket php7.0-sqlite sqlite3 graphviz php7.0-gd rrdtool librrd-dev libboost-all-dev
 
+# This is the full Check_MK OSE bundle
+wget -O /tmp/mk.tar.gz https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
+cd /tmp
+tar xzf mk.tar.gz
+cd check_mk-1.4.0p31
+
+# Install livestatus
 # Need to determine the lib directory for boost to compile correctly
 if [[ -d /usr/lib/arm-linux-gnueabihf ]]; then
   # Raspberry Pi / ARM
@@ -16,20 +23,21 @@ elif [[ -d /usr/lib/x86_64-linux-gnu ]]; then
   # 64-Bit
   libdir=/usr/lib/x86_64-linux-gnu
 fi
-
-# This is the full Check_MK OSE bundle
-wget -O /tmp/mk.tar.gz https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
-cd /tmp
-tar xzf mk.tar.gz
-cd check_mk-1.4.0p31
-
-# Install livestatus
 mkdir livestatus
 cd livestatus
 tar xzf ../livestatus.tar.gz
 ./configure --with-nagios4 --with-boost-libdir=$libdir
 make
 make install
+cd ..
+
+# Install Check_MK Multisite (web interface)
+mkdir check_mk-multisite
+cd check_mk-multisite
+tar xzf ../web.tar.gz
+cd ..
+mv check_mk-multisite /var/www/
+# Add to Apache2
 
 # /usr/local/nagios/var/rw
 

@@ -62,6 +62,13 @@ apt --yes install -f
 # Be up to date
 apt --yes upgrade && apt --yes dist-upgrade
 
+# Upgrade firmware
+rpi-update
+
+# Upgrade again in case anything changed on the new kernel
+apt update
+apt --yes upgrade && apt --yes dist-upgrade
+
 # Disable firstrun
 systemctl disable firstrun
 rm /etc/init.d/firstrun # ARMbian
