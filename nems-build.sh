@@ -94,7 +94,7 @@ rm /etc/init.d/firstrun # ARMbian
   ./build/50-nagios
 
 # Install Check_MK livestatus
-  ./build/55-check_mk-livestatus
+  ./build/55-check_mk
 
 # Install NagVis
   ./build/60-nagvis
