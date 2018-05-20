@@ -6,12 +6,10 @@ systemctl stop nagios
 apt install --yes php-net-socket php7.0-sqlite sqlite3 graphviz php7.0-gd rrdtool librrd-dev libboost-all-dev
 
 # This is the full Check_MK OSE bundle
-#wget -O /tmp/mk.tar.gz https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
-wget -O /tmp/mk.tar.gz https://mathias-kettner.de/support/1.2.8p27/check-mk-raw-1.2.8p27.cre.tar.gz
+wget -O /tmp/mk.tar.gz https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
 cd /tmp
 tar xzf mk.tar.gz
-#cd check_mk-1.4.0p31
-cd check-mk-raw-1.2.8p27.cre
+cd check_mk-1.4.0p31
 
 # Install livestatus
 # Need to determine the lib directory for boost to compile correctly
@@ -65,6 +63,7 @@ rrdcached_socket='/tmp/rrdcached.sock'
 enable_livestatus='no'
 enable_mkeventd='yes'
 mkeventdstatedir='/var/lib/mkeventd'
+livesock='/usr/local/nagios/var/rw/live.sock'
 " > ~/.check_mk_setup.conf
 if [[ ! -f /var/www/htpasswd ]]; then
   touch /var/www/htpasswd
@@ -76,14 +75,12 @@ if [[ ! -f /usr/share/check_mk/web/htdocs/livestatus.py ]]; then
  ln -s /usr/share/doc/check_mk/livestatus/api/python/livestatus.py /usr/share/check_mk/web/htdocs/livestatus.py
 fi
 
-#cd ..
-#mkdir -p /usr/share/check_mk/web
-#mv check_mk-multisite/htdocs /usr/share/check_mk/web/
-#mv check_mk-multisite/plugins /usr/share/check_mk/web/
-
 # Add to Apache2
 #cp /root/nems/nems-migrator/data/apache2/conf-available/zzz_check_mk.conf /etc/apache2/conf-available/
 a2enconf zzz_check_mk.conf
+a2dismod wsgi
+a2enmod python
+cp -rf /root/nems/nems-migrator/data/1.4/check_mk/config/* /etc/check_mk/
 systemctl restart apache2
 
 # /usr/local/nagios/var/rw
