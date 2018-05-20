@@ -69,11 +69,6 @@ ln -s /var/www/html/share/nagios/ /usr/local/nagios/share
 # Restore NEMS versions of Nagios config
 cp -R /root/nems/nems-migrator/data/1.4/nagios/etc/* /usr/local/nagios/etc/
 
-# Import the apache2 config (must come after nems-migrator)
-# FIRST NEED TO DETERMINE WHICH MODS NEED INSTALLING
-# DO THESE ONE AT A TIME UNTIL WORKING
-# rm -rf /etc/apache2 && cp -R /root/nems/nems-migrator/data/apache2 /etc/
-
 # Restart related services
 systemctl restart apache2
 systemctl restart nagios

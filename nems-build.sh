@@ -16,6 +16,8 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+cd /root/nems/nems-admin
+
 echo "" > /tmp/errors.log
 
 echo "Usage before build:"
@@ -81,6 +83,9 @@ rm /etc/init.d/firstrun # ARMbian
 
 # Setup Linux user
   ./build/30-user
+
+# Install Apache2
+  ./build/35-apache2
 
 # Install and activate Monitorix
   ./build/40-monitorix

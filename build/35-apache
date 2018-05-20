@@ -6,6 +6,6 @@ apt -y install php7.0-xml php7.0-mbstring ssl-cert
 /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
 
 systemctl stop apache2
-cp /root/nems/nems-migrator/data/apache2/sites-available/000-default.conf /etc/apache2/sites-available
+cp -f /root/nems/nems-migrator/data/apache2/sites-available/000-default.conf /etc/apache2/sites-available
 systemctl start apache2
 

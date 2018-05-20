@@ -36,7 +36,7 @@
 # Finished installing Nagios Core
 
 # Install some needed extras
-apt install nagios-plugins nagios-nrpe-plugin nagios-nrpe-server nagios-images
+apt install -y nagios-plugins nagios-nrpe-plugin nagios-nrpe-server nagios-images
 
 # Set the nagios user shell
 usermod -s /bin/bash nagios
