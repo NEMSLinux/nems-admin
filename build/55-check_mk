@@ -6,10 +6,12 @@ systemctl stop nagios
 apt install --yes php-net-socket php7.0-sqlite sqlite3 graphviz php7.0-gd rrdtool librrd-dev libboost-all-dev
 
 # This is the full Check_MK OSE bundle
-wget -O /tmp/mk.tar.gz https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
+#wget -O /tmp/mk.tar.gz https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
+wget -O /tmp/mk.tar.gz https://mathias-kettner.de/support/1.2.8p27/check-mk-raw-1.2.8p27.cre.tar.gz
 cd /tmp
 tar xzf mk.tar.gz
-cd check_mk-1.4.0p31
+#cd check_mk-1.4.0p31
+cd check-mk-raw-1.2.8p27.cre
 
 # Install livestatus
 # Need to determine the lib directory for boost to compile correctly
@@ -32,9 +34,6 @@ make install
 cd ..
 
 # Install Check_MK Multisite (web interface)
-mkdir check_mk-multisite
-cd check_mk-multisite
-tar xzf ../web.tar.gz
 echo "
 bindir='/usr/bin'
 confdir='/etc/check_mk'
@@ -69,8 +68,13 @@ mkeventdstatedir='/var/lib/mkeventd'
 " > ~/.check_mk_setup.conf
 if [[ ! -f /var/www/htpasswd ]]; then
   touch /var/www/htpasswd
+  chown www-data:www-data /var/www/htpasswd
 fi
 ./setup.sh --yes
+
+if [[ ! -f /usr/share/check_mk/web/htdocs/livestatus.py ]]; then
+ ln -s /usr/share/doc/check_mk/livestatus/api/python/livestatus.py /usr/share/check_mk/web/htdocs/livestatus.py
+fi
 
 #cd ..
 #mkdir -p /usr/share/check_mk/web
