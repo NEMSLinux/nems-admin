@@ -44,10 +44,13 @@ git clone https://github.com/Cat5TV/nconf && chown -R www-data:www-data nconf
   cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/Default_collector /etc/nems/conf/
   chmod 775 /etc/nems/conf/global
   chmod 775 /etc/nems/conf/Default_collector
+# Allow nConf to write to the conf
+  chown -R www-data:www-data /etc/nems/conf/Default_collector
+  chown -R www-data:www-data /etc/nems/conf/global
 
-# Allow www-data to reload Nagios configs
-if ! grep -q "www-data ALL=NOPASSWD: /bin/systemctl reload nagios" /etc/sudoers; then
-  echo 'www-data ALL=NOPASSWD: /bin/systemctl reload nagios' | sudo EDITOR='tee -a' visudo
+# Allow www-data to restart Nagios after exporting new configs
+if ! grep -q "www-data ALL=NOPASSWD: /bin/systemctl restart nagios" /etc/sudoers; then
+  echo 'www-data ALL=NOPASSWD: /bin/systemctl restart nagios' | sudo EDITOR='tee -a' visudo
 fi
 
 cd /usr/local/share/
