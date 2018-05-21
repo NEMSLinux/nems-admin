@@ -53,11 +53,7 @@ if ! grep -q "www-data ALL=NOPASSWD: /bin/systemctl restart nagios" /etc/sudoers
   echo 'www-data ALL=NOPASSWD: /bin/systemctl restart nagios' | sudo EDITOR='tee -a' visudo
 fi
 
-cd /usr/local/share/
-mkdir nems
-cd nems
-printf "version=" > nems.conf && cat /root/nems/nems-migrator/data/nems/ver-current.txt >> nems.conf
-chown www-data:www-data nems.conf
+cd /usr/local/share/nems
 git clone https://github.com/Cat5TV/nems-scripts
 
 # Add nems-init

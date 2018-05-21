@@ -16,6 +16,20 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+ver=$1
+
+if [ -z $ver ]; then
+  echo "Usage: $0 [version]"
+  exit
+fi
+
+echo Building NEMS $ver
+cd /usr/local/share/
+mkdir nems
+cd nems
+printf "version=$ver" > nems.conf
+chown www-data:www-data nems.conf
+
 cd /root/nems/nems-admin
 
 echo "" > /tmp/errors.log
