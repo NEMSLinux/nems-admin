@@ -1,0 +1,3 @@
+#!/bin/bash
+cp -f /root/nems/nems-migrator/data/1.4/monit/conf.d/nems.conf /etc/monit/conf.d/
+systemctl restart monit
