@@ -87,9 +87,6 @@ rm /etc/init.d/firstrun # ARMbian
 # Install Apache2
   ./build/35-apache2
 
-# Install and activate Monitorix
-  ./build/40-monitorix
-
 # Install Nagios Core
   ./build/50-nagios
 
@@ -107,6 +104,9 @@ rm /etc/init.d/firstrun # ARMbian
 
 # Install rpimonitor
   ./build/160-rpimonitor
+
+# Install and activate Monitorix
+  ./build/165-monitorix
 
 # Install cockpit
   ./build/170-cockpit
