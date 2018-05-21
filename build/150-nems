@@ -33,7 +33,7 @@ git clone https://github.com/Cat5TV/nconf && chown -R www-data:www-data nconf
   chmod 775 /etc/nems/conf/global
   chmod 775 /etc/nems/conf/Default_collector
 # Import nConf Configuration
-  cp /root/nems/nems-migrator/data/nconf/deployment.ini /var/www/nconf/config/
+  cp /root/nems/nems-migrator/data/1.4/nconf/deployment.ini /var/www/nconf/config/
 # Allow www-data to reload Nagios configs
 if ! grep -q "www-data ALL=NOPASSWD: /bin/systemctl reload nagios" /etc/sudoers; then
   echo 'www-data ALL=NOPASSWD: /bin/systemctl reload nagios' | sudo EDITOR='tee -a' visudo
