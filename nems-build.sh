@@ -75,6 +75,9 @@ apt --yes upgrade && apt --yes dist-upgrade
 systemctl disable firstrun
 rm /etc/init.d/firstrun # ARMbian
 
+# Install NEMS Migrator first and foremost
+  ./build/0-migrator
+
 # Replace TTY screen
   ./build/10-tty
 

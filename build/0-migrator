@@ -1,0 +1,8 @@
+#!/bin/bash
+cd /root/nems # this was created with nems-prep.sh
+
+if [[ ! -d nems-migrator ]]; then
+  git clone https://github.com/Cat5TV/nems-migrator
+fi
+
+
