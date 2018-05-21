@@ -111,8 +111,17 @@ rm /etc/init.d/firstrun # ARMbian
 # Install cockpit
   ./build/170-cockpit
 
+# Configure monit
+  ./build/175-monit
+
+# Install Adagios
+  ./build/180-adagios
+
 # Change hostname to nems
   ./build/200-hostname
+
+# Configure webmin
+  ./build/220-webmin
 
 # Disable swap
   sed -i '/ swap / s/^/#/' /etc/fstab

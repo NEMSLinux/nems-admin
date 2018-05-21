@@ -30,7 +30,7 @@ cd /tmp/
 wget -O adagios.tar.gz https://github.com/opinkerfi/adagios/archive/adagios-1.6.3-1.tar.gz
 tar xzf adagios.tar.gz
 cd adagios-adagios-1.6.3-1
-chown -R www-admin:www-admin adagios
+chown -R www-data:www-data adagios
 mv adagios /var/www/
 mv /var/www/adagios/etc/adagios /etc/
 cp -f /root/nems/nems-migrator/data/1.4/adagios/adagios.conf /etc/adagios/
