@@ -73,3 +73,4 @@ systemctl stop apache2
   cp -f /root/nems/nems-migrator/data/1.4/apache2/conf-available/nagios.conf /etc/apache2/conf-available/
 systemctl start apache2
 systemctl start nagios
+

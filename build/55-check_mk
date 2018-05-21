@@ -3,9 +3,11 @@
 systemctl stop nagios
 
 # Install and configure check-mk-livestatus
-apt install --yes php-net-socket php7.0-sqlite sqlite3 graphviz php7.0-gd rrdtool librrd-dev libboost-all-dev
+apt install --yes php-net-socket php7.0-sqlite sqlite3 graphviz php7.0-gd rrdtool librrd-dev libboost-all-dev libncurses5-dev libreadline-dev libxml2-dev libssl-dev
 
 # This is the full Check_MK OSE bundle
+
+# 1.4.0p31
 wget -O /tmp/mk.tar.gz https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
 cd /tmp
 tar xzf mk.tar.gz
@@ -31,6 +33,23 @@ make
 make install
 cd ..
 
+# Allow nagvis to read the socket
+chmod 666 /usr/local/nagios/var/rw/live.sock
+
+sleep 5
+
+# /usr/local/nagios/var/rw
+
+systemctl start nagios
+systemctl status nagios
+
+# Create log for livestatus
+touch /var/log/nagios/livestatus.log
+chown nagios:nagios /var/log/nagios/livestatus.log
+
+# ABORT, this doesn't work anymore. Switched to Adagios for NEMS 1.4
+exit
+
 # Install Check_MK Multisite (web interface)
 echo "
 bindir='/usr/bin'
@@ -44,7 +63,7 @@ agentslibdir='/usr/lib/check_mk_agent'
 agentsconfdir='/etc/check_mk'
 nagiosuser='nagios'
 wwwuser='www-data'
-wwwgroup='nagios'
+wwwgroup='www-data'
 nagios_binary='/usr/local/nagios/bin/nagios'
 nagios_config_file='/usr/local/nagios/etc/nagios.cfg'
 nagconfdir='/etc/nems/conf/global'
@@ -67,7 +86,8 @@ livesock='/usr/local/nagios/var/rw/live.sock'
 " > ~/.check_mk_setup.conf
 if [[ ! -f /var/www/htpasswd ]]; then
   touch /var/www/htpasswd
-  chown www-data:www-data /var/www/htpasswd
+#  chown www-data:www-data /var/www/htpasswd
+  chmod 644 /var/www/htpasswd
 fi
 ./setup.sh --yes
 
@@ -76,20 +96,14 @@ if [[ ! -f /usr/share/check_mk/web/htdocs/livestatus.py ]]; then
 fi
 
 # Add to Apache2
-#cp /root/nems/nems-migrator/data/apache2/conf-available/zzz_check_mk.conf /etc/apache2/conf-available/
+cp /root/nems/nems-migrator/data/1.4/apache2/conf-available/zzz_check_mk.conf /etc/apache2/conf-available/
 a2enconf zzz_check_mk.conf
 a2dismod wsgi
 a2enmod python
 cp -rf /root/nems/nems-migrator/data/1.4/check_mk/config/* /etc/check_mk/
 systemctl restart apache2
 
-# /usr/local/nagios/var/rw
-
-systemctl start nagios
-
-# Allow nagvis to read the socket
-chmod 666 /usr/local/nagios/var/rw/live.sock
-
-sleep 5
-systemctl status nagios
+# Create the Check_MK Multisite log and make it writeable by the interface
+touch /var/log/web.log
+chown www-data:www-data /var/log/web.log
 
