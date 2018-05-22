@@ -1,6 +1,8 @@
 #!/bin/bash
 # Replace the screen with our bootscreen which shows some basic info to the user (like how to connect)
 
+apt install -y dialog
+
 mkdir /etc/systemd/system/getty@tty1.service.d
 systemctl disable getty@tty1.service
 systemctl stop getty@tty1.service

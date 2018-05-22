@@ -33,19 +33,17 @@ make
 make install
 cd ..
 
-# Allow nagvis to read the socket
-chmod 666 /usr/local/nagios/var/rw/live.sock
-
-sleep 5
-
-# /usr/local/nagios/var/rw
-
-systemctl start nagios
-systemctl status nagios
-
 # Create log for livestatus
 touch /var/log/nagios/livestatus.log
 chown nagios:nagios /var/log/nagios/livestatus.log
+
+systemctl start nagios
+
+# Allow nagvis to read the socket
+chmod 666 /usr/local/nagios/var/rw/live.sock
+
+# /usr/local/nagios/var/rw
+
 
 # ABORT, this doesn't work anymore. Switched to Adagios for NEMS 1.4
 exit
