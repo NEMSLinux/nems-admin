@@ -15,6 +15,11 @@ chmod +x install.sh
 # Compatibility with old fixes from legacy NEMS versions
 ln -s /usr/local/nagvis/ /etc/nagvis
 
+rm /etc/nagvis/etc/maps/*
+cp /root/nems/nems-migrator/data/1.4/nagvis/maps/* /etc/nagvis/etc/maps/
+cp -f /root/nems/nems-migrator/data/1.4/nagvis/nagvis.ini.php /etc/nagvis/etc/
+
+
 # Turn me on!
 a2enconf nagvis
 systemctl restart apache2
