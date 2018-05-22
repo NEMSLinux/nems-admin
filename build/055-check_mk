@@ -1,7 +1,5 @@
 #!/bin/bash
 
-systemctl stop nagios
-
 # Install and configure check-mk-livestatus
 apt install --yes php-net-socket php7.0-sqlite sqlite3 graphviz php7.0-gd rrdtool librrd-dev libboost-all-dev libncurses5-dev libreadline-dev libxml2-dev libssl-dev
 
