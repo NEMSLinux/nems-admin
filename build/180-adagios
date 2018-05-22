@@ -23,7 +23,7 @@ python setup.py install
 
 # Install Django
 python -m pip install --upgrade pip setuptools
-pip install django==1.6
+pip install Django==1.6
 
 # Install Adagios
 cd /tmp/
@@ -54,6 +54,11 @@ Alias /adagios/media /var/www/adagios/media
 </Location>
 EOF
 
+a2dismod python
+a2enmod wsgi
+a2enconf adagios
+systemctl restart apache2
+
 # Install okconfig
 cd /opt
 git clone https://github.com/opinkerfi/okconfig.git
@@ -65,9 +70,5 @@ ln -s /opt/okconfig/usr/bin/okconfig /usr/local/bin/
 okconfig init
 okconfig verify
 
-
-
-a2dismod python
-a2enmod wsgi
-a2enconf adagios
 systemctl restart apache2
+
