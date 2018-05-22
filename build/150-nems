@@ -79,6 +79,9 @@ ln -s /var/www/html/share/nagios/ /usr/local/nagios/share
 # Restore NEMS versions of Nagios config
 cp -R /root/nems/nems-migrator/data/1.4/nagios/etc/* /usr/local/nagios/etc/
 
+# Generate certificates
+nems-cert
+
 # Restart related services
 systemctl restart apache2
 systemctl restart nagios

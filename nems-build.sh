@@ -89,76 +89,15 @@ apt --yes upgrade && apt --yes dist-upgrade
 systemctl disable firstrun
 rm /etc/init.d/firstrun # ARMbian
 
-# Install NEMS Migrator first and foremost
-  ./build/0-migrator
-
-# Replace TTY screen
-  ./build/10-tty
-
-# Configure grub
-  ./build/20-grub
-
-# Setup Linux user
-  ./build/30-user
-
-# Install Apache2
-  ./build/35-apache2
-
-# Install Nagios Core
-  ./build/50-nagios
-
-# Install Check_MK livestatus
-  ./build/55-check_mk
-
-# Install NagVis
-  ./build/60-nagvis
-
-# Setup NEMS software
-  ./build/150-nems
-
-# Activate Samba Config from Migrator
-  ./build/155-samba
-
-# Install rpimonitor
-  ./build/160-rpimonitor
-
-# Install and activate Monitorix
-  ./build/165-monitorix
-
-# Install cockpit
-  ./build/170-cockpit
-
-# Configure monit
-  ./build/175-monit
-
-# Install Adagios
-  ./build/180-adagios
-
-# Change hostname to nems
-  ./build/200-hostname
-
-# Configure webmin
-  ./build/220-webmin
+# Run the scripts in the build folder
+run-parts --exit-on-error -v build
 
 # Disable swap
   sed -i '/ swap / s/^/#/' /etc/fstab
   swapoff -a
 
-
 # Install apps from tar like Check-MK, NConf
 cd /tmp
-
-  # pnp4nagios
-  git clone https://github.com/lingej/pnp4nagios
-  cd pnp4nagios
-  ./configure
-  make
-  make all
-  make install
-
-
-# Enable systemd items
-systemctl enable webmin
 
 # clean it up!
 apt --yes autoremove
