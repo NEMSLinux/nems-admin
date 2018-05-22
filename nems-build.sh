@@ -102,19 +102,18 @@ apt --yes upgrade && apt --yes dist-upgrade
 systemctl disable firstrun
 rm /etc/init.d/firstrun # ARMbian
 
+echo "------------------------------"
+
 # Run the scripts in the build folder
 run-parts --exit-on-error -v build
 
-exit
+echo "------------------------------"
 
-# Disable swap
-  sed -i '/ swap / s/^/#/' /etc/fstab
-  swapoff -a
+sleep 5
 
-# Install apps from tar like Check-MK, NConf
+# Final cleanup...
+
 cd /tmp
-
-# clean it up!
 apt --yes autoremove
 
 echo "Usage after build:"
@@ -123,6 +122,8 @@ df -hT /etc
 # Output any errors encountered along the way.
 cat /tmp/errors.log
 
+echo "NEMS $ver compiled."
+echo ""
 echo "Don't forget to run: echo DEVID > /etc/.nems_hw_model_identifier"
 
 fi

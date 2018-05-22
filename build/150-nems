@@ -3,6 +3,12 @@
 # Add and configure NEMS packages
 
 # System
+
+
+# Disable swap - we'll be using ZRAM
+  sed -i '/ swap / s/^/#/' /etc/fstab
+  swapoff -a
+
 cd /root/nems # this was created with nems-prep.sh
 
 if [[ ! -d nems-migrator ]]; then
@@ -67,5 +73,3 @@ nems-cert
 # Restart related services
 systemctl restart apache2
 systemctl restart nagios
-
-echo "" > /var/www/html/index.php
