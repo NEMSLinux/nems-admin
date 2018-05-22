@@ -16,7 +16,7 @@ apt install -y libapache2-mod-wsgi python-simplejson libgmp-dev python-dev pytho
 
 # Install Django
 python -m pip install --upgrade pip setuptools
-pip install Django==1.6
+pip install django==1.6
 
 # Install Pynag
 cd /tmp
@@ -27,15 +27,17 @@ python setup.py install
 
 # Install Adagios
 cd /tmp/
+#git clone --branch adagios-1.6.3-2 https://github.com/opinkerfi/adagios
+#cd adagios
 wget -O adagios.tar.gz https://github.com/opinkerfi/adagios/archive/adagios-1.6.3-1.tar.gz
 tar xzf adagios.tar.gz
 cd adagios-adagios-1.6.3-1
-#git clone --branch adagios-1.6.3-2 https://github.com/opinkerfi/adagios
-#cd adagios
+cp -R etc/adagios /etc/
+cp -f /root/nems/nems-migrator/data/1.4/adagios/adagios.conf /etc/adagios/
+python setup.py install
 chown -R www-data:www-data adagios
 mv adagios /var/www/
-mv /var/www/adagios/etc/adagios /etc/
-cp -f /root/nems/nems-migrator/data/1.4/adagios/adagios.conf /etc/adagios/
+rm -f /var/www/adagios/etc/
 chown -R nagios:nagios /etc/adagios
 mkdir -p /var/lib/adagios/userdata
 chown -R www-data:www-data /var/lib/adagios
