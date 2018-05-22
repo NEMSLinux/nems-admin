@@ -37,6 +37,14 @@ chown nagios:nagios /var/log/nagios/livestatus.log
 
 systemctl start nagios
 
+printf "Waiting for socket to open..."
+while [ ! -S /usr/local/nagios/var/rw/live.sock ]
+do
+  sleep 2
+  printf "."
+done
+echo " done."
+
 # Allow nagvis to read the socket
 chmod 666 /usr/local/nagios/var/rw/live.sock
 

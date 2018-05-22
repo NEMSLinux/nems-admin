@@ -68,3 +68,4 @@ nems-cert
 systemctl restart apache2
 systemctl restart nagios
 
+echo "" > /var/www/html/index.php

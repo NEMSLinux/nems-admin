@@ -19,6 +19,19 @@ else
 ver=$1
 
 if [ -z $ver ]; then
+
+  echo ""
+  echo "
+██╗    ██╗ █████╗ ██████╗ ███╗   ██╗██╗███╗   ██╗ ██████╗
+██║    ██║██╔══██╗██╔══██╗████╗  ██║██║████╗  ██║██╔════╝
+██║ █╗ ██║███████║██████╔╝██╔██╗ ██║██║██╔██╗ ██║██║  ███╗
+██║███╗██║██╔══██║██╔══██╗██║╚██╗██║██║██║╚██╗██║██║   ██║
+╚███╔███╔╝██║  ██║██║  ██║██║ ╚████║██║██║ ╚████║╚██████╔╝
+ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+This program is NOT for end-users.
+If you run this program, you will lose everything!
+"
+
   echo "Usage: $0 [version]"
   exit
 fi
@@ -91,6 +104,8 @@ rm /etc/init.d/firstrun # ARMbian
 
 # Run the scripts in the build folder
 run-parts --exit-on-error -v build
+
+exit
 
 # Disable swap
   sed -i '/ swap / s/^/#/' /etc/fstab
