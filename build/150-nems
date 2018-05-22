@@ -67,6 +67,11 @@ if [[ -d /usr/local/nagios/share ]]; then
 fi
 ln -s /var/www/html/share/nagios/ /usr/local/nagios/share
 
+# Our Apache conf requires htpasswd exist in order to load.
+# Prevent misleading errors before nems-init by creating an empty file.
+touch /var/www/htpasswd
+chown www-data:www-data /var/www/htpasswd
+
 # Generate certificates
 nems-cert
 
