@@ -7,7 +7,7 @@ echo '
 Defaults:%nagios !requiretty
 %nagios             ALL = NOPASSWD: /etc/init.d/nagios *
 %nagios             ALL = NOPASSWD: /bin/systemctl *
-%nagios             ALL = NOPASSWD: /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+%nagios             ALL = NOPASSWD: /usr/local/nagios/bin/nagios -v *
 ' | sudo EDITOR='tee -a' visudo
 fi
 
