@@ -27,7 +27,7 @@ echo Building NEMS $ver
 cd /usr/local/share/
 mkdir nems
 cd nems
-printf "version=$ver" > nems.conf
+echo "version=$ver" > nems.conf
 chown www-data:www-data nems.conf
 
 cd /root/nems/nems-admin
