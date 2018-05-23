@@ -105,7 +105,7 @@ rm /etc/init.d/firstrun # ARMbian
 echo "------------------------------"
 
 # Run the scripts in the build folder
-run-parts --exit-on-error -v build
+run-parts -v build
 
 echo "------------------------------"
 
