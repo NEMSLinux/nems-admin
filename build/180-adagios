@@ -32,7 +32,7 @@ cd /tmp/
 wget -O adagios.tar.gz https://github.com/opinkerfi/adagios/archive/adagios-1.6.3-1.tar.gz
 tar xzf adagios.tar.gz
 cd adagios-adagios-1.6.3-1
-cp -R etc/adagios /etc/
+cp -R adagios/etc/adagios /etc/
 cp -f /root/nems/nems-migrator/data/1.4/adagios/adagios.conf /etc/adagios/
 python setup.py install
 chown -R www-data:www-data adagios
