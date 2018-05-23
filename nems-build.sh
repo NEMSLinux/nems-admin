@@ -105,11 +105,15 @@ rm /etc/init.d/firstrun # ARMbian
 echo "------------------------------"
 
 # Run the scripts in the build folder
-run-parts -v build
+run-parts --exit-on-error -v build
 
 echo "------------------------------"
 
-sleep 5
+echo ""
+
+read -n 1 -s -r -p "Press any key to clean up our build..."
+
+echo ""
 
 # Final cleanup...
 
