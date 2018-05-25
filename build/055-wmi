@@ -1,7 +1,15 @@
 #!/bin/bash
 # Thanks to Ryan Siegel for the contribution on NEMS 1.2.1
 
-apt install autoconf
+apt install autoconf cpanminus
+cpanm DateTime::TimeZone
+cpanm DateTime::Locale
+cpanm Getopt::Long
+cpanm Number::Format
+cpanm Scalar::Util
+cpanm Data::Dumper
+cpanm Config::IniFiles
+cpanm Storable
 
 cd /tmp/
 
