@@ -1,0 +1,22 @@
+#!/bin/bash
+# Thanks to Ryan Siegel for the contribution on NEMS 1.2.1
+
+apt install autoconf
+
+cd /tmp/
+
+# Install WMI
+wget -O wmi.tar.gz http://www.openvas.org/download/wmi/wmi-1.3.14.tar.bz2
+bzip2 -cd wmi-1.3.14.tar.bz2 | tar xf -
+cd wmi-1.3.14/
+make "CPP=gcc -E -ffreestanding"
+cp Samba/source/bin/wmic /usr/local/bin
+
+# Install WMI Plus
+wget -O wmi_plus.tar.gz http://edcint.co.nz/checkwmiplus/sites/default/files/check_wmi_plus.v1.63.tar.gz
+mkdir wmi_plus
+cd wmi_plus
+tar xzf ../wmi_plus.tar.gz
+
+mv check_wmi_plus.pl /usr/lib/nagios/plugins
+mv etc/check_wmi_plus /etc/
