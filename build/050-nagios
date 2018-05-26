@@ -127,5 +127,9 @@ fi
 cp -f /root/nems/nems-migrator/data/1.4/submodules/barryo/nagios-plugins/notify-by-pushover.php /usr/local/nagios/libexec/
 /bin/sed -i -- 's,Nagios Alert,NEMS Alert,g' /usr/local/nagios/libexec/notify-by-pushover.php
 
+# Setup log for sendemail
+touch /var/log/sendemail
+chown nagios:nagios /var/log/sendemail
+
 # nagios is not running yet since we have to install the socket first
 # See 055
