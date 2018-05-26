@@ -25,4 +25,5 @@ git push origin master
 cd /var/www/nconf/
 git add *
 git commit -am "$comment"
-git push origin master
+git push origin develop
+
