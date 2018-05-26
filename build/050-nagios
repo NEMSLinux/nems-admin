@@ -116,5 +116,15 @@ systemctl stop apache2
   cp -f /root/nems/nems-migrator/data/1.4/apache2/conf-available/nagios.conf /etc/apache2/conf-available/
 systemctl start apache2
 
+# Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
+if [[ ! -f /usr/local/bin/php ]]; then
+  if [[ -f /usr/bin/php ]]; then
+    ln -s /usr/bin/php /usr/local/bin/php
+  fi
+fi
+
+# Install notify-by-pushover
+cp -f /root/nems/nems-migrator/data/1.4/submodules/barryo/nagios-plugins/notify-by-pushover.php /usr/local/nagios/libexec/
+
 # nagios is not running yet since we have to install the socket first
 # See 055
