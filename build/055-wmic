@@ -25,7 +25,7 @@ wget -O wmi_plus.tar.gz http://edcint.co.nz/checkwmiplus/sites/default/files/che
 mkdir wmi_plus
 cd wmi_plus
 tar xzf ../wmi_plus.tar.gz
-mv check_wmi_plus.pl /usr/lib/nagios/plugins
+mv check_wmi_plus.pl /usr/local/nagios/libexec
 mv etc/check_wmi_plus /etc/
 
 # Install the NEMS 1.4+ conf file for check_wmi_plus
