@@ -26,8 +26,8 @@ else
 #  " > /etc/apt/sources.list
   
   apt update
-  apt install --yes git screen
-
+  apt install --yes git screen ca-certificates
+  
   # Setup default account info
   git config --global user.email "nems@baldnerd.com"
   git config --global user.name "NEMS Linux"
