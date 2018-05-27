@@ -24,7 +24,7 @@ luajit
 lua-sec
 mariadb-server
 monit
-monitoring-plugins
+#monitoring-plugins
 monitorix
 openssl
 perl
