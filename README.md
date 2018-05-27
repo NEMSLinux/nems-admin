@@ -13,7 +13,6 @@ Install Debian on your hardware with the following settings:
 
 - Prep the clean Debian install for NEMS deployment (as root):
 ```bash
-apt -y install ca-certificates
 wget -O /tmp/nems-prep.sh https://raw.githubusercontent.com/Cat5TV/nems-admin/master/nems-prep.sh && chmod +x /tmp/nems-prep.sh && /tmp/nems-prep.sh
 ```
 
