@@ -1,5 +1,4 @@
 #!/bin/bash
-exit # Disabled for now.
 hn=$(/bin/hostname)
 printf "Changing Hostname... "
 /bin/sed -i -- 's/'"$hn"'/nems/g' /etc/hosts
