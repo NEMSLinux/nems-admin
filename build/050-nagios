@@ -52,13 +52,13 @@ deb-src http://security.debian.org/debian-security/ stretch/updates main" > /etc
   a2enmod cgi
   a2enconf nagios
 
-  systemctl start nagios
   systemctl enable nagios
+  systemctl stop nagios
 
 # Finished installing Nagios Core
 
 # Install some needed extras
-apt install -y nagios-plugins nagios-nrpe-plugin nagios-nrpe-server nagios-images
+apt install -y nagios-nrpe-plugin nagios-nrpe-server nagios-images
 
 # Set the nagios user shell
 usermod -s /bin/bash nagios
@@ -71,8 +71,6 @@ if [[ ! -d /var/cache/nagios/ ]]; then
   mkdir /var/cache/nagios/
   chown nagios:nagios /var/cache/nagios/
 fi
-
-systemctl stop nagios
 
 # Restore NEMS versions of Nagios config
 cp -R /root/nems/nems-migrator/data/1.4/nagios/etc/* /usr/local/nagios/etc/
@@ -97,17 +95,17 @@ fi
 
 
 # Compatibility with older versions of NEMS
-mkdir /etc/nagios3
+#mkdir /etc/nagios3
 
-echo "This folder contains symlinks to the Nagios 4 configs to allow compatibility with older versions of NEMS" > /etc/nagios3/README
-ln -s /usr/local/nagios/etc/cgi.cfg /etc/nagios3/cgi.cfg
-ln -s /etc/nems/conf/global /etc/nagios3/global
-ln -s /etc/nems/conf/Default_collector /etc/nagios3/Default_collector
-ln -s /etc/nems/conf/global /etc/nagios/global
-ln -s /etc/nems/conf/Default_collector /etc/nagios/Default_collector
-ln -s /etc/nems/conf/import /etc/nagios3/import
+#echo "This folder contains symlinks to the Nagios 4 configs to allow compatibility with older versions of NEMS" > /etc/nagios3/README
+#ln -s /usr/local/nagios/etc/cgi.cfg /etc/nagios3/cgi.cfg
+#ln -s /etc/nems/conf/global /etc/nagios3/global
+#ln -s /etc/nems/conf/Default_collector /etc/nagios3/Default_collector
+#ln -s /etc/nems/conf/global /etc/nagios/global
+#ln -s /etc/nems/conf/Default_collector /etc/nagios/Default_collector
+#ln -s /etc/nems/conf/import /etc/nagios3/import
 # For nagios-api
-ln -s /var/cache/nagios /var/cache/nagios3
+#ln -s /var/cache/nagios /var/cache/nagios3
 
 # Change some permissions changes
 systemctl stop apache2
