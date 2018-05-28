@@ -61,7 +61,6 @@ EOF
 a2dismod python
 a2enmod wsgi
 a2enconf adagios
-systemctl restart apache2
 
 # Install okconfig
 cd /opt
