@@ -17,6 +17,12 @@ cd /tmp/
 wget -O wmi.tar.bz2 http://www.openvas.org/download/wmi/wmi-1.3.14.tar.bz2
 bzip2 -cd wmi.tar.bz2 | tar xf -
 cd wmi-1.3.14/
+# Remove line 583 to make compatible with Perl > 5.22
+sed -i~ '/defined @$pidl/d' Samba/source/pidl/pidl
+# WMI's build script has a leak... but rather than fixing it we will temporarily bypass it
+# This setting does not survive reboot, so no worries (as long as it doesn't crash your system)
+ulimit -n 10000
+# Build
 make "CPP=gcc -E -ffreestanding"
 cp Samba/source/bin/wmic /usr/local/bin
 
