@@ -20,8 +20,9 @@
 
   cd /tmp
   # Install dependencies
-  echo "deb http://security.debian.org/debian-security/ stretch/updates main
-deb-src http://security.debian.org/debian-security/ stretch/updates main" > /etc/apt/sources.list.d/security.list
+# REMOVE as it breaks pi - see if will build on Debian without this (it should).
+##  echo "deb http://security.debian.org/debian-security/ stretch/updates main
+##deb-src http://security.debian.org/debian-security/ stretch/updates main" > /etc/apt/sources.list.d/security.list
   apt update
 #  apt install -y libsnmp-base libsnmp-dev libsnmp-perl libsnmp30 libsnmp30-dbg python-netsnmp snmp snmpd snmptrapd tkmib libnet-snmp-perl
 #  apt install -y fping qstat ldap-utils nut-server libghc-hdbc-postgresql-dev python-ldap libldap2-dev
