@@ -4,6 +4,9 @@
 
 # System
 
+  if [[ ! -d /var/log/nems ]]; then
+    mkdir /var/log/nems
+  fi
 
 # Disable swap - we'll be using ZRAM
   sed -i '/ swap / s/^/#/' /etc/fstab
