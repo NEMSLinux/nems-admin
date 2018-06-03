@@ -5,11 +5,23 @@
   echo 'deb http://ftp.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/backports.list
 # Install dirmngr, required to import the Debian Backports keys
   apt install dirmngr --install-recommends
+
 # Import the keys
-  gpg --keyserver pgpkeys.mit.edu --recv-key 8B48AD6246925553
-  gpg -a --export 8B48AD6246925553 | sudo apt-key add -
-  gpg --keyserver pgpkeys.mit.edu --recv-key 7638D0442B90D010
-  gpg -a --export 7638D0442B90D010 | sudo apt-key add -
+
+  key=8B48AD6246925553
+  while [[ ! $(gpg --list-keys | grep $key) ]]; do
+    echo Importing $key...
+    gpg --keyserver pgpkeys.mit.edu --recv-key $key
+    gpg -a --export $key | sudo apt-key add -
+  done
+
+  key=7638D0442B90D010
+  while [[ ! $(gpg --list-keys | grep $key) ]]; do
+    echo Importing $key...
+    gpg --keyserver pgpkeys.mit.edu --recv-key $key
+    gpg -a --export $key | sudo apt-key add -
+  done
+
 # Install Cockpit
   apt update
   apt --yes install cockpit
