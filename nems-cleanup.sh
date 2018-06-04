@@ -188,11 +188,8 @@ nameserver 2001:4860:4860::8844
   # Remove nconf history, should it exist
   mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 
-  # Remove NagVis user accounts
-  if [ -f /etc/nagvis/etc/auth.db ]; then
-    rm /etc/nagvis/etc/auth.db
-  fi
-  cp /root/nems/nems-migrator/data/nagvis/auth.db /etc/nagvis/etc/
+  # Remove NagVis user accounts and reset to default (empty) auth database
+  cp -f /root/nems/nems-migrator/data/1.4/nagvis/auth.db /etc/nagvis/etc/
   chown www-data:www-data /etc/nagvis/etc/auth.db
 
   # Sync the current running version as the current available version

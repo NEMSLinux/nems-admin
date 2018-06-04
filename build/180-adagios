@@ -37,7 +37,7 @@ cp -f /root/nems/nems-migrator/data/1.4/adagios/adagios.conf /etc/adagios/
 python setup.py install
 chown -R www-data:www-data adagios
 mv adagios /var/www/
-rm -f /var/www/adagios/etc/
+rm -fr /var/www/adagios/etc/
 chown -R nagios:nagios /etc/adagios
 mkdir -p /var/lib/adagios/userdata
 chown -R www-data:www-data /var/lib/adagios
