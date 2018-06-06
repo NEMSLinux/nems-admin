@@ -126,6 +126,10 @@ fi
 cp -f /root/nems/nems-migrator/data/1.4/submodules/barryo/nagios-plugins/notify-by-pushover.php /usr/local/nagios/libexec/
 /bin/sed -i -- 's,Nagios Alert,NEMS Alert,g' /usr/local/nagios/libexec/notify-by-pushover.php
 
+# Install notify-by-telegram
+cp /root/nems/nems-migrator/data/1.4/nagios/plugins/telegram_nems.lua /usr/local/bin/
+chmod +x /usr/local/bin/telegram_nems.lua
+
 # Setup log for sendemail
 touch /var/log/sendemail.log
 chown nagios:nagios /var/log/sendemail.log

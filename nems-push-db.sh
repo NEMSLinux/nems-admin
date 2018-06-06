@@ -15,15 +15,15 @@ if [[ -d mysql ]]; then
 fi
 cp -R /var/lib/mysql .
 
-cd nagios/conf
-if [[ -d Default_collector ]]; then
-  rm -rf Default_collector
-fi
-if [[ -d global ]]; then
-  rm -rf global
-fi
-cp -R /etc/nems/conf/Default_collector .
-cp -R /etc/nems/conf/global .
+#cd nagios/conf
+#if [[ -d Default_collector ]]; then
+#  rm -rf Default_collector
+#fi
+#if [[ -d global ]]; then
+#  rm -rf global
+#fi
+#cp -R /etc/nems/conf/Default_collector .
+#cp -R /etc/nems/conf/global .
 
 systemctl start mysql
 systemctl start nagios
