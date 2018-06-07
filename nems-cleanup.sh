@@ -181,7 +181,8 @@ nameserver 2001:4860:4860::8844
   # Replace the database with Sample database
   systemctl stop mysql
   rm -rf /var/lib/mysql/
-  cp -R /root/nems/nems-migrator/data/1.4/mysql/ /var/lib
+  cp -R /root/nems/nems-migrator/data/1.4/mysql/NEMS-Sample /var/lib
+  mv /var/lib/NEMS-Sample /var/lib/mysql
   chown -R mysql:mysql /var/lib/mysql
   systemctl start mysql
   
