@@ -1,0 +1,12 @@
+#!/bin/bash
+
+printf "Installing raspi-config... "
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why we have to do this after 150-nems
+
+if [[ $platform = "0" ]] || [[ $platform = "1" ]] || [[ $platform = "2" ]] || [[ $platform = "3" ]]; then
+  apt update
+  apt -y install raspi-config
+  echo "Done."
+else
+  echo "This is not a Pi, skipping."
+fi
