@@ -130,6 +130,11 @@ cp -f /root/nems/nems-migrator/data/1.4/submodules/barryo/nagios-plugins/notify-
 cp /root/nems/nems-migrator/data/1.4/nagios/plugins/telegram_nems.lua /usr/local/bin/
 chmod +x /usr/local/bin/telegram_nems.lua
 
+# Install various plugins
+cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_mikrotik_switch /usr/local/nagios/libexec/
+cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_minecraft /usr/local/nagios/libexec/
+cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_rpi_temperature /usr/local/nagios/libexec/
+
 # Setup log for sendemail
 touch /var/log/sendemail.log
 chown nagios:nagios /var/log/sendemail.log
