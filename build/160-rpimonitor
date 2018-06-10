@@ -15,7 +15,8 @@ if [[ $platform = "0" ]] || [[ $platform = "1" ]] || [[ $platform = "2" ]] || [[
   apt -y install rpimonitor
   /etc/init.d/rpimonitor update
   systemctl stop rpimonitor
-  cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor/
+  cp /root/nems/nems-migrator/data/1.4/rpimonitor/daemon.conf /etc/rpimonitor/
+  cp -f /root/nems/nems-migrator/data/1.4/rpimonitor/template/* /etc/rpimonitor/template/
   systemctl start rpimonitor
   echo "Done."
 else
