@@ -16,7 +16,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
-ver=$1
+export ver=$1
 
 if [ -z $ver ]; then
 
