@@ -1,0 +1,4 @@
+#!/bin/bash
+apt update
+apt -y install unattended-upgrades apt-listchanges
+
