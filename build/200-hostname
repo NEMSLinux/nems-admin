@@ -1,9 +1,9 @@
 #!/bin/bash
 hn=$(/bin/hostname)
 printf "Changing Hostname... "
-/bin/sed -i -- 's/'"$hn"'/nems/g' /etc/hosts
-/bin/sed -i -- 's/'"$hn"'/nems/g' /etc/hostname
-hostnamectl set-hostname nems
+/bin/sed -i -- 's/'"$hn"'/nems-xu4/g' /etc/hosts
+/bin/sed -i -- 's/'"$hn"'/nems-xu4/g' /etc/hostname
+hostnamectl set-hostname nems-xu4
 echo Done.
 echo Change will take effect at next reboot.
 
