@@ -32,8 +32,13 @@ This program is NOT for end-users.
 If you run this program, you will lose everything!
 "
 
-  echo "Usage: $0 [version]"
+  echo "Usage: $0 [version] [hw_num]"
   exit
+fi
+
+
+if [[ ! -d /var/log/nems ]]; then
+  mkdir /var/log/nems
 fi
 
 echo Building NEMS $ver
@@ -42,6 +47,19 @@ mkdir nems
 cd nems
 echo "version=$ver" > nems.conf
 chown www-data:www-data nems.conf
+
+# Detect hardware
+if [ ! -z $2 ]; then
+  echo $2 > /etc/.nems_hw_model_identifier
+fi
+wget -O /tmp/hw_model.sh https://raw.githubusercontent.com/Cat5TV/nems-scripts/master/hw_model.sh
+chmod +x /tmp/hw_model.sh
+/tmp/hw_model.sh
+hw_model=$(cat /var/log/nems/hw_model | sed -n 2p)
+echo "Detected Hardware: $hw_model"
+echo "If this is incorrect, press CTRL-C and rerun with the hw number on command line."
+echo "eg., $0 $ver 98000"
+sleep 5
 
 cd /root/nems/nems-admin
 
