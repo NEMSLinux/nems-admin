@@ -1,0 +1,16 @@
+Deploy: https://forum.pine64.org/showthread.php?tid=4931
+
+SSH to pine@10.0.0.199
+PW: pine
+
+Change NIC to DHCP:
+sudo su
+echo "auto eth0
+iface eth0 inet dhcp" > /etc/network/interfaces
+reboot
+
+Replace sources.list with working copy :P
+echo "deb http://deb.debian.org/debian stretch main contrib non-free" > /etc/apt/sources.list
+rm /etc/apt/sources.list.d/security-updates.list
+
+Proceed with regular NEMS prep and compile.
