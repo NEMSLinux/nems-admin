@@ -14,3 +14,5 @@ echo "deb http://deb.debian.org/debian stretch main contrib non-free" > /etc/apt
 rm /etc/apt/sources.list.d/security-updates.list
 
 Proceed with regular NEMS prep and compile.
+
+Issues: luajit not found
