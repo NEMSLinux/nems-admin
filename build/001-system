@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Ping is missing from Pine64.
+apt -y install iputils-ping
