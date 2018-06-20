@@ -22,3 +22,6 @@ reboot
 Reconnect to IP issued by DHCP server.
 
 Compile NEMS as normal.
+
+Issues:
+Possibly boost? Can't compile livestatus: checking build system type... aarch64-unknown-linux-gnu
