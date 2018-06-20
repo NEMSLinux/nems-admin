@@ -13,6 +13,9 @@ Replace sources.list with working copy :P
 echo "deb http://deb.debian.org/debian stretch main contrib non-free" > /etc/apt/sources.list
 rm /etc/apt/sources.list.d/security-updates.list
 
+Resize filesystem:
+/root/nems/nems-admin/resize_rootfs.sh
+
 Proceed with regular NEMS prep and compile.
 
 Issues: luajit not found
