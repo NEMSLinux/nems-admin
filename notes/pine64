@@ -7,15 +7,18 @@ Change NIC to DHCP:
 sudo su
 echo "auto eth0
 iface eth0 inet dhcp" > /etc/network/interfaces
+
+** run NEMS system prep as normal
+
+Resize filesystem:
+/root/nems/nems-admin/resize_rootfs.sh
+
 reboot
 
 Replace sources.list with working copy :P
 echo "deb http://deb.debian.org/debian stretch main contrib non-free" > /etc/apt/sources.list
 rm /etc/apt/sources.list.d/security-updates.list
 
-Resize filesystem:
-/root/nems/nems-admin/resize_rootfs.sh
-
-Proceed with regular NEMS prep and compile.
+Compile NEMS as normal.
 
 Issues: luajit not found
