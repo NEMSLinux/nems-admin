@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ -d /usr/lib/aarch64-linux-gnu ]]; then
+  # On aarch64 (eg., Pine64), luajit can't be installed by apt,
+  # so build the aarch64 version from source
+  # For now, have to use beta (for aarch64 support) as stable doesn't have it
+  cd /tmp/
+  wget -O luajit.tar.gz http://luajit.org/download/LuaJIT-2.1.0-beta3.tar.gz
+  tar -xvzf luajit.tar.gz
+  cd LuaJIT-2.1.0-beta3
+  make
+  make install
+else
+  apt -y install luajit
+fi

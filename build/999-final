@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# Stuff to run at the very end... cleanup, etc.
-
-# On Pine64, luajit can't be installed before 170-cockpit creates the repo
-apt -y install luajit
