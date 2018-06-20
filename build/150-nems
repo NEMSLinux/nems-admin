@@ -53,8 +53,8 @@ git clone https://github.com/Cat5TV/nems-scripts
 
 # Add base symlinks for NEMS commands
 ln -sf /usr/local/share/nems/nems-scripts/benchmark.sh /usr/local/bin/nems-benchmark
-ln -sf /usr/local/share/nems/nems-scripts/gen-cert.sh /usr/local/nems-cert
-ln -sf /usr/local/share/nems/nems-scripts/info.sh /usr/local/nems-info
+ln -sf /usr/local/share/nems/nems-scripts/gen-cert.sh /usr/local/bin/nems-cert
+ln -sf /usr/local/share/nems/nems-scripts/info.sh /usr/local/bin/nems-info
 ln -sf /usr/local/share/nems/nems-scripts/init.sh /usr/local/bin/nems-init
 ln -sf /usr/local/share/nems/nems-scripts/mailtest.sh /usr/local/bin/nems-mailtest
 ln -sf /root/nems/nems-admin/nems-push.sh /usr/local/bin/nems-push
