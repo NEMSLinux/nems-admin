@@ -22,6 +22,9 @@ elif [[ -d /usr/lib/i386-linux-gnu ]]; then
 elif [[ -d /usr/lib/x86_64-linux-gnu ]]; then
   # 64-Bit
   libdir=/usr/lib/x86_64-linux-gnu
+elif [[ -d /usr/lib/aarch64-linux-gnu ]]; then
+  # Pine A64+ aarch64
+  libdir=/usr/lib/aarch64-linux-gnu
 fi
 mkdir livestatus
 cd livestatus
