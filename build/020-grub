@@ -1,32 +1,36 @@
 #!/bin/bash
 
-# Determine the platform
-if [[ -d /usr/lib/arm-linux-gnueabihf ]]; then
-  # Raspberry Pi / ARM
-  echo Raspberry Pi does not use Grub...
-  exit
-elif [[ -d /usr/lib/i386-linux-gnu ]]; then
-  # 32-Bit
-  echo This is a 32-bit build. Installing Grub...
-elif [[ -d /usr/lib/x86_64-linux-gnu ]]; then
-  # 64-Bit
-  echo This is a 64-bit build. Installing Grub...
+if [[ -d /boot/grub/ ]]; then
+  # Determine the platform
+  if [[ -d /usr/lib/arm-linux-gnueabihf ]]; then
+    # Raspberry Pi / ARM
+    echo Raspberry Pi does not use Grub...
+    exit
+  elif [[ -d /usr/lib/i386-linux-gnu ]]; then
+    # 32-Bit
+    echo This is a 32-bit build. Installing Grub...
+  elif [[ -d /usr/lib/x86_64-linux-gnu ]]; then
+    # 64-Bit
+    echo This is a 64-bit build. Installing Grub...
+  fi
+
+  # Delete current settings
+  sed -i '/GRUB_HIDDEN_TIMEOUT/d' /etc/default/grub
+  sed -i '/GRUB_TIMEOUT/d' /etc/default/grub
+
+  # Add NEMS settings
+  echo "
+  # Hide GRUB Menu
+  GRUB_HIDDEN_TIMEOUT=0
+  GRUB_TIMEOUT=0" >> /etc/default/grub
+
+  # Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
+  if ! grep -q "nomodeset" /etc/default/grub; then
+    sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset /g' /etc/default/grub
+  fi
+
+  # Update grub
+  /usr/sbin/update-grub
+else
+  echo "This device does not appear to use grub."
 fi
-
-# Delete current settings
-sed -i '/GRUB_HIDDEN_TIMEOUT/d' /etc/default/grub
-sed -i '/GRUB_TIMEOUT/d' /etc/default/grub
-
-# Add NEMS settings
-echo "
-# Hide GRUB Menu
-GRUB_HIDDEN_TIMEOUT=0
-GRUB_TIMEOUT=0" >> /etc/default/grub
-
-# Add nomodeset to grub (otherwise display may turn off after boot if connected to a TV)
-if ! grep -q "nomodeset" /etc/default/grub; then
-  sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset /g' /etc/default/grub
-fi
-
-# Update grub
-/usr/sbin/update-grub

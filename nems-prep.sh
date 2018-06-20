@@ -26,7 +26,7 @@ else
 #  " > /etc/apt/sources.list
   
   apt update
-  apt install --yes git screen dialog gnupg
+  apt install --yes git screen dialog gnupg nano
   
   # Setup default account info
   git config --global user.email "nems@baldnerd.com"
