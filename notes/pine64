@@ -22,5 +22,3 @@ reboot
 Reconnect to IP issued by DHCP server.
 
 Compile NEMS as normal.
-
-Issues: luajit not found
