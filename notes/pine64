@@ -13,11 +13,13 @@ iface eth0 inet dhcp" > /etc/network/interfaces
 Resize filesystem:
 /root/nems/nems-admin/resize_rootfs.sh
 
-reboot
-
 Replace sources.list with working copy :P
 echo "deb http://deb.debian.org/debian stretch main contrib non-free" > /etc/apt/sources.list
 rm /etc/apt/sources.list.d/security-updates.list
+
+reboot
+
+Reconnect to IP issued by DHCP server.
 
 Compile NEMS as normal.
 
