@@ -12,6 +12,8 @@ Replace sources.list with working copy :P
 echo "deb http://deb.debian.org/debian stretch main contrib non-free" > /etc/apt/sources.list
 rm /etc/apt/sources.list.d/security-updates.list
 
+reboot
+
 ** run NEMS system prep as normal
 
 Resize filesystem:
