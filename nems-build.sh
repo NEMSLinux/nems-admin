@@ -36,6 +36,11 @@ If you run this program, you will lose everything!
   exit
 fi
 
+diskfree=$(($(stat -f --format="%a*%S" .)))
+if (( "$diskfree" < "8589934592" )); then
+  echo You do not have enough free space to build. Did you resize the root fs?
+  exit
+fi
 
 if [[ ! -d /var/log/nems ]]; then
   mkdir /var/log/nems
