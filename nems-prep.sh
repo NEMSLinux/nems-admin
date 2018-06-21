@@ -24,8 +24,14 @@ else
 #        deb http://deb.debian.org/debian/ stretch-updates non-free main contrib
 #       deb-src http://deb.debian.org/debian/ stretch-updates non-free main contrib
 #  " > /etc/apt/sources.list
-  
+
   apt update
+
+  # Generate locale
+  apt install -y locales
+  locale-gen en_US.UTF-8
+  locale-gen en_CA.UTF-8
+
   apt install --yes git screen dialog gnupg nano apt-utils
   
   # Setup default account info
