@@ -139,5 +139,8 @@ cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_rpi_temperature /usr/l
 touch /var/log/sendemail.log
 chown nagios:nagios /var/log/sendemail.log
 
+# Set permissions to allow Nagios to archive log files
+chmod ug+x /usr/local/nagios/var/archives
+
 # nagios is not running yet since we have to install the socket first
 # See 055
