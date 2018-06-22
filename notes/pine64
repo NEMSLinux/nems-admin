@@ -14,6 +14,8 @@ rm /etc/apt/sources.list.d/security-updates.list
 
 reboot
 
+Reconnect to IP issued by DHCP server.
+
 ** run NEMS system prep as normal
 
 Resize filesystem:
@@ -21,9 +23,5 @@ Resize filesystem:
 
 reboot
 
-Reconnect to IP issued by DHCP server.
 
 Compile NEMS as normal.
-
-Issues:
-Possibly boost? Can't compile livestatus: checking build system type... aarch64-unknown-linux-gnu
