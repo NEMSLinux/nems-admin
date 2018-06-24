@@ -7,19 +7,30 @@
   apt install dirmngr --install-recommends
 
 # Import the keys
+# Will try both MIT and Ubuntu servers - one should work!
 
   key=8B48AD6246925553
   while [[ ! $(gpg --list-keys | grep $key) ]]; do
-    echo Importing $key...
+    echo Importing $key from MIT...
     gpg --keyserver pgpkeys.mit.edu --recv-key $key
     gpg -a --export $key | sudo apt-key add -
+    if [[ ! $(gpg --list-keys | grep $key) ]]; then
+      echo Importing $key from Canonical...
+      gpg --keyserver keyserver.ubuntu.com --recv-key $key
+      gpg -a --export $key | sudo apt-key add -
+    fi
   done
 
   key=7638D0442B90D010
   while [[ ! $(gpg --list-keys | grep $key) ]]; do
-    echo Importing $key...
+    echo Importing $key from MIT...
     gpg --keyserver pgpkeys.mit.edu --recv-key $key
     gpg -a --export $key | sudo apt-key add -
+    if [[ ! $(gpg --list-keys | grep $key) ]]; then
+      echo Importing $key from Canonical...
+      gpg --keyserver keyserver.ubuntu.com --recv-key $key
+      gpg -a --export $key | sudo apt-key add -
+    fi
   done
 
 # Install Cockpit
