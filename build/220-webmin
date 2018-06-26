@@ -2,3 +2,4 @@
 apt -y install webmin
 systemctl start webmin
 systemctl enable webmin
+rm /webmin-setup.out
