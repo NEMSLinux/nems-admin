@@ -45,6 +45,8 @@
   wget https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
   tar -zxvf /tmp/nagios-plugins-2.2.1.tar.gz
   cd /tmp/nagios-plugins-2.2.1/
+ # CHANGE THIS TO AUTO-detect platform
+  # PINE64:  ./configure --build=arm --with-nagios-user=nagios --with-nagios-group=nagios
   ./configure --with-nagios-user=nagios --with-nagios-group=nagios
   make
   make install
