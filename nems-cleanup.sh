@@ -158,26 +158,15 @@ nameserver 2001:4860:4860::8844
   echo "################################################################################" >> /usr/local/nagios/etc/resource.cfg
   echo "\$USER1$=/usr/local/nagios/libexec" >> /usr/local/nagios/etc/resource.cfg
 
-  # Reininitialize Nagios user account
-  echo "define contactgroup {
-                  contactgroup_name                     admins
-                  alias                                 NEMS Administrators
-                  members                               nemsadmin
-  }
-  " > /etc/nems/conf/global/contactgroups.cfg
-  echo "define contact {
-                  contact_name                          nemsadmin
-                  alias                                 NEMS Admin
-                  host_notification_options             d,u,r,f,s
-                  service_notification_options          w,u,c,r,f,s
-                  email                                 nagios@localhost
-                  host_notification_period              24x7
-                  service_notification_period           24x7
-                  host_notification_commands            notify-host-by-email
-                  service_notification_commands         notify-service-by-email
-  }
-  " > /usr/local/nagios/etc/objects/contacts.cfg
-  
+  # Import default Nagios configs
+  rm -rf /etc/nems/conf
+  mkdir /etc/nems/conf
+  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/* /etc/nems/conf/
+  if [[ ! -d /etc/nems/conf/okconfig ]]; then
+    mkdir /etc/nems/conf/okconfig
+  fi
+  chown -R www-data:www-data /etc/nems/conf/
+
   # Replace the database with Sample database
   systemctl stop mysql
   rm -rf /var/lib/mysql/
