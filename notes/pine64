@@ -1,4 +1,6 @@
-Deploy: https://forum.pine64.org/showthread.php?tid=4931
+Deploy Debian Stretch:
+Build 1 & 2 used https://forum.pine64.org/showthread.php?tid=4931 but has a timer bug.
+Build 3 will test https://github.com/ayufan-pine64/linux-build/releases
 
 SSH to pine@10.0.0.199
 PW: pine
