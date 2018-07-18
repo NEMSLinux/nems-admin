@@ -2,3 +2,7 @@ Debian Stretch from https://forum.odroid.com/viewtopic.php?f=96&t=21256
 
 Username: root
 Password: odroid
+
+Once SD card image is built, create eMMC image:
+echo 0 > /sys/block/mmcblk0boot0/force_ro
+Then write the mmcboot.img to that partition (U-Boot).
