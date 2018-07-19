@@ -70,6 +70,10 @@ if [[ ! -d /var/log/nagios ]]; then
   mkdir /var/log/nagios
 fi
 
+if [[ ! -d /var/log/nagios/archives ]]; then
+  mkdir /var/log/nagios/archives
+fi
+
 if [[ ! -d /var/cache/nagios/ ]]; then
   mkdir /var/cache/nagios/
   chown nagios:nagios /var/cache/nagios/
