@@ -17,6 +17,7 @@ apt install -y libapache2-mod-wsgi python-simplejson libgmp-dev python-dev pytho
 # Install Django
 python -m pip install --upgrade pip setuptools
 pip install django==1.6
+pip install django-clear-cache
 
 # Install Pynag
 cd /tmp
