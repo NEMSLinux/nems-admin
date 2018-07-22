@@ -3,11 +3,12 @@ Debian Stretch from https://forum.odroid.com/viewtopic.php?f=96&t=30552
 Username: root
 Password: odroid
 
-IMMEDIATELY resize the filesystem and initialize the base OS:
-/root/scripts/first-boot
+Verify the filesystem has been successfully resized. Distro includes a script at /root/scripts/first-boot that runs automatically at first boot via /etc/rc.local - but it doesn't always work.
 
-Check filesystem space and then build NEMS:
+Check filesystem space first, then prep NEMS as per normal.
+
+Then build NEMS with:
 /root/nems-admin/nems-build.sh 11
 
-Once SD card image is built, create eMMC image:
+Once SD card image is built, prep image for eMMC compatibility:
 Run: nand-sata-install and choose "Update bootloader on a special eMMC partition"
