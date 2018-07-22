@@ -3,5 +3,11 @@ Debian Stretch from https://forum.odroid.com/viewtopic.php?f=96&t=30552
 Username: root
 Password: odroid
 
+IMMEDIATELY resize the filesystem:
+... resize script not working. Need to write this.
+
+Check filesystem space and then build NEMS:
+/root/nems-admin/nems-build.sh 11
+
 Once SD card image is built, create eMMC image:
 Run: nand-sata-install and choose "Update bootloader on a special eMMC partition"
