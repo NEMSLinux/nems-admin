@@ -1,6 +1,7 @@
 #!/bin/sh
 
 #FROM: https://github.com/longsleep/build-pine64-image/blob/master/simpleimage/platform-scripts/resize_rootfs.sh
+# The version included in the XU4 Stretch distro /root/scripts/resize is much sexier. Eventually integrate.
 
 #The MIT License (MIT)
 #Copyright (c) 2016 Simon Eisenmann <simon@longsleep.org>
