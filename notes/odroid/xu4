@@ -3,8 +3,8 @@ Debian Stretch from https://forum.odroid.com/viewtopic.php?f=96&t=30552
 Username: root
 Password: odroid
 
-IMMEDIATELY resize the filesystem:
-... resize script not working. Need to write this.
+IMMEDIATELY resize the filesystem and initialize the base OS:
+/root/scripts/first-boot
 
 Check filesystem space and then build NEMS:
 /root/nems-admin/nems-build.sh 11
