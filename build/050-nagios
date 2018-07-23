@@ -68,10 +68,14 @@ usermod -s /bin/bash nagios
 
 if [[ ! -d /var/log/nagios ]]; then
   mkdir /var/log/nagios
+  chown nagios:nagios /var/log/nagios
 fi
 
 if [[ ! -d /var/log/nagios/archives ]]; then
   mkdir /var/log/nagios/archives
+  chown nagios:nagios /var/log/nagios/archives
+  chmod ug+x /var/log/nagios/archives
+  chmod g+ws /var/log/nagios/archives
 fi
 
 if [[ ! -d /var/cache/nagios/ ]]; then

@@ -36,12 +36,18 @@ cd adagios-adagios-1.6.3-1
 cp -R adagios/etc/adagios /etc/
 cp -f /root/nems/nems-migrator/data/1.4/adagios/adagios.conf /etc/adagios/
 python setup.py install
-chown -R www-data:www-data adagios
-mv adagios /var/www/
-rm -fr /var/www/adagios/etc/
+ln -s /usr/local/lib/python2.7/dist-packages/adagios /var/www/adagios
 chown -R nagios:nagios /etc/adagios
+rm -fr /var/www/adagios/etc/
 mkdir -p /var/lib/adagios/userdata
 chown -R www-data:www-data /var/lib/adagios
+cp -f /root/nems/nems-migrator/data/1.4/adagios/settings.py /var/www/adagios/
+chown -R www-data:www-data /var/www/adagios/
+
+# Import templates
+cp -f /root/nems/nems-migrator/data/1.4/adagios/templates/403.html /var/www/adagios/templates/
+cp -f /root/nems/nems-migrator/data/1.4/adagios/templates/base.html /var/www/adagios/templates/
+
 
 cat << EOF > /etc/apache2/conf-available/adagios.conf
 WSGISocketPrefix /var/run/apache2/wsgi
