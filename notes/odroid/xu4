@@ -5,7 +5,7 @@ Ensure the boot mode selection switch is set to SD mode (closest to HDMI port).
 Username: root
 Password: odroid
 
-Verify the filesystem has been successfully resized. Distro includes a script at /root/scripts/first-boot that runs automatically at first boot via /etc/rc.local - but it doesn't always work.
+Verify the filesystem has been successfully resized ( df -h | grep mmcblk1p2). Distro includes a script at /root/scripts/first-boot that runs automatically at first boot via /etc/rc.local - but it doesn't always work.
 
 Check filesystem space first, then prep NEMS as per normal.
 
