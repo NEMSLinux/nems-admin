@@ -10,7 +10,7 @@ Verify the filesystem has been successfully resized ( df -h | grep mmcblk1p2). D
 Check filesystem space first, then prep NEMS as per normal.
 
 Then build NEMS with:
-/root/nems-admin/nems-build.sh 11
+/root/nems/nems-admin/nems-build.sh 11
 
 Once SD card image is built, connect eMMC and prep with:
 Run: nand-sata-install and choose "Update bootloader on a special eMMC partition"
