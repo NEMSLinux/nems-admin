@@ -1,3 +1,5 @@
+Ensure using a UHS-1 capable SD card.
+
 Install to SD Card: Debian Stretch from https://forum.odroid.com/viewtopic.php?f=96&t=30552
 
 Ensure the boot mode selection switch is set to SD mode (closest to HDMI port).
