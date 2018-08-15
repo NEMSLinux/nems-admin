@@ -1,0 +1,8 @@
+#!/bin/bash
+if [[ ! -f /usr/bin/phoronix-test-suite ]]; then
+  wget -O /tmp/pts.deb https://phoronix-test-suite.com/releases/repo/pts.debian/files/phoronix-test-suite_8.0.1_all.deb
+  dpkg -i /tmp/pts.deb
+  rm /tmp/pts.deb
+  # Run it the first time as this will download the needed tests
+  /usr/bin/yes NEMS | /usr/bin/phoronix-test-suite benchmark 1803222-FO-MODEL3BPL99
+fi
