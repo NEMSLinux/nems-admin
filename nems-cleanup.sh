@@ -68,6 +68,9 @@ else
   rm -rf /root/.nano
   rm -rf /home/nemsadmin/.nano
 
+  # Remove ODROID resize log
+  rm -rf /root/resize--log.txt
+
   sudo apt-get clean
   sudo apt-get autoclean
   apt-get autoremove
