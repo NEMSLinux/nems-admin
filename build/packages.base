@@ -52,3 +52,4 @@ grub-efi-amd64-bin
 grub2-common
 firmware-linux-nonfree
 ssh
+less
