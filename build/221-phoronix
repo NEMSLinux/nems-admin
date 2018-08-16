@@ -6,6 +6,14 @@ if [[ ! -f /usr/bin/phoronix-test-suite ]]; then
   dpkg -i /tmp/pts.deb
   rm /tmp/pts.deb
   cp -f /root/nems/nems-migrator/data/1.4/phoronix-test-suite/phoronix-test-suite.xml /etc/
-  /usr/bin/phoronix-test-suite install 1803222-FO-MODEL3BPL99
-  /usr/bin/phoronix-test-suite install smallpt
+
+  # Install tests
+    # Rendering
+      /usr/bin/phoronix-test-suite install smallpt
+    # Multi-core CPU test
+      /usr/bin/phoronix-test-suite install himeno
+    # RAM
+      /usr/bin/phoronix-test-suite install ramspeed
+    # Storage
+      /usr/bin/phoronix-test-suite install iozone
 fi
