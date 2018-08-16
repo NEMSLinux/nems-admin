@@ -9,11 +9,12 @@ if [[ ! -f /usr/bin/phoronix-test-suite ]]; then
 
   # Install tests
     # Rendering
-      /usr/bin/phoronix-test-suite install smallpt
+#      /usr/bin/phoronix-test-suite install smallpt
     # Multi-core CPU test
-      /usr/bin/phoronix-test-suite install himeno
+#      /usr/bin/phoronix-test-suite install himeno
     # RAM
-      /usr/bin/phoronix-test-suite install ramspeed
+#      /usr/bin/phoronix-test-suite install ramspeed
     # Storage
-      /usr/bin/phoronix-test-suite install iozone
+#      /usr/bin/phoronix-test-suite install iozone
+
 fi
