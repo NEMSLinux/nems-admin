@@ -4,3 +4,5 @@ Username: rock64
 Password: rock64
 
 Run prep as normal.
+
+Build: /root/nems/nems-admin/nems-build.sh 1.4.1 43
