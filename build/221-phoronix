@@ -1,7 +1,6 @@
 #!/bin/bash
 if [[ ! -f /usr/bin/phoronix-test-suite ]]; then
   mkdir /var/log/nems/phoronix
-  cp /root/nems/nems-migrator/data/1.4/phoronix-test-suite/index.php /var/log/nems/phoronix/
   chown -R www-data:www-data /var/log/nems/phoronix
   wget -O /tmp/pts.deb --no-check-certificate https://phoronix-test-suite.com/releases/repo/pts.debian/files/phoronix-test-suite_8.0.1_all.deb
   dpkg -i /tmp/pts.deb
