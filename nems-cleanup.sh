@@ -194,6 +194,11 @@ nameserver 2001:4860:4860::8844
   cp -R /root/nems/nems-migrator/data/certs /var/www
   chown -R root:root /var/www/certs
 
+  # Remove Phoronix test results
+  rm -rf /var/log/nems/phoronix
+  mkdir /var/log/nems/phoronix
+  chown -R www-data:www-data /var/log/nems/phoronix
+
   sync
   
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
