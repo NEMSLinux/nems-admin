@@ -34,6 +34,8 @@ else
     echo "Looks like user accounts are ready to go."
   else
     echo "You have not removed your test users. Aborting."
+    echo "Run: userdel -r username"
+    echo "Then, reboot and login as nemsadmin"
     exit
   fi
 
