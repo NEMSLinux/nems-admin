@@ -203,6 +203,8 @@ nameserver 2001:4860:4860::8844
   mkdir /var/log/nems/phoronix
   chown -R www-data:www-data /var/log/nems/phoronix
 
+  # double check that rc.local is configured correctly, which happens during tty setup
+  /root/nems/nems-admin/build/011-tty
 
   # Make it so filesystem resizes at first boot
   if (( $platform >= 0 )) && (( $platform <= 9 )); then
