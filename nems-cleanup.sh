@@ -209,19 +209,21 @@ nameserver 2001:4860:4860::8844
     # Raspberry Pi
     # Will use raspi-config during init for now, but should automate this in future
     echo "Filesystem will be resized during nems-init.
-  else if (( $platform >= 10 )) && (( $platform <= 19 )); then
-    # ODROID
-    addition="/root/nems/nems-admin/resize_rootfs/odroid-stage1\n"
-    if grep -q "exit" /etc/rc.local; then
-      # This file contains an exit command, so make sure our new command comes before it
-      /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
-    else
-      # No exit command within the file, so just add it
-      echo "PLACEHERE" >> /etc/rc.local
-      /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
+  else
+    if (( $platform >= 10 )) && (( $platform <= 19 )); then
+     # ODROID
+     addition="/root/nems/nems-admin/resize_rootfs/odroid-stage1\n"
+     if grep -q "exit" /etc/rc.local; then
+       # This file contains an exit command, so make sure our new command comes before it
+       /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
+     else
+       # No exit command within the file, so just add it
+       echo "PLACEHERE" >> /etc/rc.local
+       /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
+     fi
+     # Also a bit of extra cleanup on the ODROID:
+     rm -rf /root/scripts
     fi
-    # Also a bit of extra cleanup on the ODROID:
-    rm -rf /root/scripts
   fi
 
   sync
