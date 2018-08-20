@@ -3,15 +3,28 @@
 # Perform some additional TTY setup without manipulating the splash (010-tty)
 
 if [[ ! -f /etc/rc.local ]]; then
-  echo "#!/bin/bash
+  echo "#!/bin/sh -e
   " > /etc/rc.local
   chmod +x /etc/rc.local
 fi
 
+if grep -q '"exit 0"' /etc/rc.local; then
+  sed -i~ '/"exit 0"/d' /etc/rc.local
+fi
+
 if ! grep -q "NEMS00000" /etc/rc.local; then
-  echo "# NEMS00000 Don't blank TTY1
-  setterm -blank 0
-" >> /etc/rc.local
+
+  addition="# NEMS00000 Don't blank TTY1\nsetterm -blank 0\n\n"
+
+  if grep -q "exit" /etc/rc.local; then
+    # This file contains an exit command, so make sure our new command comes before it
+    /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
+  else
+    # No exit command within the file, so just add it
+    echo "PLACEHERE" >> /etc/rc.local
+    /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
+  fi
   /bin/systemctl stop rc-local.service
   /bin/systemctl start rc-local.service
 fi
+

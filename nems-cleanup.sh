@@ -10,7 +10,9 @@ if [[ $EUID -ne 0 ]]; then
 else
   
   if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution or the reboot option to reboot."; echo ""; fi;
-  
+
+  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+
   # Check if nemsadmin exists, and create it if not
   if [ ! -d /home/nemsadmin ]; then
     # Create the nemsadmin user
@@ -200,6 +202,26 @@ nameserver 2001:4860:4860::8844
   rm -rf /var/log/nems/phoronix
   mkdir /var/log/nems/phoronix
   chown -R www-data:www-data /var/log/nems/phoronix
+
+
+  # Make it so filesystem resizes at first boot
+  if (( $platform >= 0 )) && (( $platform <= 9 )); then
+    # Raspberry Pi
+    # Will use raspi-config during init for now, but should automate this in future
+  elif (( $platform >= 10 )) && (( $platform <= 19 )); then
+    # ODROID
+    addition="/root/nems/nems-admin/resize_rootfs/odroid-stage1\n"
+    if grep -q "exit" /etc/rc.local; then
+      # This file contains an exit command, so make sure our new command comes before it
+      /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
+    else
+      # No exit command within the file, so just add it
+      echo "PLACEHERE" >> /etc/rc.local
+      /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
+    fi
+    # Also a bit of extra cleanup on the ODROID:
+    rm -rf /root/scripts
+  fi
 
   sync
   
