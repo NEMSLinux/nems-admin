@@ -208,7 +208,8 @@ nameserver 2001:4860:4860::8844
   if (( $platform >= 0 )) && (( $platform <= 9 )); then
     # Raspberry Pi
     # Will use raspi-config during init for now, but should automate this in future
-  elif (( $platform >= 10 )) && (( $platform <= 19 )); then
+    echo "Filesystem will be resized during nems-init.
+  else if (( $platform >= 10 )) && (( $platform <= 19 )); then
     # ODROID
     addition="/root/nems/nems-admin/resize_rootfs/odroid-stage1\n"
     if grep -q "exit" /etc/rc.local; then
