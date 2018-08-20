@@ -192,7 +192,7 @@ nameserver 2001:4860:4860::8844
   # Sync the current running version as the current available version
   # Will be overwritten on first boot
   /usr/local/share/nems/nems-scripts/info.sh nemsver > /var/www/html/inc/ver-available.txt
-  
+
   # Replace installed certs with defaults
   rm -rf /var/www/certs/
   cp -R /root/nems/nems-migrator/data/certs /var/www
@@ -208,7 +208,7 @@ nameserver 2001:4860:4860::8844
   if (( $platform >= 0 )) && (( $platform <= 9 )); then
     # Raspberry Pi
     # Will use raspi-config during init for now, but should automate this in future
-    echo "Filesystem will be resized during nems-init.
+    echo "Filesystem will be resized during nems-init."
   else
     if (( $platform >= 10 )) && (( $platform <= 19 )); then
      # ODROID
@@ -227,7 +227,7 @@ nameserver 2001:4860:4860::8844
   fi
 
   sync
-  
+
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
 
   if [[ $1 == "reboot" ]]; then echo "Rebooting..."; reboot; exit; fi;
