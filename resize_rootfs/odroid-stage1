@@ -26,7 +26,7 @@ p
 w
 EOF
 	sync && sync
-	sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage1,/root/nems/nems-admin/resize_rootfs/odroid-stage2" "$BOOT"
+	sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage1,/root/nems/nems-admin/resize_rootfs/odroid-stage2,g" "$BOOT"
 	echo > /etc/udev/rules.d/70-persistent-net.rules
 }
 
@@ -38,7 +38,7 @@ fix_ssh()
 
 function remove_start
 {
-        sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage2" "$BOOT"
+        sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage2,g" "$BOOT"
 }
 
 do_resize
