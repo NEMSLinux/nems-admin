@@ -9,11 +9,11 @@ function do_resize
 	echo "Saving the log to $rsflog"
 	sleep 4
 
-	p2_start=`fdisk -l /dev/$BOOTDEVICE | grep ${BOOTDEVICE}p2 | awk '{print $2}'`
-	p2_end=$(((`fdisk -l /dev/$BOOTDEVICE | head -n1 | grep -i bytes | awk '{print $5}'`/512)-20))
+	p2_start=`/sbin/fdisk -l /dev/$BOOTDEVICE | grep ${BOOTDEVICE}p2 | awk '{print $2}'`
+	p2_end=$(((`/sbin/fdisk -l /dev/$BOOTDEVICE | head -n1 | grep -i bytes | awk '{print $5}'`/512)-20))
 	echo $p2_end
 
-	fdisk /dev/$BOOTDEVICE <<EOF &>> $rsflog
+	/sbin/fdisk /dev/$BOOTDEVICE <<EOF &>> $rsflog
 p
 d
 2
@@ -30,20 +30,6 @@ EOF
 	echo > /etc/udev/rules.d/70-persistent-net.rules
 }
 
-fix_ssh()
-{
-	rm -rf /etc/ssh/ssh_host_*_key
-	dpkg-reconfigure openssh-server
-}
-
-function remove_start
-{
-        sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage2,g" "$BOOT"
-}
-
 do_resize
-remove_start
-fix_ssh
-systemctl enable systemd-timesyncd.service
 sync
 reboot
