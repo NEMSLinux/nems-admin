@@ -138,8 +138,10 @@ echo ""
 
 # Rock64/Pine 64-LTS NIC
 if [[ "$2" = "43" ]] || [[ "$2" = "44" ]]; then
+echo "source /etc/network/interfaces.d/*" > /etc/network/interfaces # https://askubuntu.com/a/854226
 echo "allow-hotplug eth0
 iface eth0 inet dhcp" > /etc/network/interfaces.d/eth0
+systemctl restart networking
 fi
 
 read -n 1 -s -r -p "Press any key to clean up our build..."
