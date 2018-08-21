@@ -7,7 +7,7 @@ Username and Password: pine64
 sudo su
 
 Upgrade packages:
-sleep 60 && pine64_update_package.sh 0.7.19 && pine64_update_kernel.sh 0.7.19 && reboot
+sleep 60 && pine64_update_package.sh 0.7.19 && pine64_update_kernel.sh 0.7.19 && sync && sleep 5 && reboot
 
 Prep as normal.
 
