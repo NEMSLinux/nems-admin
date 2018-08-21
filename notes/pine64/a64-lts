@@ -9,8 +9,10 @@ sudo su
 Upgrade packages:
 pine64_update_kernel.sh 0.7.19
   then reboot
+
+sleep 60 && pine64_update_uboot.sh 0.7.19
+
 pine64_update_package.sh 0.7.19
-pine64_update_uboot.sh 0.7.19
   then reboot
   
 Prep as normal.
