@@ -136,8 +136,8 @@ echo "------------------------------"
 
 echo ""
 
-# Rock64 NIC
-if [[ "$2" = "43" ]]; then
+# Rock64/Pine 64-LTS NIC
+if [[ "$2" = "43" ]] || [[ "$2" = "44" ]]; then
 echo "allow-hotplug eth0
 iface eth0 inet dhcp" > /etc/network/interfaces.d/eth0
 fi
