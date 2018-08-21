@@ -57,5 +57,6 @@ else
   # This requires the user to re-connect
   sed -i -e 's/    SendEnv LANG LC_*/#   SendEnv LANG LC_*/g' /etc/ssh/ssh_config
 
-  echo System Prepped... re-connect, run screen, then /root/nems/nems-admin/nems-build.sh
+  echo System Prepped & Rebooting... re-connect, run screen, then run your build script (see ./notes).
+  reboot
 fi
