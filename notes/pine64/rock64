@@ -3,11 +3,12 @@ Install Debian on MicroSD: https://github.com/ayufan-rock64/linux-build/releases
 Username: rock64
 Password: rock64
 
-Change NIC to DHCP:
 sudo su
-echo "auto eth0
-iface eth0 inet dhcp" > /etc/network/interfaces
 
 Run prep as normal.
 
 Build: /root/nems/nems-admin/nems-build.sh 1.4.1 43
+
+Change NIC to DHCP
+echo "allow-hotplug eth0
+iface eth0 inet dhcp" > /etc/network/interfaces.d/eth0
