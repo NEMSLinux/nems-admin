@@ -136,6 +136,12 @@ echo "------------------------------"
 
 echo ""
 
+# Rock64 NIC
+if [[ "$2" = "42" ]]; then
+echo "allow-hotplug eth0
+iface eth0 inet dhcp" > /etc/network/interfaces.d/eth0
+fi
+
 read -n 1 -s -r -p "Press any key to clean up our build..."
 
 echo ""
