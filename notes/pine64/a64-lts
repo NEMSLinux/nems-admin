@@ -4,7 +4,15 @@ Alt: Armbian Xenial: https://dl.armbian.com/pine64so/Ubuntu_xenial_default.7z
 
 Username and Password: pine64
 
+sudo su
+
 Upgrade packages:
-sudo ./pine64_update_kernel.sh 0.7.19
-sudo ./pine64_update_uboot.sh 0.7.19
-sudo ./pine64_update_package.sh 0.7.19
+pine64_update_kernel.sh 0.7.19
+  then reboot
+pine64_update_package.sh 0.7.19
+pine64_update_uboot.sh 0.7.19
+  then reboot
+  
+Prep as normal.
+
+Build: Build: /root/nems/nems-admin/nems-build.sh 1.4.1 44
