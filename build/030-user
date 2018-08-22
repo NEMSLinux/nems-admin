@@ -26,6 +26,7 @@
   userdel -f -r linaro # ASUS TinkerBoard
   userdel -f -r dietpi
   userdel -f -r pine # Pine A64+
+  userdel -f -r pine64 # Sopine
 
 # Remove sudo message
 echo "Defaults lecture = never" > /etc/sudoers.d/privacy

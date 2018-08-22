@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Remove Pine64 help MOTD
+if [[ -e /etc/update-motd.d/11-pine-a64-help-text ]]; then
+  rm /etc/update-motd.d/11-pine-a64-help-text
+fi
