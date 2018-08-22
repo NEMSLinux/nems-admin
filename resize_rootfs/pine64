@@ -46,3 +46,6 @@ EOF
 resize
 
 echo "Done!"
+
+sed -i "s,/root/nems/nems-admin/resize_rootfs/pine64,,g" /etc/rc.local
+
