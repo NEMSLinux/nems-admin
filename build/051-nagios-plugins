@@ -6,6 +6,24 @@
   # run this at any time to reinstall all plugins.                          #
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+  # Install dependencies
+  # Doing one per apt instance to avoid it failing if one package is missing
+  apt update
+  apt install -y libnet-snmp-perl
+  apt install -y snmp
+  apt install -y snmpd
+  apt install -y snmp-mibs-downloader
+  apt install -y dnsutils
+  apt install -y fping
+  apt install -y iputils-ping
+  apt install -y libfreeradius-client-dev
+  apt install -y libldap2-dev
+  apt install -y default-libmysqlclient-dev
+  apt install -y libdbi-dev
+  apt install -y libdbi-perl
+  apt install -y smbclient
+  apt install -y qstat
+
   # Setup automake so this can compile on any system.
   # for example, in early builds for PINE64 you'd have to do this:  ./configure --build=arm --with-nagios-user=nagios --with-nagios-group=nagios
   # but now automake allows automatic detection of platform
@@ -25,13 +43,12 @@
 
   # Patches
     # Fix timeticks issue as reported by Tech Dave: https://forum.category5.tv/thread-197-post-1549.html#pid1549
-    patch -t -d plugins -i /root/nems/nems-admin/patch/0001-check_snmp.patch && apt -y install libnet-snmp-perl 
+    patch -t -d plugins -i /root/nems/nems-admin/patch/0001-check_snmp.patch && apt -y install libnet-snmp-perl
 
   # Build it and install it
     ./configure --with-nagios-user=nagios --with-nagios-group=nagios
     make
     make install
-
 
   # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
   if [[ ! -f /usr/local/bin/php ]]; then

@@ -18,26 +18,6 @@
   make install-commandmode
   make install-webconf
 
-  cd /tmp
-  # Install dependencies
-  apt update
-  apt install -y \
-    libnet-snmp-perl \
-    snmp \
-    snmpd \
-    snmp-mibs-downloader \
-    dnsutils \
-    fping \
-    iputils-ping \
-    libfreeradius-client-dev \
-    libldap2-dev \
-    default-libmysqlclient-dev \
-    libdbi-dev \
-    libdbi-perl \
-    smbclient \
-    qstat
-
-
 # Finished installing Nagios Core
 
 # Install some needed extras
