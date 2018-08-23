@@ -34,8 +34,8 @@
     # Set version to download and deploy
     # DO NOT use 2.2.1 - has a broken check_snmp (will be fixed in 2.2.2)
     # Timeticks issue in 2.2.1 reported by Tech Dave: https://forum.category5.tv/thread-197-post-1549.html#pid1549
-    # Unfortunately the tradeoff is that 2.2.0 doesn't work with ipv6. Can't wait for 2.2.2!
-    npver="2.2.0"
+    # Unfortunately the tradeoff is that 2.1.1 doesn't work with ipv6. Can't wait for 2.2.2!
+    npver="2.1.1"
 
     if [[ -d /tmp/nagios-plugins-$npver/ ]]; then
       rm -rf /tmp/nagios-plugins-$npver/
