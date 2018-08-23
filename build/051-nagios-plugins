@@ -25,7 +25,7 @@
 
   # Patches
     # Fix timeticks issue as reported by Tech Dave: https://forum.category5.tv/thread-197-post-1549.html#pid1549
-    patch -t -d plugins -i /root/nems/nems-admin/patch/0001-check_snmp.patch
+    patch -t -d plugins -i /root/nems/nems-admin/patch/0001-check_snmp.patch && apt -y install libnet-snmp-perl 
 
   # Build it and install it
     ./configure --with-nagios-user=nagios --with-nagios-group=nagios
