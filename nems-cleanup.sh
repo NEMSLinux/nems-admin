@@ -16,14 +16,8 @@ else
   # Check if nemsadmin exists, and create it if not
   if [ ! -d /home/nemsadmin ]; then
     # Create the nemsadmin user
-    adduser --disabled-password --gecos "" nemsadmin
+    /root/nems/nems-admin/build/030-user
   fi
-
-  # Configure nemsadmin user as default admin
-    # Allow user to become super-user
-    usermod -aG sudo nemsadmin
-    # Set the user password
-    echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
 
   # Reset the RPi-Monitor users
   cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor
