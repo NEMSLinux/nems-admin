@@ -31,5 +31,5 @@ if [[ -d /root/nems/nems-tools ]]; then
   cd /root/nems/nems-tools
   git add *
   git commit -am "$comment"
-  git push origin develop
+  git push origin master
 fi
