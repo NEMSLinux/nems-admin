@@ -31,19 +31,17 @@
     automake=$(ls -r /usr/share/automake*/config.guess | head -1)
 
   # Obtain the source for nagios-plugins
-    if [[ -d /tmp/nagios-plugins-2.2.1/ ]]; then
-      rm -rf /tmp/nagios-plugins-2.2.1/
+    if [[ -d /tmp/nagios-plugins-2.2.0/ ]]; then
+      rm -rf /tmp/nagios-plugins-2.2.0/
     fi
-    wget -O /tmp/nagios-plugins.tar.gz https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+    # DO NOT use 2.2.1 - has a broken check_snmp (will be fixed in 2.2.2)
+    # Timeticks issue in 2.2.1 reported by Tech Dave: https://forum.category5.tv/thread-197-post-1549.html#pid1549
+    wget -O /tmp/nagios-plugins.tar.gz https://nagios-plugins.org/download/nagios-plugins-2.2.0.tar.gz
     cd /tmp/
     tar -zxvf /tmp/nagios-plugins.tar.gz
-    cd /tmp/nagios-plugins-2.2.1/
+    cd /tmp/nagios-plugins-2.2.0/
     # This is where automake's config gets written to the nagios-plugins src:
     cp $automake /tmp/nagios-plugins-2.2.1/build-aux/
-
-  # Patches
-    # Fix timeticks issue as reported by Tech Dave: https://forum.category5.tv/thread-197-post-1549.html#pid1549
-    patch -t -d plugins -i /root/nems/nems-admin/patch/0001-check_snmp.patch && apt -y install libnet-snmp-perl
 
   # Build it and install it
     ./configure --with-nagios-user=nagios --with-nagios-group=nagios
