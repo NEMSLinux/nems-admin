@@ -35,17 +35,17 @@
     # DO NOT use 2.2.1 - has a broken check_snmp (will be fixed in 2.2.2)
     # Timeticks issue in 2.2.1 reported by Tech Dave: https://forum.category5.tv/thread-197-post-1549.html#pid1549
     # Unfortunately the tradeoff is that 2.2.0 doesn't work with ipv6. Can't wait for 2.2.2!
-    np-ver="2.2.0"
+    npver="2.2.0"
 
-    if [[ -d /tmp/nagios-plugins-$np-ver/ ]]; then
-      rm -rf /tmp/nagios-plugins-$np-ver/
+    if [[ -d /tmp/nagios-plugins-$npver/ ]]; then
+      rm -rf /tmp/nagios-plugins-$npver/
     fi
-    wget -O /tmp/nagios-plugins.tar.gz https://nagios-plugins.org/download/nagios-plugins-$np-ver.tar.gz
+    wget -O /tmp/nagios-plugins.tar.gz https://nagios-plugins.org/download/nagios-plugins-$npver.tar.gz
     cd /tmp/
     tar -zxvf /tmp/nagios-plugins.tar.gz
-    cd /tmp/nagios-plugins-$np-ver/
+    cd /tmp/nagios-plugins-$npver/
     # This is where automake's config gets written to the nagios-plugins src:
-    cp $automake /tmp/nagios-plugins-$np-ver/build-aux/
+    cp $automake /tmp/nagios-plugins-$npver/build-aux/
 
   # Build it and install it
     ./configure --with-nagios-user=nagios --with-nagios-group=nagios
