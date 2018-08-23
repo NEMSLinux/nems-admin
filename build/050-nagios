@@ -20,12 +20,7 @@
 
   cd /tmp
   # Install dependencies
-# REMOVE as it breaks pi - see if will build on Debian without this (it should).
-##  echo "deb http://security.debian.org/debian-security/ stretch/updates main
-##deb-src http://security.debian.org/debian-security/ stretch/updates main" > /etc/apt/sources.list.d/security.list
   apt update
-#  apt install -y libsnmp-base libsnmp-dev libsnmp-perl libsnmp30 libsnmp30-dbg python-netsnmp snmp snmpd snmptrapd tkmib libnet-snmp-perl
-#  apt install -y fping qstat ldap-utils nut-server libghc-hdbc-postgresql-dev python-ldap libldap2-dev
   apt install -y \
     libnet-snmp-perl \
     snmp \
@@ -42,21 +37,6 @@
     smbclient \
     qstat
 
-  wget https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
-  tar -zxvf /tmp/nagios-plugins-2.2.1.tar.gz
-  cd /tmp/nagios-plugins-2.2.1/
- # CHANGE THIS TO AUTO-detect platform
-  # PINE64:  ./configure --build=arm --with-nagios-user=nagios --with-nagios-group=nagios
-  ./configure --with-nagios-user=nagios --with-nagios-group=nagios
-  make
-  make install
-
-  a2enmod rewrite
-  a2enmod cgi
-  a2enconf nagios
-
-  systemctl enable nagios
-  systemctl stop nagios
 
 # Finished installing Nagios Core
 
@@ -65,92 +45,3 @@ apt install -y nagios-nrpe-plugin nagios-nrpe-server nagios-images
 
 # Set the nagios user shell
 usermod -s /bin/bash nagios
-
-if [[ ! -d /var/log/nagios ]]; then
-  mkdir /var/log/nagios
-  chown nagios:nagios /var/log/nagios
-fi
-
-if [[ ! -d /var/log/nagios/archives ]]; then
-  mkdir /var/log/nagios/archives
-  chown nagios:nagios /var/log/nagios/archives
-  chmod ug+x /var/log/nagios/archives
-  chmod g+ws /var/log/nagios/archives
-fi
-
-if [[ ! -d /var/cache/nagios/ ]]; then
-  mkdir /var/cache/nagios/
-  chown nagios:nagios /var/cache/nagios/
-fi
-
-# Restore NEMS versions of Nagios config
-cp -R /root/nems/nems-migrator/data/1.4/nagios/etc/* /usr/local/nagios/etc/
-
-/bin/sed -i -- 's/nagiosadmin/'"nemsadmin"'/g' /usr/local/nagios/etc/cgi.cfg
-
-# Create NEMS configuration folder
-  mkdir -p /etc/nems/conf
-# Copy sample data
-  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/global /etc/nems/conf/
-  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/Default_collector /etc/nems/conf/
-  chmod 775 /etc/nems/conf/global
-  chmod 775 /etc/nems/conf/Default_collector
-# Allow nConf to write to the conf
-  chown -R www-data:www-data /etc/nems/conf/Default_collector
-  chown -R www-data:www-data /etc/nems/conf/global
-
-# Allow www-data to restart Nagios after exporting new configs
-if ! grep -q "www-data ALL=NOPASSWD: /bin/systemctl restart nagios" /etc/sudoers; then
-  echo 'www-data ALL=NOPASSWD: /bin/systemctl restart nagios' | sudo EDITOR='tee -a' visudo
-fi
-
-
-# Compatibility with older versions of NEMS
-#mkdir /etc/nagios3
-
-#echo "This folder contains symlinks to the Nagios 4 configs to allow compatibility with older versions of NEMS" > /etc/nagios3/README
-#ln -s /usr/local/nagios/etc/cgi.cfg /etc/nagios3/cgi.cfg
-#ln -s /etc/nems/conf/global /etc/nagios3/global
-#ln -s /etc/nems/conf/Default_collector /etc/nagios3/Default_collector
-#ln -s /etc/nems/conf/global /etc/nagios/global
-#ln -s /etc/nems/conf/Default_collector /etc/nagios/Default_collector
-#ln -s /etc/nems/conf/import /etc/nagios3/import
-# For nagios-api
-#ln -s /var/cache/nagios /var/cache/nagios3
-
-# Change some permissions changes
-systemctl stop apache2
-  dpkg-statoverride --update --add nagios www-data 2710 /usr/local/nagios/var/rw
-  dpkg-statoverride --update --add nagios nagios 751 /var/lib/nagios
-  cp -f /root/nems/nems-migrator/data/1.4/apache2/conf-available/nagios.conf /etc/apache2/conf-available/
-systemctl start apache2
-
-# Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
-if [[ ! -f /usr/local/bin/php ]]; then
-  if [[ -f /usr/bin/php ]]; then
-    ln -s /usr/bin/php /usr/local/bin/php
-  fi
-fi
-
-# Install notify-by-pushover
-cp -f /root/nems/nems-migrator/data/1.4/submodules/barryo/nagios-plugins/notify-by-pushover.php /usr/local/nagios/libexec/
-/bin/sed -i -- 's,Nagios Alert,NEMS Alert,g' /usr/local/nagios/libexec/notify-by-pushover.php
-
-# Install notify-by-telegram
-cp /root/nems/nems-migrator/data/1.4/nagios/plugins/telegram_nems.lua /usr/local/bin/
-chmod +x /usr/local/bin/telegram_nems.lua
-
-# Install various plugins
-cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_mikrotik_switch /usr/local/nagios/libexec/
-cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_minecraft /usr/local/nagios/libexec/
-cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_rpi_temperature /usr/local/nagios/libexec/
-
-# Setup log for sendemail
-touch /var/log/sendemail.log
-chown nagios:nagios /var/log/sendemail.log
-
-# Set permissions to allow Nagios to archive log files
-chmod ug+x /usr/local/nagios/var/archives
-
-# nagios is not running yet since we have to install the socket first
-# See 055

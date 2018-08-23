@@ -1,0 +1,54 @@
+#!/bin/bash
+
+  # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+  # This script is run during initial NEMS compile, but because sometimes   #
+  # bugs are fixed in nagios-plugins that could affect users, you can also  #
+  # run this at any time to reinstall all plugins.                          #
+  # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+  # Setup automake so this can compile on any system.
+  # for example, in early builds for PINE64 you'd have to do this:  ./configure --build=arm --with-nagios-user=nagios --with-nagios-group=nagios
+  # but now automake allows automatic detection of platform
+    apt -y install automake
+    automake=$(ls -r /usr/share/automake*/config.guess | head -1)
+
+  # Obtain the source for nagios-plugins
+    if [[ -d /tmp/nagios-plugins-2.2.1/ ]]; then
+      rm -rf /tmp/nagios-plugins-2.2.1/
+    fi
+    wget -O /tmp/nagios-plugins.tar.gz https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+    cd /tmp/
+    tar -zxvf /tmp/nagios-plugins.tar.gz
+    cd /tmp/nagios-plugins-2.2.1/
+    # This is where automake's config gets written to the nagios-plugins src:
+    cp $automake /tmp/nagios-plugins-2.2.1/build-aux/
+
+  # Patches
+    # Fix timeticks issue as reported by Tech Dave: https://forum.category5.tv/thread-197-post-1549.html#pid1549
+    patch -t -d plugins -i /root/nems/nems-admin/patch/0001-check_snmp.patch
+
+  # Build it and install it
+    ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+    make
+    make install
+
+
+  # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
+  if [[ ! -f /usr/local/bin/php ]]; then
+    if [[ -f /usr/bin/php ]]; then
+      ln -s /usr/bin/php /usr/local/bin/php
+    fi
+  fi
+
+  # Install notify-by-pushover
+    cp -f /root/nems/nems-migrator/data/1.4/submodules/barryo/nagios-plugins/notify-by-pushover.php /usr/local/nagios/libexec/
+    /bin/sed -i -- 's,Nagios Alert,NEMS Alert,g' /usr/local/nagios/libexec/notify-by-pushover.php
+
+  # Install notify-by-telegram
+    cp /root/nems/nems-migrator/data/1.4/nagios/plugins/telegram_nems.lua /usr/local/bin/
+    chmod +x /usr/local/bin/telegram_nems.lua
+
+  # Install various plugins
+    cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_mikrotik_switch /usr/local/nagios/libexec/
+    cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_minecraft /usr/local/nagios/libexec/
+    cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_rpi_temperature /usr/local/nagios/libexec/

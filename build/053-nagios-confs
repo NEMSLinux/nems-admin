@@ -1,0 +1,53 @@
+#!/bin/bash
+
+if [[ ! -d /var/log/nagios ]]; then
+  mkdir /var/log/nagios
+  chown nagios:nagios /var/log/nagios
+fi
+
+if [[ ! -d /var/log/nagios/archives ]]; then
+  mkdir /var/log/nagios/archives
+  chown nagios:nagios /var/log/nagios/archives
+  chmod ug+x /var/log/nagios/archives
+  chmod g+ws /var/log/nagios/archives
+fi
+
+if [[ ! -d /var/cache/nagios/ ]]; then
+  mkdir /var/cache/nagios/
+  chown nagios:nagios /var/cache/nagios/
+fi
+
+# Restore NEMS versions of Nagios config
+cp -R /root/nems/nems-migrator/data/1.4/nagios/etc/* /usr/local/nagios/etc/
+
+# Create NEMS configuration folder
+  mkdir -p /etc/nems/conf
+# Copy sample data
+  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/global /etc/nems/conf/
+  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/Default_collector /etc/nems/conf/
+  chmod 775 /etc/nems/conf/global
+  chmod 775 /etc/nems/conf/Default_collector
+# Allow nConf to write to the conf
+  chown -R www-data:www-data /etc/nems/conf/Default_collector
+  chown -R www-data:www-data /etc/nems/conf/global
+
+# Allow www-data to restart Nagios after exporting new configs
+if ! grep -q "www-data ALL=NOPASSWD: /bin/systemctl restart nagios" /etc/sudoers; then
+  echo 'www-data ALL=NOPASSWD: /bin/systemctl restart nagios' | sudo EDITOR='tee -a' visudo
+fi
+
+# Change some permissions changes
+systemctl stop apache2
+  dpkg-statoverride --update --add nagios www-data 2710 /usr/local/nagios/var/rw
+  dpkg-statoverride --update --add nagios nagios 751 /var/lib/nagios
+  cp -f /root/nems/nems-migrator/data/1.4/apache2/conf-available/nagios.conf /etc/apache2/conf-available/
+systemctl start apache2
+
+# Setup log for sendemail
+if [[ ! -f /var/log/sendemail.log ]]; then
+  touch /var/log/sendemail.log
+fi
+chown nagios:nagios /var/log/sendemail.log
+
+# Set permissions to allow Nagios to archive log files
+chmod ug+x /usr/local/nagios/var/archives

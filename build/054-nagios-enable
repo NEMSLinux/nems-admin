@@ -1,0 +1,11 @@
+#!/bin/bash
+
+  a2enmod rewrite
+  a2enmod cgi
+  a2enconf nagios
+
+  systemctl enable nagios
+  systemctl stop nagios
+
+  # nagios cannot be running yet since we have to install the socket first
+  # See 055
