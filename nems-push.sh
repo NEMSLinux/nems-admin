@@ -10,7 +10,7 @@ cd /root/nems/nems-admin
 git add *
 git commit -am "$comment"
 #git push origin master
-git push 'https://Cat5TV:$password@github.com/Cat5TV/nems-admin.git'
+git push "https://Cat5TV:$password@github.com/Cat5TV/nems-admin.git"
 
 cd /usr/local/share/nems/nems-scripts/
 git add *
