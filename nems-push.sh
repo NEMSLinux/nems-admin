@@ -4,7 +4,7 @@ if [[ "$1" == '' ]]; then comment="Update $DATE"; else comment=$1; fi
 
 echo Pushing NEMS update: $comment
 echo ""
-read -p "Github Password: " password
+read -s -p "Github Password: " password
 
 cd /root/nems/nems-admin
 git add *
