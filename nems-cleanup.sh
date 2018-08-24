@@ -115,9 +115,6 @@ else
   rm /var/log/lastlog
   touch /var/log/lastlog
 
-  # remove config backup from NEMS-Migrator
-  rm /var/www/html/backup/backup.nems
-
   # Remove DNS Resolver config (will be auto-generated on first boot)
   echo "# Default resolv.conf file created by NEMS Admin
 
@@ -140,18 +137,14 @@ nameserver 2001:4860:4860::8844
   # Remove NEMS init password file
   rm /var/www/htpasswd
 
-  # Remove NEMS Log Files
+  # Reset NEMS Log Files
   rm /var/log/nems/*
+  mkdir /var/log/nems
+  mkdir /var/log/nems/nems-tools
+  mkdir /var/log/nems/phoronix && chown -R www-data:www-data /var/log/nems/phoronix
 
-  # Reset pi Linux User password to "raspberry"
-  #pipassword="raspberry"
-  #echo -e "$pipassword\n$pipassword" | passwd pi >/tmp/init 2>&1
-  
   # Reset Nagios Core User
   cp -f /root/nems/nems-migrator/data/1.4/nagios/etc/cgi.cfg /usr/local/nagios/etc/
-  
-  # Reset Check_MK User
-#  cp -f /root/nems/nems-migrator/data/check_mk/users.mk /etc/check_mk/multisite.d/wato/users.mk
 
   # Clear Nagios' resource.cfg file
   echo "################################################################################" > /usr/local/nagios/etc/resource.cfg
@@ -192,11 +185,6 @@ nameserver 2001:4860:4860::8844
   cp -R /root/nems/nems-migrator/data/certs /var/www
   chown -R root:root /var/www/certs
 
-  # Remove Phoronix test results
-  rm -rf /var/log/nems/phoronix
-  mkdir /var/log/nems/phoronix
-  chown -R www-data:www-data /var/log/nems/phoronix
-
   # double check that rc.local is configured correctly, which happens during tty setup
   /root/nems/nems-admin/build/011-tty
 
@@ -222,6 +210,7 @@ nameserver 2001:4860:4860::8844
     fi
   else
     if (( $platform = 44 )); then
+      # PINE64
       addition="/root/nems/nems-admin/resize_rootfs/pine64"
       if grep -q "exit" /etc/rc.local; then
         # This file contains an exit command, so make sure our new command comes before it
@@ -249,5 +238,5 @@ nameserver 2001:4860:4860::8844
   systemctl start apache2
   systemctl start nagios
   rm /tmp/nems.freeze
-  
+
 fi
