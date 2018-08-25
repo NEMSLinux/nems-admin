@@ -6,6 +6,11 @@ Username and Password: pine64
 
 sudo su
 
+Once booted from Ayufan's build and logged in as root, run this and let it wait:
+sleep 600 && reboot
+
+Then let it sit a while (to ensure Ayufan's first boot scripts are complete).
+
 Prep as normal.
 
 Build: Build: /root/nems/nems-admin/nems-build.sh 1.4.1 44
