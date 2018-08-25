@@ -37,7 +37,7 @@ else
   mkdir nems
   cd nems
 
-  git clone https://github.com/Cat5TV/nems-admin
+  git -c http.sslVerify=false clone https://github.com/Cat5TV/nems-admin
 
   cd /root/nems/nems-admin
 
