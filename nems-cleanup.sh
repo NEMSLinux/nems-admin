@@ -210,7 +210,7 @@ nameserver 2001:4860:4860::8844
   fi
   if (( $platform == 44 )); then
       # PINE64
-      addition="/root/nems/nems-admin/resize_rootfs/pine64"
+      addition="/root/nems/nems-admin/resize_rootfs/pine64\n"
       if grep -q "exit" /etc/rc.local; then
         # This file contains an exit command, so make sure our new command comes before it
         /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
