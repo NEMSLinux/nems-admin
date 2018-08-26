@@ -224,10 +224,12 @@ nameserver 2001:4860:4860::8844
      # Also a bit of extra cleanup on the ODROID:
      rm -rf /root/scripts
   fi
-  if (( $platform == 43 )); then
+
+  if (( $platform >= 45 )) && (( $platform <= 47 )); then
     # ROCK64
     rm -rf /var/lib/rock64 # Ayufan's build places a file in that folder which stops it from resizing on boot
   fi
+
   if (( $platform == 44 )); then
     # PINE64
     addition="/root/nems/nems-admin/resize_rootfs/pine64\n"

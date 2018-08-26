@@ -136,8 +136,9 @@ echo "------------------------------"
 
 echo ""
 
-# Rock64/Pine A64-LTS NIC
-if [[ "$2" = "43" ]] || [[ "$2" = "44" ]]; then
+# NIC on Pine64 boards need eth0 to be set to DHCP
+# Could probably do this on all boards that use eth0
+if (( $2 >= 40 )) && (( $2 <= 49 )); then
 #echo "source /etc/network/interfaces.d/*" > /etc/network/interfaces # https://askubuntu.com/a/854226
 #echo "allow-hotplug eth0
 #iface eth0 inet dhcp" > /etc/network/interfaces.d/eth0
