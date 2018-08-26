@@ -241,6 +241,9 @@ nameserver 2001:4860:4860::8844
     fi
   fi
 
+  # remove any package data left behind after removal
+  apt-get purge $(dpkg -l | awk '/^rc/ { print $2 }')
+
   sync
 
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;

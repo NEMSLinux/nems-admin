@@ -3,6 +3,9 @@
 # The Rock64 platform requires some extra fandangling to resize the filesystem
 # Thanks to Ayufan for doing all the legwork... I'd have scratched my head a while.
 
+# There is also a folder located at /var/lib/rock64
+# But we'll leave it to the cleanup script - not here
+
 # Install the latest kernel and patches from Ayufan
 apt -y install linux-rock64
 
@@ -13,6 +16,15 @@ apt -y install gdisk
   if [[ ! -d /usr/local/sbin/ ]]; then
     mkdir /usr/local/sbin
   fi
-  cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/first-boot.service /etc/systemd/system/
-  cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/rock64_first_boot.sh /usr/local/sbin/
-  cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/resize_rootfs.sh /usr/local/sbin/
+
+  if [[ ! -e /etc/systemd/system/first-boot.service ]]; then
+    cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/first-boot.service /etc/systemd/system/
+  fi
+
+  if [[ ! -e /usr/local/sbin/rock64_first_boot.sh ]]; then
+    cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/rock64_first_boot.sh /usr/local/sbin/
+  fi
+
+  if [[ ! -e /usr/local/sbin/resize_rootfs.sh ]]; then
+    cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/resize_rootfs.sh /usr/local/sbin/
+  fi
