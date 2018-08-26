@@ -8,8 +8,24 @@ if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
   exit 1
 else
-  
+
   if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution or the reboot option to reboot."; echo ""; fi;
+
+  if [[ -f /tmp/qf.sh ]]; then
+    qfrunning=`ps aux | grep -i "myscript.sh" | grep -v "grep" | wc -l`
+    if [ $qfrunning -ge 1 ]
+     then
+      printf "Please wait... your NEMS server is being updated."
+      while [ -f /tmp/qf.sh ]
+      do
+        printf "."
+        sleep 2
+      done
+      echo " Ready."
+     else
+      rm /tmp/qf.sh
+     fi
+  fi
 
   platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 
