@@ -1,0 +1,35 @@
+#!/bin/bash
+BOOTDEVICE=mmcblk1
+PARTITION=7
+PLATFORM=rock64 # Must match the filename $PLATFORM-stage#
+
+function do_resize
+{
+	rsflog=/var/log/nems/resize-$DATE.log
+	echo "Saving the log to $rsflog"
+	sleep 4
+
+	start=`/sbin/fdisk -l /dev/$BOOTDEVICE | grep ${BOOTDEVICE}p${PARTITION} | awk '{print $2}'`
+	end=$(((`/sbin/fdisk -l /dev/$BOOTDEVICE | head -n1 | grep -i bytes | awk '{print $5}'`/512)-20))
+	echo $end
+
+	/sbin/fdisk /dev/$BOOTDEVICE <<EOF &>> $rsflog
+p
+d
+$PARTITION
+n
+p
+$PARTITION
+$start
+$end
+p
+w
+EOF
+	sync && sync
+	sed -i "s,/root/nems/nems-admin/resize_rootfs/"'${PLATFORM}'"-stage1,/root/nems/nems-admin/resize_rootfs/"'${PLATFORM}'"-stage2,g" "/etc/rc.local"
+	echo > /etc/udev/rules.d/70-persistent-net.rules
+}
+
+do_resize
+sync
+reboot

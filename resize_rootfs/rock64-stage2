@@ -1,0 +1,7 @@
+#!/bin/bash
+BOOTDEVICE=mmcblk1
+PARTITION=7
+PLATFORM=rock64 # Must match the filename $PLATFORM-stage#
+
+/sbin/resize2fs /dev/${BOOTDEVICE}p${PARTITION}
+sed -i "s,/root/nems/nems-admin/resize_rootfs/"'${PLATFORM}'"-stage2,,g" /etc/rc.local
