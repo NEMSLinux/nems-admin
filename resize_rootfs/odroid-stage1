@@ -4,7 +4,7 @@ BOOTDEVICE=`ls -l /dev/disk/by-uuid/ | grep 96C3-9298 | awk '{print $11}' | sed 
 
 function do_resize
 {
-	# this takes in consideration /dev/mmcblk1p2 as the rootfs!
+	DATE=`date +%Y-%m-%d`
         rsflog=/var/log/nems/resize-$DATE.log
 	echo "Saving the log to $rsflog"
 	sleep 4

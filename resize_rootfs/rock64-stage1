@@ -5,13 +5,13 @@ PLATFORM=rock64 # Must match the filename $PLATFORM-stage#
 
 function do_resize
 {
+	DATE=`date +%Y-%m-%d`
 	rsflog=/var/log/nems/resize-$DATE.log
 	echo "Saving the log to $rsflog"
 	sleep 4
 
 	start=`/sbin/fdisk -l /dev/$BOOTDEVICE | grep ${BOOTDEVICE}p${PARTITION} | awk '{print $2}'`
-	end=$(((`/sbin/fdisk -l /dev/$BOOTDEVICE | head -n1 | grep -i bytes | awk '{print $5}'`/512)-20))
-	echo $end
+	end=$(((`/sbin/fdisk -l /dev/$BOOTDEVICE | head -n1 | grep -i bytes | awk '{print $5}'`/512)-34))
 
 	/sbin/fdisk /dev/$BOOTDEVICE <<EOF &>> $rsflog
 p
@@ -32,4 +32,4 @@ EOF
 
 do_resize
 sync
-#reboot
+reboot
