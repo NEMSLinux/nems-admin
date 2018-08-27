@@ -18,7 +18,7 @@ fi
 
 set -x
 
-DEVICE="/dev/mmcblk0"
+DEVICE="/dev/mmcblk1"
 PART="7"
 
 resize() {
