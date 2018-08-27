@@ -246,6 +246,9 @@ nameserver 2001:4860:4860::8844
   # remove any package data left behind after removal
   apt-get purge $(dpkg -l | awk '/^rc/ { print $2 }')
 
+  # Some final cleanup
+  /root/nems/nems-admin/build/151-motd
+
   sync
 
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
