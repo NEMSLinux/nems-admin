@@ -32,4 +32,4 @@ EOF
 
 do_resize
 sync
-reboot
+#reboot
