@@ -224,7 +224,7 @@ nameserver 2001:4860:4860::8844
      # Also a bit of extra cleanup on the ODROID:
      rm -rf /root/scripts
   fi
-  if (( $platform = 43 )); then
+  if (( $platform == 43 )); then
       # ROCK64
       addition="/root/nems/nems-admin/resize_rootfs/rock64-stage1\n"
       if grep -q "exit" /etc/rc.local; then
@@ -237,7 +237,7 @@ nameserver 2001:4860:4860::8844
       fi
     fi
   fi
-  if (( $platform = 44 )); then
+  if (( $platform == 44 )); then
       # PINE64
       addition="/root/nems/nems-admin/resize_rootfs/pine64\n"
       if grep -q "exit" /etc/rc.local; then
