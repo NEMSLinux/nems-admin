@@ -10,6 +10,6 @@ apt -y install gdisk
   if [[ ! -d /usr/local/sbin/ ]]; then
     mkdir /usr/local/sbin
   fi
-  cp /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/first-boot.service /etc/systemd/system/
-  cp /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/rock64_first_boot.sh /usr/local/sbin/
-  cp /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/resize_rootfs.sh /usr/local/sbin/
+  cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/first-boot.service /etc/systemd/system/
+  cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/rock64_first_boot.sh /usr/local/sbin/
+  cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/resize_rootfs.sh /usr/local/sbin/
