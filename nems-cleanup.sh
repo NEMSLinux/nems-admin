@@ -226,15 +226,7 @@ nameserver 2001:4860:4860::8844
   fi
   if (( $platform == 43 )); then
     # ROCK64
-    addition="/root/nems/nems-admin/resize_rootfs/rock64-stage1\n"
-    if grep -q "exit" /etc/rc.local; then
-      # This file contains an exit command, so make sure our new command comes before it
-      /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
-    else
-      # No exit command within the file, so just add it
-      echo "PLACEHERE" >> /etc/rc.local
-      /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
-    fi
+    rm -rf /var/lib/rock64 # Ayufan's build places a file in that folder which stops it from resizing on boot
   fi
   if (( $platform == 44 )); then
     # PINE64
