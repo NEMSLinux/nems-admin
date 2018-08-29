@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# The Rock64 platform requires some extra fandangling to resize the filesystem
+# Thanks to Ayufan for doing all the legwork... I'd have scratched my head a while.
+
+# Get the needed commands for resize_rootfs.sh from the gdisk package command
+apt -y install gdisk
+
+# first-boot service
+  if [[ ! -d /usr/local/sbin/ ]]; then
+    mkdir /usr/local/sbin
+  fi
+  cp /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/first-boot.service /etc/systemd/system/
+  cp /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/rock64_first_boot.sh /usr/local/sbin/
+  cp /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/resize_rootfs.sh /usr/local/sbin/
