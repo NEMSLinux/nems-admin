@@ -3,6 +3,9 @@
 # The Rock64 platform requires some extra fandangling to resize the filesystem
 # Thanks to Ayufan for doing all the legwork... I'd have scratched my head a while.
 
+# Install the latest kernel and patches from Ayufan
+apt -y install linux-rock64
+
 # Get the needed commands for resize_rootfs.sh from the gdisk package command
 apt -y install gdisk
 
