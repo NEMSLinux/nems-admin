@@ -9,5 +9,4 @@ Run prep as normal.
 
 Build: /root/nems/nems-admin/nems-build.sh 1.4.1 43
 
-Check network settings in /etc/network/interfaces.d/eth0
-Should have been setup automatically by the build script.
+Easy-peasy.
