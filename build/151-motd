@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Remove Pine64 help MOTD
-if [[ -e /etc/update-motd.d/11-pine-a64-help-text ]]; then
-  rm /etc/update-motd.d/11-pine-a64-help-text
-fi
+# Quick cheat to avoid errors if no files exist
+  touch /etc/update-motd.d/dummy
+
+# Remove any MOTD items included with the base distro
+  rm /etc/update-motd.d/*
+
