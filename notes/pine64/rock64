@@ -13,4 +13,10 @@ Set the timezone: dpkg-reconfigure tzdata
 
 Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
 
-Easy-peasy.
+Edit /etc/locale.gen and uncomment en_CA.UTF-8 UTF-8
+
+Run locale-gen
+
+Reboot
+
+Cleanup
