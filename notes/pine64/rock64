@@ -9,4 +9,6 @@ Run prep as normal.
 
 Build: /root/nems/nems-admin/nems-build.sh 1.4.1 45
 
+Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
+
 Easy-peasy.
