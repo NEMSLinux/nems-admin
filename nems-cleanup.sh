@@ -247,7 +247,7 @@ nameserver 2001:4860:4860::8844
   apt-get purge $(dpkg -l | awk '/^rc/ { print $2 }')
 
   # Some final cleanup
-  /root/nems/nems-admin/build/151-motd
+  /root/nems/nems-admin/build/230-motd
 
   sync
 
