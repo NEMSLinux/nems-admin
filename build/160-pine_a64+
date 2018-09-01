@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# This is for the Pine A64+
+
+# The Pine64 platform requires some extra fandangling to resize the filesystem
+# Thanks to Ayufan for doing all the legwork... I'd have scratched my head a while.
+
+# There is also a folder located at /var/lib/pine64
+# But we'll leave it to the cleanup script - not here
+
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+
+if (( $platform >= 40 )) && (( $platform <= 42 )); then
+
+  # Install the latest kernel and patches from Ayufan, including the first_boot scripts
+  apt -y install linux-pine64-package
+
+  # Get the needed commands for resize_rootfs.sh from the gdisk package command
+  apt -y install gdisk
+
+fi
