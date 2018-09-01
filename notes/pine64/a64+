@@ -1,29 +1,28 @@
 Deploy Debian Stretch:
-Build 1 & 2 used https://forum.pine64.org/showthread.php?tid=4931 but has a timer bug.
-Build 3 will test https://github.com/ayufan-pine64/linux-build/releases
+Build 1 & 2 used https://forum.pine64.org/showthread.php?tid=4931 but has a timer bug + lack of support from developer.
+Build 3 switched to Ayufan's build: https://github.com/ayufan-pine64/linux-build/releases
 
-SSH to pine@10.0.0.199
-PW: pine
+Username and Password: pine64
 
-Change NIC to DHCP:
 sudo su
-echo "auto eth0
-iface eth0 inet dhcp" > /etc/network/interfaces
 
-Replace sources.list with working copy :P
-echo "deb http://deb.debian.org/debian stretch main contrib non-free" > /etc/apt/sources.list
-rm /etc/apt/sources.list.d/security-updates.list
+Once booted from Ayufan's build and logged in as root, run this and let it wait:
+sleep 600 && reboot
 
-reboot
+Then let it sit a while (to ensure Ayufan's first boot scripts are complete).
 
-Reconnect to IP issued by DHCP server.
+Prep as normal.
 
-** run NEMS system prep as normal
+Build: /root/nems/nems-admin/nems-build.sh 1.4.1 40
 
-Resize filesystem:
-/root/nems/nems-admin/resize_rootfs.sh
+Set the timezone: dpkg-reconfigure tzdata
 
-reboot
+Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
 
+Edit /etc/locale.gen and uncomment en_CA.UTF-8 UTF-8
 
-Compile NEMS as normal.
+Run locale-gen
+
+Reboot
+
+Cleanup
