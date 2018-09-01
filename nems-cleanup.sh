@@ -237,7 +237,7 @@ nameserver 2001:4860:4860::8844
 
 
   if (( $platform == 44 )); then
-    # PINE64
+    # PINE64 SOPINE
     addition="/root/nems/nems-admin/resize_rootfs/pine64\n"
     if grep -q "exit" /etc/rc.local; then
       # This file contains an exit command, so make sure our new command comes before it
@@ -253,6 +253,7 @@ nameserver 2001:4860:4860::8844
   apt-get purge $(dpkg -l | awk '/^rc/ { print $2 }')
 
   # Some final cleanup
+  # This script removes any MOTD that were added during installs (annoying!)
   /root/nems/nems-admin/build/230-motd
 
   sync
