@@ -6,6 +6,7 @@ function do_resize
 {
 	DATE=`date +%Y-%m-%d`
         rsflog=/var/log/nems/resize-$DATE.log
+	echo $rsflog > /var/log/nems/resize-logfile.tmp
 	echo "Saving the log to $rsflog"
 	sleep 4
 
@@ -31,5 +32,6 @@ EOF
 }
 
 do_resize
+touch /forcefsck
 sync
 reboot

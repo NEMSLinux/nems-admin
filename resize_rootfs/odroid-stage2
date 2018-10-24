@@ -1,6 +1,20 @@
 #!/bin/bash
+# Get the log filename passed from Stage 1.
+rslog=$(cat /var/log/nems/resize-logfile.tmp)
+rm -f /var/log/nems/resize-logfile.tmp
 ROOTFS=`ls -l /dev/disk/by-uuid/ | grep "e139ce78-9841-40fe-8823-96a304a09859" | awk '{print $11}' | sed "s/\.\.\/\.\.\///" | sed "s/p1//"`
-e2fsck -y -f /dev/$ROOTFS
-/sbin/resize2fs /dev/$ROOTFS
+echo "Stage 2 on $ROOTFS" >> $rslog
+e2fsck -y -f /dev/$ROOTFS >> $rslog
+
+echo "-------- Resize --------" >> $rslog
+/sbin/resize2fs /dev/$ROOTFS >> $rslog
+# When using SD (rather than emmc) a second block device shows which mirrors the first.
+# It requires resizing.
+/sbin/resize2fs /dev/mmcblk1p2 >> $rslog
+echo "-------- /Resize -------" >> $rslog
+
+e2fsck -y -f /dev/$ROOTFS >> $rslog
 sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage2,,g" /etc/rc.local
-#reboot
+echo "Done" >> $rslog
+df -h / >> $rslog
+reboot
