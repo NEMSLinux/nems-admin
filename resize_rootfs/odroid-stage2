@@ -7,14 +7,15 @@ BOOTDEVICE=`ls -l /dev/disk/by-uuid/ | grep 96C3-9298 | awk '{print $11}' | sed 
 NEMSPART=${BOOTDEVICE}p2
 
 echo "Stage 2 on $NEMSPART" >> $rslog
-e2fsck -y -f /dev/$NEMSPART >> $rslog
 
 echo "-------- Resize --------" >> $rslog
-/sbin/resize2fs /dev/$NEMSPART >> $rslog
+/sbin/resize2fs /dev/$NEMSPART >> $rslog 2>&1
 echo "-------- /Resize -------" >> $rslog
 
-e2fsck -y -f /dev/$NEMSPART >> $rslog
 sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage2,,g" /etc/rc.local
 echo "Done" >> $rslog
 df -h / >> $rslog
+# Force FSCK to run at next boot just for good measure
+touch /forcefsck
+sync
 reboot
