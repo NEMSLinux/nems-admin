@@ -29,7 +29,6 @@ monitorix
 openssl
 perl
 perl-base
-php7.0-sqlite3
 php-net-socket
 python
 python3-openssl
@@ -64,7 +63,6 @@ hddtemp
 
 # For Nagios Core
 libgd-dev
-php7.0-gd
 # nagios-images -- part of nems-www now
 nagios-nrpe-plugin
 nagios-nrpe-server
@@ -76,7 +74,6 @@ libnss-mdns
 # Apache2 dependencies
 libapache2-modsecurity
 modsecurity-crs
-php7.0
 php-curl
 
 # NEMS

@@ -1,6 +1,6 @@
 #!/bin/bash
 a2enmod ssl
-apt -y install php7.0-xml php7.0-mbstring ssl-cert libapache2-mod-security2
+apt -y install ssl-cert libapache2-mod-security2
 
 # Generating new Snakeoil cert
 /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
