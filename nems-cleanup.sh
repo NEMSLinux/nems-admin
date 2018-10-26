@@ -154,10 +154,16 @@ nameserver 2001:4860:4860::8844
   rm /var/www/htpasswd
 
   # Reset NEMS Log Files
-  rm /var/log/nems/*
-  mkdir /var/log/nems
-  mkdir /var/log/nems/nems-tools
-  mkdir /var/log/nems/phoronix && chown -R www-data:www-data /var/log/nems/phoronix
+  find /var/log/nems/ -name "*" -type f -delete
+  if [[ ! -d /var/log/nems ]]; then
+    mkdir /var/log/nems
+  fi
+  if [[ ! -d /var/log/nems/nems-tools ]]; then
+    mkdir /var/log/nems/nems-tools
+  fi
+  if [[ ! -d /var/log/nems/phoronix ]]; then
+    mkdir /var/log/nems/phoronix && chown -R www-data:www-data /var/log/nems/phoronix
+  fi
 
   # Reset Nagios Core User
   cp -f /root/nems/nems-migrator/data/1.4/nagios/etc/cgi.cfg /usr/local/nagios/etc/
