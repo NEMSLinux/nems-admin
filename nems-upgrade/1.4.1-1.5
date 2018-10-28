@@ -1,0 +1,14 @@
+#!/bin/bash
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
+
+if [[ "$ver" == "1.4.1" ]]; then
+
+  # All Platforms
+
+  ## Upgrade PHP from 7.0 to 7.2
+    echo "Removing PHP 7.0..." && apt -y purge php7.0* && echo "Done removing PHP 7.0." && /root/nems/nems-admin/build/036-php72
+
+else
+  echo "Cannot uprade NEMS $ver to 1.5."
+fi
