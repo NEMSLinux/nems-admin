@@ -1,3 +1,17 @@
 #!/bin/bash
+
+# Fix the cert bug in 5.20
+# It seems this has been patched upstream, so can comment this out - but leaving until confirmed
+#apt -y install automake
+#cd /tmp
+#mkdir patch-monit
+#cd patch-monit
+#wget https://bitbucket.org/tildeslash/monit/get/master.tar.gz
+#tar -xzf master.tar.gz
+#cd tildeslash*
+#./boostrap
+#./configure
+#make
+
 cp -f /root/nems/nems-migrator/data/1.4/monit/conf.d/nems.conf /etc/monit/conf.d/
 systemctl restart monit
