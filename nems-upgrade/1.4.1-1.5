@@ -1,4 +1,8 @@
 #!/bin/bash
+# This script helps migrate pre-built 1.4.1 images to NEMS 1.5
+# Not a user upgrade script. This is intended to save me time when building the new version
+# Ie., no need to re-build the entire port.
+
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 ver=$(/usr/local/share/nems/nems-scripts/info.sh nemsver) 
 
@@ -6,8 +10,22 @@ if [[ "$ver" == "1.4.1" ]]; then
 
   # All Platforms
 
+  ## Update the core OS
+    apt update && apt -y upgrade
+    apt -y dist-upgrade
+
   ## Upgrade PHP from 7.0 to 7.2
     echo "Removing PHP 7.0..." && apt -y purge php7.0* && echo "Done removing PHP 7.0." && /root/nems/nems-admin/build/036-php72
+
+  ## Upgrade Nagios to from 4.3.4 to 4.4.2
+    if [[ -d /tmp/libexec ]]; then rm -rf /tmp/libexec; fi
+    mv /usr/local/nagios/libexec /tmp/ && rm -rf /usr/local/nagios/ && /nems/nems-admin/build/050-nagios && systemctl stop nagios && rm -rf /usr/local/nagios/libexec && mv /tmp/libexec /usr/local/nagios/ && systemctl start nagios
+
+  ## Install PHPMailer
+    /root/nems/nems-admin/build/040-phpmailer
+
+  ## Install NEMS Nagios Plugins
+    /root/nems/nems-admin/build/052-nems-nagios-plugins
 
 else
   echo "Cannot uprade NEMS $ver to 1.5."

@@ -70,22 +70,3 @@
         cp -f plugins/check_snmp /usr/local/nagios/libexec/
     fi
 
-  # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
-  if [[ ! -f /usr/local/bin/php ]]; then
-    if [[ -f /usr/bin/php ]]; then
-      ln -s /usr/bin/php /usr/local/bin/php
-    fi
-  fi
-
-  # Install notify-by-pushover
-    cp -f /root/nems/nems-migrator/data/1.4/submodules/barryo/nagios-plugins/notify-by-pushover.php /usr/local/nagios/libexec/
-    /bin/sed -i -- 's,Nagios Alert,NEMS Alert,g' /usr/local/nagios/libexec/notify-by-pushover.php
-
-  # Install notify-by-telegram
-    cp /root/nems/nems-migrator/data/1.4/nagios/plugins/telegram_nems.lua /usr/local/bin/
-    chmod +x /usr/local/bin/telegram_nems.lua
-
-  # Install various plugins
-    cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_mikrotik_switch /usr/local/nagios/libexec/
-    cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_minecraft /usr/local/nagios/libexec/
-    cp /root/nems/nems-migrator/data/1.4/nagios/plugins/check_rpi_temperature /usr/local/nagios/libexec/
