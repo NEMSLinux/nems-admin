@@ -16,7 +16,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
-export ver=$1
+ver=$(cat /root/nems/nems-admin/build-version)
 
 if [ -z $ver ]; then
 
@@ -32,7 +32,7 @@ This program is NOT for end-users.
 If you run this program, you will lose everything!
 "
 
-  echo "Usage: $0 [version] [hw_num]"
+  echo "Usage: $0 [hw_num]"
   exit
 fi
 
@@ -54,8 +54,8 @@ echo "version=$ver" > nems.conf
 chown www-data:www-data nems.conf
 
 # Detect hardware
-if [ ! -z $2 ]; then
-  echo $2 > /etc/.nems_hw_model_identifier
+if [ ! -z $1 ]; then
+  echo $1 > /etc/.nems_hw_model_identifier
 fi
 wget -O /tmp/hw_model.sh https://raw.githubusercontent.com/Cat5TV/nems-scripts/master/hw_model.sh
 chmod +x /tmp/hw_model.sh
@@ -138,7 +138,7 @@ echo ""
 
 # NIC on Pine64 boards need eth0 to be set to DHCP
 # Could probably do this on all boards that use eth0
-if (( $2 >= 40 )) && (( $2 <= 49 )); then
+if (( $1 >= 40 )) && (( $1 <= 49 )); then
 #echo "source /etc/network/interfaces.d/*" > /etc/network/interfaces # https://askubuntu.com/a/854226
 #echo "allow-hotplug eth0
 #iface eth0 inet dhcp" > /etc/network/interfaces.d/eth0
