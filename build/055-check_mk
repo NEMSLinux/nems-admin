@@ -1,15 +1,23 @@
 #!/bin/bash
 
+# Once GCC 7 is available upstream, we can upgrade to 1.5, which requires C++17 to compile.
+
 # Install and configure check-mk-livestatus
 apt install --yes php-net-socket php7.2-sqlite3 sqlite3 graphviz php7.2-gd rrdtool librrd-dev libboost-all-dev libncurses5-dev libreadline-dev libxml2-dev libssl-dev
 
 # This is the full Check_MK OSE bundle
 
-# 1.4.0p31
-wget -O /tmp/mk.tar.gz --no-check-certificate https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
-cd /tmp
-tar xzf mk.tar.gz
-cd check_mk-1.4.0p31
+# NEMS 1.4.1 - 1.4.0p31
+# wget -O /tmp/mk.tar.gz --no-check-certificate https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
+# cd /tmp
+# tar xzf mk.tar.gz
+# cd check_mk-1.4.0p31
+
+# NEMS 1.5 - 1.4.0p37
+ wget -O /tmp/mk.tar.gz --no-check-certificate https://mathias-kettner.de/support/1.4.0p37/check_mk-1.4.0p37.tar.gz
+ cd /tmp
+ tar xzf mk.tar.gz
+ cd check_mk-1.4.0p37
 
 # Install livestatus
 # Need to determine the lib directory for boost to compile correctly
@@ -26,6 +34,7 @@ elif [[ -d /usr/lib/aarch64-linux-gnu ]]; then
   # Pine A64+ aarch64
   libdir=/usr/lib/aarch64-linux-gnu
 fi
+
 mkdir livestatus
 cd livestatus
 tar xzf ../livestatus.tar.gz

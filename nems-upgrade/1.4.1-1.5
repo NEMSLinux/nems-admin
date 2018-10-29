@@ -19,13 +19,19 @@ if [[ "$ver" == "1.4.1" ]]; then
 
   ## Upgrade Nagios to from 4.3.4 to 4.4.2
     if [[ -d /tmp/libexec ]]; then rm -rf /tmp/libexec; fi
-    mv /usr/local/nagios/libexec /tmp/ && rm -rf /usr/local/nagios/ && /nems/nems-admin/build/050-nagios && systemctl stop nagios && rm -rf /usr/local/nagios/libexec && mv /tmp/libexec /usr/local/nagios/ && systemctl start nagios
+    mv /usr/local/nagios/libexec /tmp/ && rm -rf /usr/local/nagios/ && /root/nems/nems-admin/build/050-nagios && systemctl stop nagios && rm -rf /usr/local/nagios/libexec && mv /tmp/libexec /usr/local/nagios/ && systemctl start nagios
 
   ## Install PHPMailer
     /root/nems/nems-admin/build/040-phpmailer
 
   ## Install NEMS Nagios Plugins
     /root/nems/nems-admin/build/052-nems-nagios-plugins
+
+  ## Reload config files
+    /root/nems/nems-admin/build/053-nagios-confs
+
+  ## Recompile livestatus with Nagios 4.4.2
+    /root/nems/nems-admin/build/055-check_mk
 
 else
   echo "Cannot uprade NEMS $ver to 1.5."
