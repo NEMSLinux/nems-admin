@@ -1,0 +1,62 @@
+#!/bin/bash
+# https://raymii.org/s/tutorials/Nagios_Core_4_Installation_on_Ubuntu_12.04.html
+# Access at /nagiosgraph/cgi-bin/show.cgi
+
+if [[ -d /usr/local/src/nagiosgraph ]]; then
+  rm -Rf /tmp/nagiosgraph/
+fi
+mkdir -p /tmp/nagiosgraph/
+cd /tmp/nagiosgraph/
+wget http://downloads.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagiosgraph-1.5.2.tar.gz
+tar -xf nagiosgraph-1.5.2.tar.gz
+cd nagiosgraph-1.5.2
+./install.pl --check-prereq
+echo If anything is missing, CTRL-C and install, then re-run $0
+sleep 5
+./install.pl --layout standalone --prefix /usr/local/nagiosgraph
+
+echo "# process nagios performance data using nagiosgraph
+process_performance_data=1
+service_perfdata_file=/tmp/perfdata.log
+service_perfdata_file_template=\$LASTSERVICECHECK\$||\$HOSTNAME\$||\$SERVICEDESC\$||\$SERVICEOUTPUT\$||\$SERVICEPERFDATA\$
+service_perfdata_file_mode=a
+service_perfdata_file_processing_interval=30
+service_perfdata_file_processing_command=process-service-perfdata-for-nagiosgraph
+" >> /usr/local/nagios/etc/nagios.cfg
+
+
+# also need to add this to NCONF:
+# command to process nagios performance data for nagiosgraph
+#define command {
+#  command_name process-service-perfdata-for-nagiosgraph
+#  command_line /usr/local/nagiosgraph/bin/insert.pl
+#}
+
+#ln -s /usr/local/nagiosgraph/etc/nagiosgraph-apache.conf /etc/apache2/conf-available/nagiosgraph.conf
+echo '# enable nagiosgraph CGI scripts
+ScriptAlias /nagiosgraph/cgi-bin "/usr/local/nagiosgraph/cgi"
+<Directory "/usr/local/nagiosgraph/cgi">
+   Options ExecCGI
+   AllowOverride None
+   Order allow,deny
+   Allow from all
+   AuthName "NEMS User"
+   AuthType Basic
+   AuthUserFile /var/www/htpasswd
+   Require valid-user
+</Directory>
+# enable nagiosgraph CSS and JavaScript
+Alias /nagiosgraph "/usr/local/nagiosgraph/share"
+<Directory "/usr/local/nagiosgraph/share">
+   Options None
+   AllowOverride None
+   Order allow,deny
+   Allow from all
+</Directory>
+' > /etc/apache2/conf-available/nagiosgraph.conf
+
+a2enconf nagiosgraph
+
+systemctl restart nagios
+systemctl restart apache2
+

@@ -21,6 +21,9 @@ if [[ "$ver" == "1.4.1" ]]; then
     if [[ -d /tmp/libexec ]]; then rm -rf /tmp/libexec; fi
     mv /usr/local/nagios/libexec /tmp/ && rm -rf /usr/local/nagios/ && /root/nems/nems-admin/build/050-nagios && systemctl stop nagios && rm -rf /usr/local/nagios/libexec && mv /tmp/libexec /usr/local/nagios/ && systemctl start nagios
 
+  # Install nagiosgraph
+    /root/nems/nems-admin/build/051-nagiosgraph
+
   ## Install PHPMailer
     /root/nems/nems-admin/build/040-phpmailer
 
