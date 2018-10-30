@@ -1,6 +1,8 @@
 #!/bin/bash
 # https://raymii.org/s/tutorials/Nagios_Core_4_Installation_on_Ubuntu_12.04.html
+# https://ahmermansoor.blogspot.com/2016/09/install-configure-nagiosgraph-on-nagios.html
 # Access at /nagiosgraph/cgi-bin/show.cgi
+
 
 if [[ -d /usr/local/src/nagiosgraph ]]; then
   rm -Rf /tmp/nagiosgraph/
