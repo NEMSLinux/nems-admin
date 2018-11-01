@@ -1,0 +1,17 @@
+#!/bin/bash
+if [[ ! -f /usr/bin/stress ]]; then
+  apt -y install stress
+fi
+
+cores=8
+
+# main test runs for 20 minutes, constantly
+stress --cpu $cores --timeout 1200 &
+
+# After 5 minutes, increase the load, for 15 minutes
+sleep 300 && stress --cpu $cores --timeout 900 &
+
+# Get serious 10 minutes in and crank out 5 minutes of doom
+sleep 300 && stress --cpu $cores --timeout 300 &
+
+# the stress test will stop after the timeouts are up.
