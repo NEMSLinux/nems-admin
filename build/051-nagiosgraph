@@ -40,8 +40,7 @@ ScriptAlias /nagiosgraph/cgi-bin "/usr/local/nagiosgraph/cgi"
 <Directory "/usr/local/nagiosgraph/cgi">
    Options ExecCGI
    AllowOverride None
-   Order allow,deny
-   Allow from all
+   Require all granted
    AuthName "NEMS User"
    AuthType Basic
    AuthUserFile /var/www/htpasswd
@@ -52,8 +51,7 @@ Alias /nagiosgraph "/usr/local/nagiosgraph/share"
 <Directory "/usr/local/nagiosgraph/share">
    Options None
    AllowOverride None
-   Order allow,deny
-   Allow from all
+   Require all granted
 </Directory>
 ' > /etc/apache2/conf-available/nagiosgraph.conf
 
