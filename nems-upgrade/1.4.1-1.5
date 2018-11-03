@@ -21,6 +21,12 @@ if [[ "$ver" == "1.4.1" ]]; then
     if [[ -d /tmp/libexec ]]; then rm -rf /tmp/libexec; fi
     mv /usr/local/nagios/libexec /tmp/ && rm -rf /usr/local/nagios/ && /root/nems/nems-admin/build/050-nagios && systemctl stop nagios && rm -rf /usr/local/nagios/libexec && mv /tmp/libexec /usr/local/nagios/ && systemctl start nagios
 
+    # Point Nagios to the NEMS Nagios Theme in nems-www and import the config
+    if [[ -d /usr/local/nagios/share ]]; then
+      rm -rf /usr/local/nagios/share
+    fi
+    ln -s /var/www/html/share/nagios/ /usr/local/nagios/share
+
   # Install nagiosgraph
     /root/nems/nems-admin/build/051-nagiosgraph
 
