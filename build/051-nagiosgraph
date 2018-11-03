@@ -1,6 +1,7 @@
 #!/bin/bash
 # https://raymii.org/s/tutorials/Nagios_Core_4_Installation_on_Ubuntu_12.04.html
 # https://ahmermansoor.blogspot.com/2016/09/install-configure-nagiosgraph-on-nagios.html
+# https://www.allcloud.io/how-to/install-nagiosgraph/
 # Access at /nagiosgraph/cgi-bin/show.cgi
 
 
@@ -16,23 +17,6 @@ cd nagiosgraph-1.5.2
 echo If anything is missing, CTRL-C and install, then re-run $0
 sleep 5
 ./install.pl --layout standalone --prefix /usr/local/nagiosgraph
-
-echo "# process nagios performance data using nagiosgraph
-process_performance_data=1
-service_perfdata_file=/tmp/perfdata.log
-service_perfdata_file_template=\$LASTSERVICECHECK\$||\$HOSTNAME\$||\$SERVICEDESC\$||\$SERVICEOUTPUT\$||\$SERVICEPERFDATA\$
-service_perfdata_file_mode=a
-service_perfdata_file_processing_interval=30
-service_perfdata_file_processing_command=process-service-perfdata-for-nagiosgraph
-" >> /usr/local/nagios/etc/nagios.cfg
-
-
-# also need to add this to NCONF:
-# command to process nagios performance data for nagiosgraph
-#define command {
-#  command_name process-service-perfdata-for-nagiosgraph
-#  command_line /usr/local/nagiosgraph/bin/insert.pl
-#}
 
 #ln -s /usr/local/nagiosgraph/etc/nagiosgraph-apache.conf /etc/apache2/conf-available/nagiosgraph.conf
 echo '# enable nagiosgraph CGI scripts

@@ -23,6 +23,10 @@
   make install-commandmode
   make install-webconf
 
+  systemctl stop nagios
+  cp -f /root/nems/nems-migrator/data/1.5/nagios/nagios.cfg /usr/local/nagios/etc/
+  systemctl start nagios
+
 # Finished installing Nagios Core
 
 # Install some needed extras
