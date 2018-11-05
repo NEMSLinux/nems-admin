@@ -9,11 +9,12 @@ mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 systemctl stop nagios
 systemctl stop mysql
 
-cd /root/nems/nems-migrator/data/1.5/
-if [[ -d mysql ]]; then
-  rm -rf mysql
+cd /root/nems/nems-migrator/data/1.5/mysql
+if [[ -d NEMS-Sample ]]; then
+  rm -rf NEMS-Sample
 fi
 cp -R /var/lib/mysql .
+mv mysql NEMS-Sample
 
 systemctl start mysql
 systemctl start nagios
