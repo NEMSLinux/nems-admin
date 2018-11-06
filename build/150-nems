@@ -68,7 +68,7 @@ ln -sf /usr/local/share/nems/nems-scripts/upgrade.sh /usr/local/bin/nems-upgrade
 
 # Enable NEMS MOTD
 echo > /etc/motd
-cp /root/nems/nems-migrator/data/nems/motd.tcl /etc/
+cp /root/nems/nems-migrator/data/1.5/nems/motd.tcl /etc/
 chmod 755 /etc/motd.tcl
 if ! grep -q "/etc/motd.tcl" /etc/profile; then
   echo "/etc/motd.tcl" >> /etc/profile
@@ -83,8 +83,10 @@ ln -s /var/www/html/share/nagios/ /usr/local/nagios/share
 
 # Our Apache conf requires htpasswd exist in order to load.
 # Prevent misleading errors before nems-init by creating an empty file.
-touch /var/www/htpasswd
-chown www-data:www-data /var/www/htpasswd
+if [[ ! -e /var/www/htpasswd ]]; then
+  touch /var/www/htpasswd
+  chown www-data:www-data /var/www/htpasswd
+fi
 
 # Generate certificates
 nems-cert
