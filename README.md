@@ -6,7 +6,7 @@ These are used by Robbie to assist with development of NEMS. None of these scrip
 If you build a custom build of NEMS Linux, please contact Robbie so he can help customize the system (otherwise it will show up as an unknown device and will not present accurate information).
 
 Install Debian on your hardware with the following settings:
-- Hostname: nems-*YOURDEVICE* - for example nems-pi for a Raspberry Pi.
+- Hostname: nems
 - Root password: nemsadmin
 - Base user username: nemsadmin
 - Base user password: nemsadmin
