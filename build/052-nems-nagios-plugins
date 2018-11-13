@@ -5,6 +5,8 @@
     apt -y install libnet-snmp-perl snmp
     # WMIC
     apt -y install libdatetime-timezone-perl
+    # check_ipmi_sensor
+    apt -y install libipc-run-perl freeipmi
 
   # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
   if [[ ! -f /usr/local/bin/php ]]; then
@@ -21,5 +23,13 @@
       rm -f /usr/local/bin/telegram_nems.lua
     fi
     ln -s /usr/local/nagios/libexec/notify-by-telegram.lua /usr/local/bin/telegram_nems.lua
+
+
+  # Add IPMI sudoers access for nagios user
+  if ! grep -q "# IPMI" /etc/sudoers; then
+    echo "# IPMI" >> /etc/sudoers
+    echo "nagios ALL=(root) NOPASSWD: /usr/sbin/ipmi-sensors, /usr/sbin/ipmi-sel" >> /etc/sudoers
+  fi
+
 
 
