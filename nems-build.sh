@@ -46,6 +46,18 @@ if [[ ! -d /var/log/nems ]]; then
   mkdir /var/log/nems
 fi
 
+printf "The board's RTC reports: "
+date
+
+echo "Adjusting based on my nerdgasm..."
+# We know I have a valid cert, but we'll ignore it because IF the clock is indeed wrong, it will fail
+wget --no-check-certificate -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
+
+printf "New time is reported as: "
+date
+
+sleep 5
+
 echo Building NEMS $ver
 cd /usr/local/share/
 mkdir nems
@@ -73,13 +85,6 @@ echo "" > /tmp/errors.log
 echo "Usage before build:"
 df -hT /etc
 sleep 5
-
-# Add repositories needed for deployment of apps
-
-# Webmin
-echo "deb http://download.webmin.com/download/repository sarge contrib
-deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib" > /etc/apt/sources.list.d/webmin.list
-wget -qO - http://www.webmin.com/jcameron-key.asc | apt-key add -
 
 # Remove cruft
 apt update
