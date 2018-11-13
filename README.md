@@ -17,7 +17,8 @@ apt update && apt install -y ca-certificates wget ssl-cert && /usr/sbin/make-ssl
 ```
 or
 ```bash
-wget https://nemslinux.com/prep
+cd /tmp
+wget --no-check-certificate https://nemslinux.com/prep
 chmod +x prep
 ./prep
 ```
