@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Reloading Daemon"
+systemctl daemon-reload

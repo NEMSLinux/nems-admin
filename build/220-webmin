@@ -1,8 +1,6 @@
 #!/bin/bash
 apt -y remove --purge webmin
-#apt -y install webmin
-#systemctl start webmin
-#systemctl enable webmin
 if [[ -e /webmin-setup.out ]]; then
   rm /webmin-setup.out
 fi
+rm -f /etc/apt/sources.list.d/webmin.list
