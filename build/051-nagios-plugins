@@ -23,6 +23,8 @@
   apt install -y libdbi-perl
   apt install -y smbclient
   apt install -y qstat
+  apt install -y openssl
+  apt install -y openssl-devel
 
   # Setup automake so this can compile on any system.
   # for example, in early builds for PINE64 you'd have to do this:  ./configure --build=arm --with-nagios-user=nagios --with-nagios-group=nagios
@@ -44,7 +46,7 @@
     # This is where automake's config gets written to the nagios-plugins src:
     cp $automake /tmp/nagios-plugins-$npver/build-aux/
     # Build it and install it
-      ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+      ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
       make
       make install
 
@@ -64,7 +66,7 @@
       # This is where automake's config gets written to the nagios-plugins src:
       cp $automake /tmp/nagios-plugins-$npver/build-aux/
       # Build it and install it
-        ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+        ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
         make
         # do not make install it since we ONLY want check_snmp... instead:
         cp -f plugins/check_snmp /usr/local/nagios/libexec/
