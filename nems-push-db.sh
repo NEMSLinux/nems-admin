@@ -7,6 +7,13 @@
 mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 
 systemctl stop nagios
+
+# Convert the database to new default config files (for reconciliation)
+/root/nems/nems-admin/nems-db-to-cfg.sh
+
+
+# Proceed with DB conversion and migration
+
 systemctl stop mysql
 
 if [[ -d /tmp/mysql ]]; then
