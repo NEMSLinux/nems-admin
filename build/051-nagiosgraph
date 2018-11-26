@@ -16,9 +16,8 @@ cd nagiosgraph-1.5.2
 ./install.pl --check-prereq
 echo If anything is missing, CTRL-C and install, then re-run $0
 sleep 5
-./install.pl --layout standalone --prefix /usr/local/nagiosgraph
+./install.pl --layout overlay --prefix /usr/local/nagios
 
-#ln -s /usr/local/nagiosgraph/etc/nagiosgraph-apache.conf /etc/apache2/conf-available/nagiosgraph.conf
 echo '# enable nagiosgraph CGI scripts
 ScriptAlias /nagiosgraph/cgi-bin "/usr/local/nagiosgraph/cgi"
 <Directory "/usr/local/nagiosgraph/cgi">
