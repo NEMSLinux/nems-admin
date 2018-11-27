@@ -42,6 +42,9 @@ if [[ "$ver" == "1.4.1" ]]; then
   ## Recompile livestatus with Nagios 4.4.2
     /root/nems/nems-admin/build/055-check_mk
 
+  ## Install MOTD
+    /root/nems/nems-admin/build/230-motd
+
 else
   echo "Cannot uprade NEMS $ver to 1.5."
 fi

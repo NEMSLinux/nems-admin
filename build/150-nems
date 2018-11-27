@@ -66,15 +66,6 @@ ln -sf /usr/local/share/nems/nems-scripts/upgrade.sh /usr/local/bin/nems-upgrade
 # Create symlinks, apply patches/fixes, etc.
 /usr/local/share/nems/nems-scripts/fixes.sh
 
-# Enable NEMS MOTD
-echo > /etc/motd
-cp /root/nems/nems-migrator/data/1.5/nems/motd.tcl /etc/
-chmod 755 /etc/motd.tcl
-if ! grep -q "/etc/motd.tcl" /etc/profile; then
-  echo "/etc/motd.tcl" >> /etc/profile
-fi
-
-
 # Point Nagios to the NEMS Nagios Theme in nems-www and import the config
 if [[ -d /usr/local/nagios/share ]]; then
   rm -rf /usr/local/nagios/share
