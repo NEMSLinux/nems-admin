@@ -47,6 +47,7 @@ webmin
 wpasupplicant
 ntp
 locate
+dhcpcd5
 
 # Tool to view disk usage of the NEMS server and find usage hogs
 ncdu
@@ -86,3 +87,6 @@ netcat
 # Device-specific stuff
   # CL100
   firmware-realtek
+
+  # Raspberry Pi WiFi support
+  raspberrypi-net-mods
