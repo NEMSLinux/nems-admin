@@ -47,7 +47,12 @@ webmin
 wpasupplicant
 ntp
 locate
+
+# WiFi
 dhcpcd5
+firmware-brcm80211
+wireless-tools
+wpasupplicant
 
 # Tool to view disk usage of the NEMS server and find usage hogs
 ncdu
@@ -90,3 +95,4 @@ netcat
 
   # Raspberry Pi WiFi support
   raspberrypi-net-mods
+  
