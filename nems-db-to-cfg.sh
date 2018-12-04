@@ -36,4 +36,9 @@ fi
   /var/www/nconf/bin/get_items.pl -c servicegroup -f > $dest/Default_collector/servicegroups.cfg
   /var/www/nconf/bin/get_items.pl -c service-dependency -f > $dest/Default_collector/service_dependencies.cfg
 
+# Copy the live configs (Sample data based on current database export)
+# Make sure Nagios starts fine before doing this
+  cp /etc/nems/conf/Default_collector/advanced_services.cfg $dest/Default_collector/advanced_services_sample.cfg
+  cp /etc/nems/conf/global/service_templates.cfg $dest/global/service_templates_sample.cfg
+
 echo Done. Files in $dest have been updated.

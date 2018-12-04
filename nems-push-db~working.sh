@@ -8,16 +8,6 @@ mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 
 systemctl stop nagios
 
-echo Starting Nagios.
-systemctl start nagios
-echo If you see an error, press CTRL-C immediately!!
-systemctl stop nagios
-sleep 5
-
-echo "DO NOT press CTRL-C from this point forward (will leave system broken)"
-
-sleep 3
-
 # Convert the database to new default config files (for reconciliation)
 /root/nems/nems-admin/nems-db-to-cfg.sh
 
@@ -41,29 +31,20 @@ cp -R /var/lib/mysql .
 systemctl start mysql
 
 # Replace my user info with defaults
-#echo "Before:"
-#mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id_attr=47;"
-#mysql -t -u nconf -pnagiosadmin nconf -e "UPDATE ConfigValues SET attr_value='nemsadmin' WHERE fk_id_attr=47;"
-#echo "After:"
-#mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id_attr=47;"
+echo "Before:"
+mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id_attr=47;"
+mysql -t -u nconf -pnagiosadmin nconf -e "UPDATE ConfigValues SET attr_value='nemsadmin' WHERE fk_id_attr=47;"
+echo "After:"
+mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id_attr=47;"
 
-#echo "Before:"
-#mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id_attr=55;"
-#mysql -t -u nconf -pnagiosadmin nconf -e "UPDATE ConfigValues SET attr_value='nagios@localhost' WHERE fk_id_attr=55;"
-#echo "After:"
-#mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id_attr=55;"
-
-echo "Login to NEMS Configurator and delete:
- - Contacts
- - Contact Groups
-"
-read -n 1 -s -r -p "Press any key to continue"
+echo "Before:"
+mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id_attr=55;"
+mysql -t -u nconf -pnagiosadmin nconf -e "UPDATE ConfigValues SET attr_value='nagios@localhost' WHERE fk_id_attr=55;"
+echo "After:"
+mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id_attr=55;"
 
 systemctl stop mysql
 
-if [[ ! -d /root/nems/nems-migrator/data/1.5/mysql ]]; then
-  mkdir -p /root/nems/nems-migrator/data/1.5/mysql
-fi
 cd /root/nems/nems-migrator/data/1.5/mysql
 
 if [[ -d NEMS-Sample ]]; then
