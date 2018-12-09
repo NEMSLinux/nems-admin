@@ -3,3 +3,7 @@
 # Ping is missing from Pine64.
 apt -y install iputils-ping
 
+# PHP interpreter is required for some of these scripts
+if [[ ! -e /usr/bin/php ]]; then
+  apt -y install php
+fi
