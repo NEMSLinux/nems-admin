@@ -2,3 +2,10 @@
 apt update
 apt -y install unattended-upgrades apt-listchanges
 
+# try to clean up kernels (in case /boot gets full)
+apt -y autoremove
+apt -y install -f
+
+echo "If /boot has less than ~10 MB free, you will need to manually delete old kernels and retry"
+df -h | grep "/boot"
+sleep 5
