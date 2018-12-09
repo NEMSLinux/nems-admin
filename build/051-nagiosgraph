@@ -17,13 +17,13 @@ wget http://downloads.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagi
 tar -xf nagiosgraph-1.5.2.tar.gz
 cd nagiosgraph-1.5.2
 ./install.pl --check-prereq
-echo If anything is missing, CTRL-C and install, then re-run $0
-sleep 5
-echo ""
-echo "Just push enter a bunch of times (already pre-filled)"
-echo ""
-sleep 5
-./install.pl --layout overlay --prefix /usr/local/nagios --etc-dir /usr/local/nagios/etc/nagiosgraph --var-dir /usr/local/nagios/var --log-dir /var/log/nagios/ --doc-dir /usr/local/nagios/docs/nagiosgraph --nagios-cgi-url /nagios/cgi-bin --nagios-perfdata-file /tmp/perfdata.log --nagios-user nagios --www-user www-data
+#echo If anything is missing, CTRL-C and install, then re-run $0
+#sleep 5
+#echo ""
+#echo "Settings are already pre-filled. If prompted, just press Enter."
+#echo ""
+#sleep 5
+echo | ./install.pl --layout overlay --prefix /usr/local/nagios --etc-dir /usr/local/nagios/etc/nagiosgraph --var-dir /usr/local/nagios/var --log-dir /var/log/nagios/ --doc-dir /usr/local/nagios/docs/nagiosgraph --nagios-cgi-url /nagios/cgi-bin --nagios-perfdata-file /tmp/perfdata.log --nagios-user nagios --www-user www-data
 
 echo '# enable nagiosgraph CGI scripts
 ScriptAlias /nagiosgraph/cgi-bin "/usr/local/nagiosgraph/cgi"
