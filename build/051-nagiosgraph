@@ -25,6 +25,9 @@ cd nagiosgraph-1.5.2
 #sleep 5
 echo | ./install.pl --layout overlay --prefix /usr/local/nagios --etc-dir /usr/local/nagios/etc/nagiosgraph --var-dir /usr/local/nagios/var --log-dir /var/log/nagios/ --doc-dir /usr/local/nagios/docs/nagiosgraph --nagios-cgi-url /nagios/cgi-bin --nagios-perfdata-file /tmp/perfdata.log --nagios-user nagios --www-user www-data
 
+# Cleanup backups of CSS files
+rm /var/www/html/share/nagios_themes/nems-1.3/nagiosgraph.css.*
+
 echo '# enable nagiosgraph CGI scripts
 ScriptAlias /nagiosgraph/cgi-bin "/usr/local/nagiosgraph/cgi"
 <Directory "/usr/local/nagiosgraph/cgi">
