@@ -14,6 +14,9 @@ if [[ "$ver" == "1.4.1" ]]; then
     apt update && apt -y upgrade
     apt -y dist-upgrade
 
+  ## Install CSF/LFD
+    /root/nems/nems-admin/build/028-csf
+
   ## Upgrade PHP from 7.0 to 7.2
     echo "Removing PHP 7.0..." && apt -y purge php7.0* && echo "Done removing PHP 7.0." && /root/nems/nems-admin/build/036-php72
 

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+  ## Install CSF/LFD
+  cd /usr/src
+  wget -O /tmp/csf.tgz https://download.configserver.com/csf.tgz
+  tar -xzf /tmp/csf.tgz
+  cd csf
+  sh install.sh
+
+
+  ## Add our default configuration
+  cp -f /root/nems/nems-migrator/data/1.5/csf/* /etc/csf/
+
+  ## Start the firewall
+  csf -r
