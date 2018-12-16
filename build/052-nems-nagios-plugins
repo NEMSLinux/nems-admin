@@ -9,6 +9,8 @@
     apt -y install libipc-run-perl freeipmi
     # check_esxi_hardware
     apt install -y python-pywbem
+    # check_mssql
+    apt install -y php7.2-sybase
 
   # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
   if [[ ! -f /usr/local/bin/php ]]; then
