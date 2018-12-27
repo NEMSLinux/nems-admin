@@ -7,9 +7,3 @@
   cd csf
   sh install.sh
 
-
-  ## Add our default configuration
-  cp -f /root/nems/nems-migrator/data/1.5/csf/* /etc/csf/
-
-  ## Start the firewall
-  csf -r
