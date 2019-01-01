@@ -14,12 +14,23 @@ echo If you see an error, press CTRL-C immediately!!
 systemctl stop nagios
 sleep 5
 
+# Convert the database to new default config files (for reconciliation)
+/root/nems/nems-admin/helpers/nems-db-to-cfg.sh
+
+# Copy the active config for use as default at init
+systemctl start nagios
+/root/nems/nems-admin/helpers/nems-conf-to-cfg.sh
+systemctl stop nagios
+
+echo Starting Nagios.
+systemctl start nagios
+echo If you see an error, press CTRL-C immediately!!
+systemctl stop nagios
+sleep 5
+
 echo "DO NOT press CTRL-C from this point forward (will leave system broken)"
 
 sleep 3
-
-# Convert the database to new default config files (for reconciliation)
-/root/nems/nems-admin/nems-db-to-cfg.sh
 
 
 # Proceed with DB conversion and migration

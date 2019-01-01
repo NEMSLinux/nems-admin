@@ -177,7 +177,7 @@ nameserver 2001:4860:4860::8844
   # Import default Nagios configs
   rm -rf /etc/nems/conf
   mkdir /etc/nems/conf
-  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/* /etc/nems/conf/
+  cp -R /root/nems/nems-migrator/data/1.5/nagios/conf/default/* /etc/nems/conf/
   if [[ ! -d /etc/nems/conf/okconfig ]]; then
     mkdir /etc/nems/conf/okconfig
   fi

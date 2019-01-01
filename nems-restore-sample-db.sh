@@ -18,10 +18,10 @@ rm -rf /etc/nems/conf/Default_collector
 rm -rf /etc/nems/conf/global
 cp -R /root/nems/nems-migrator/data/$version/nagios/conf/* /etc/nems/conf/
 # Import the live configs (sample data from dump)
-rm /etc/nems/conf/Default_collector/advanced_services.cfg
-mv /etc/nems/conf/Default_collector/advanced_services_sample.cfg /etc/nems/conf/Default_collector/advanced_services.cfg
-rm /etc/nems/conf/global/service_templates.cfg
-mv /etc/nems/conf/global/service_templates_sample.cfg /etc/nems/conf/global/service_templates.cfg
+#rm /etc/nems/conf/Default_collector/advanced_services.cfg
+#mv /etc/nems/conf/Default_collector/advanced_services_sample.cfg /etc/nems/conf/Default_collector/advanced_services.cfg
+#rm /etc/nems/conf/global/service_templates.cfg
+#mv /etc/nems/conf/global/service_templates_sample.cfg /etc/nems/conf/global/service_templates.cfg
 # Set ownership
 chown -R www-data:www-data /etc/nems/conf/Default_collector
 chown -R www-data:www-data /etc/nems/conf/global
