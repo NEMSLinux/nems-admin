@@ -26,6 +26,37 @@
   apt install -y openssl
   apt install -y openssl-devel
 
+  # BEGIN Fix NRPE and check_wmi_plus
+
+    # Remove NRPE plugin if it is installed in the wrong folder
+    # Check if it's a directory (not symlink) first
+    if [[ -d /usr/lib/nagios/plugins ]]; then
+      if [[ -e /usr/lib/nagios/plugins/check_nrpe ]]; then
+        apt -y --purge remove nagios-nrpe-plugin
+      fi
+    fi
+
+    # If the plugins folder still exists, rename it (would rather delete)
+    if [[ -d /usr/lib/nagios/plugins ]]; then
+      mv /usr/lib/nagios/plugins /usr/lib/nagios/plugins~
+    fi
+
+    # Create the base folder if it doesn't exist
+    if [[ ! -d /usr/lib/nagios ]]; then
+      mkdir /usr/lib/nagios
+    fi
+
+    # If the plugins symlink doesn't already exist, create it
+    # This is needed for check_wmi_plus. While I could patch it, I don't want to have to maintain it TBH
+    if [[ ! -e /usr/lib/nagios/plugins ]]; then
+      ln -s /usr/local/nagios/libexec /usr/lib/nagios/plugins
+    fi
+
+    # Reinstall check_nrpe, which will now pop into the correct folder due to the symlink
+    apt install -y nagios-nrpe-plugin
+
+  # END Fix NRPE and check_wmi_plus
+
   # Setup automake so this can compile on any system.
   # for example, in early builds for PINE64 you'd have to do this:  ./configure --build=arm --with-nagios-user=nagios --with-nagios-group=nagios
   # but now automake allows automatic detection of platform
