@@ -1,7 +1,9 @@
 #!/bin/bash
 # Thanks to Ryan Siegel for the contribution on NEMS 1.2.1
+# Updated for NEMS 1.5 since openvas stopped distributing the package
 
-apt install -y autoconf cpanminus libclass-std-storable-perl
+apt install -y autoconf cpanminus libclass-std-storable-perl cmake gnutls-dev heimdal-dev libpopt-dev libglib2.0-dev gcc-mingw-w64 gcc pkg-config perl-base
+
 cpanm DateTime::TimeZone
 cpanm DateTime::Locale
 cpanm Getopt::Long
@@ -14,25 +16,36 @@ cpanm Config::IniFiles
 cd /tmp/
 
 # Install WMI
-wget -O wmi.tar.bz2 http://www.openvas.org/download/wmi/wmi-1.3.14.tar.bz2
-bzip2 -cd wmi.tar.bz2 | tar xf -
-cd wmi-1.3.14/
-# Remove line 583 to make compatible with Perl > 5.22
-sed -i~ '/defined @$pidl/d' Samba/source/pidl/pidl
-# WMI's build script has a leak... but rather than fixing it we will temporarily bypass it
-# This setting does not survive reboot, so no worries (as long as it doesn't crash your system)
-ulimit -n 10000
+if [[ -d /tmp/nems-wmic ]]; then
+  rm -rf /tmp/nems-wmic
+fi
+git clone https://github.com/Cat5TV/nems-wmic
+
+if [[ -d /tmp/nems-wmic/build ]]; then
+  rm -rf /tmp/nems-wmic/build
+fi
+# as set in GNUmakefile
+mkdir /tmp/nems-wmic/build
+cd /tmp/nems-wmic/build
+
 # Build
-make "CPP=gcc -E -ffreestanding"
-cp Samba/source/bin/wmic /usr/local/bin
+cmake ..
+make
+
+cp /tmp/nems-wmic/build/wmi/wmic /usr/local/bin
+
+# Stop here if not running NEMS Linux
+# (for those who want to use this installer on other distros)
+if [[ ! -e /usr/local/bin/nems-info ]]; then
+  exit
+fi
 
 # Install WMI Plus
-wget -O wmi_plus.tar.gz http://edcint.co.nz/checkwmiplus/sites/default/files/check_wmi_plus.v1.63.tar.gz
-mkdir wmi_plus
-cd wmi_plus
-tar xzf ../wmi_plus.tar.gz
-mv check_wmi_plus.pl /usr/local/nagios/libexec
-mv etc/check_wmi_plus /etc/
+# NEMS 1.5 moves this to our repo. Download new versions at http://edcint.co.nz/checkwmiplus
+## wget -O wmi_plus.tar.gz http://edcint.co.nz/checkwmiplus/sites/default/files/check_wmi_plus.v1.64.tar.gz
+cd /tmp/nems-wmic/extras/check_wmi_plus
+cp -f check_wmi_plus.pl /usr/local/nagios/libexec
+cp -rf etc/check_wmi_plus /etc/
 
 # Install the NEMS conf file for check_wmi_plus
 cp -f /root/nems/nems-migrator/data/1.5/nagios/misc/check_wmi_plus.conf /etc/check_wmi_plus/
