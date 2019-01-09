@@ -104,6 +104,8 @@ else
   find /var/log/ -iname "*.gz" -type f -delete
   find /var/log/ -iname "*.log.*" -type f -delete
   rm /var/log/nagios/archives/*.log
+  cat /dev/null > /var/log/wtmp
+  cat /dev/null > /var/log/btmp
 
   # Clear system mail
   find /var/mail/ -type f -exec cp /dev/null {} \;
