@@ -11,6 +11,10 @@ else
 
   if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution or the reboot option to reboot."; echo ""; fi;
 
+  echo "Did you set thermal thresholds in sbc-temperature for this board?"
+  echo "Press CTRL-C if not."
+  sleep 5
+
   if [[ -f /tmp/qf.sh ]]; then
     qfrunning=`ps aux | grep -i "myscript.sh" | grep -v "grep" | wc -l`
     if [ $qfrunning -ge 1 ]

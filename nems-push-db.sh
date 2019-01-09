@@ -3,24 +3,9 @@
 # Built for creating new sample hosts and services, and pushing to all other NEMS servers
 # Requires NEMS 1.4+
 
-# Remove nconf history, should it exist
-mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
-
-systemctl stop nagios
-
-echo Starting Nagios.
-systemctl start nagios
-echo If you see an error, press CTRL-C immediately!!
-systemctl stop nagios
-sleep 5
-
-# Convert the database to new default config files (for reconciliation)
-/root/nems/nems-admin/helpers/nems-db-to-cfg.sh
-
-# Copy the active config for use as default at init
-systemctl start nagios
-/root/nems/nems-admin/helpers/nems-conf-to-cfg.sh
-systemctl stop nagios
+echo ""
+echo "You must have UI access in order to proceed."
+echo ""
 
 echo Starting Nagios.
 systemctl start nagios
@@ -63,6 +48,27 @@ mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id
 mysql -t -u nconf -pnagiosadmin nconf -e "UPDATE ConfigValues SET attr_value='nagios@localhost' WHERE fk_id_attr=55;"
 echo "After:"
 mysql -t -u nconf -pnagiosadmin nconf -e "SELECT * FROM ConfigValues WHERE fk_id_attr=55;"
+
+
+# Remove nconf history, should it exist
+mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
+
+systemctl stop nagios
+
+echo Starting Nagios.
+systemctl start nagios
+echo If you see an error, press CTRL-C immediately!!
+systemctl stop nagios
+sleep 5
+
+# Convert the database to new default config files (for reconciliation)
+/root/nems/nems-admin/helpers/nems-db-to-cfg.sh
+
+# Copy the active config for use as default at init
+systemctl start nagios
+/root/nems/nems-admin/helpers/nems-conf-to-cfg.sh
+systemctl stop nagios
+
 
 systemctl stop mysql
 
