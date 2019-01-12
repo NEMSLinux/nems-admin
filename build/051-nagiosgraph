@@ -16,14 +16,40 @@ cd /tmp/nagiosgraph/
 wget http://downloads.sourceforge.net/project/nagiosgraph/nagiosgraph/1.5.2/nagiosgraph-1.5.2.tar.gz
 tar -xf nagiosgraph-1.5.2.tar.gz
 cd nagiosgraph-1.5.2
-./install.pl --check-prereq
-#echo If anything is missing, CTRL-C and install, then re-run $0
-#sleep 5
-#echo ""
-#echo "Settings are already pre-filled. If prompted, just press Enter."
-#echo ""
-#sleep 5
-echo | ./install.pl --layout overlay --prefix /usr/local/nagios --etc-dir /usr/local/nagios/etc/nagiosgraph --var-dir /usr/local/nagios/var --log-dir /var/log/nagios/ --doc-dir /usr/local/nagios/docs/nagiosgraph --nagios-cgi-url /nagios/cgi-bin --nagios-perfdata-file /tmp/perfdata.log --nagios-user nagios --www-user www-data
+
+if [[ -d /usr/local/nagios/nagiosgraph ]]; then
+  rm -rf /usr/local/nagios/nagiosgraph
+fi
+mkdir /usr/local/nagios/nagiosgraph
+cp -r etc /usr/local/nagios/nagiosgraph/
+
+sed -i "s#/opt/nagiosgraph/etc#/usr/local/nagios/nagiosgraph/etc#g" cgi/*cgi 
+cp cgi/*.cgi /usr/local/nagios/sbin
+
+sed -i "s#/opt/nagiosgraph/etc#/usr/local/nagios/nagiosgraph/etc#g" lib/insert.pl
+cp lib/insert.pl /usr/local/nagios/libexec
+
+cp share/nagiosgraph.css /usr/local/nagios/share
+cp share/nagiosgraph.js /usr/local/nagios/share
+
+cp -f /root/nems/nems-migrator/data/1.5/nagios/misc/nagiosgraph.conf /usr/local/nagios/nagiosgraph/etc/
+
+mkdir /usr/local/nagios/nagiosgraph/var
+mkdir /usr/local/nagios/nagiosgraph/var/rrd
+
+echo '<script type="text/javascript" src="/nagios/nagiosgraph.js"></script>' > /usr/local/nagios/share/ssi/common-header.ssi
+
+cp /root/nems/nems-migrator/data/1.5/nagios/etc/nagios.cfg /usr/local/nagios/etc/
+
+chown -R nagios:nagios /usr/local/nagios/
+chmod 755 /usr/local/nagios/nagiosgraph/var/rrd
+touch /usr/local/nagios/nagiosgraph/var/nagiosgraph.log
+chmod 664 /usr/local/nagios/nagiosgraph/var/nagiosgraph.log
+touch /usr/local/nagios/nagiosgraph/var/nagiosgraph-cgi.log
+chown www-data /usr/local/nagios/nagiosgraph/var/nagiosgraph-cgi.log
+chmod 664 /usr/local/nagios/nagiosgraph/var/nagiosgraph-cgi.log
+
+cp -f share/graph.gif /usr/local/nagios/share/images/action.gif
 
 # Cleanup backups of CSS files
 rm /var/www/html/share/nagios_themes/nems-1.3/nagiosgraph.css.*
