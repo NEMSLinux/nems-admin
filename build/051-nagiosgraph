@@ -1,8 +1,7 @@
 #!/bin/bash
 # https://raymii.org/s/tutorials/Nagios_Core_4_Installation_on_Ubuntu_12.04.html
 # https://ahmermansoor.blogspot.com/2016/09/install-configure-nagiosgraph-on-nagios.html
-# https://www.allcloud.io/how-to/install-nagiosgraph/
-# Access at /nagiosgraph/cgi-bin/show.cgi
+# *** https://www.allcloud.io/how-to/install-nagiosgraph/ ***
 
 # Install dependencies
 apt -y install libgd-graph-perl
@@ -54,28 +53,5 @@ cp -f share/graph.gif /usr/local/nagios/share/images/action.gif
 # Cleanup backups of CSS files
 rm /var/www/html/share/nagios_themes/nems-1.3/nagiosgraph.css.*
 
-echo '# enable nagiosgraph CGI scripts
-ScriptAlias /nagiosgraph/cgi-bin "/usr/local/nagiosgraph/cgi"
-<Directory "/usr/local/nagiosgraph/cgi">
-   Options ExecCGI
-   AllowOverride None
-   Require all granted
-   AuthName "NEMS User"
-   AuthType Basic
-   AuthUserFile /var/www/htpasswd
-   Require valid-user
-</Directory>
-# enable nagiosgraph CSS and JavaScript
-Alias /nagiosgraph "/usr/local/nagiosgraph/share"
-<Directory "/usr/local/nagiosgraph/share">
-   Options None
-   AllowOverride None
-   Require all granted
-</Directory>
-' > /etc/apache2/conf-available/nagiosgraph.conf
-
-a2enconf nagiosgraph
-
 systemctl restart nagios
-systemctl restart apache2
 
