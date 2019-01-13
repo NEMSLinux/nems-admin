@@ -43,6 +43,9 @@ cd adagios-adagios-1.6.3-2
 if [[ -d /etc/adagios ]]; then
   rm -rf /etc/adagios
 fi
+if [[ -d /usr/local/lib/python2.7/dist-packages/adagios ]]; then
+  rm -rf /usr/local/lib/python2.7/dist-packages/adagios
+fi
 cp -R adagios/etc/adagios /etc/
 cp -f /root/nems/nems-migrator/data/1.5/adagios/adagios.conf /etc/adagios/
 python setup.py install
