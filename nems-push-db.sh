@@ -83,7 +83,7 @@ fi
 cp -R /var/lib/mysql .
 mv mysql NEMS-Sample
 
-# Create the clean database (used after initialization with custom user)
+# Create the clean database (used for NEMS Migrator Restore)
 
 systemctl start mysql
 
@@ -179,11 +179,11 @@ if [[ $item != '' ]]; then
 fi
 mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=57;"  # contactgroups
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=30;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=30;"  # checkcommands
+#item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=30;" | sed -n 1p)
+#if [[ $item != '' ]]; then
+#  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
+#fi
+#mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=30;"  # checkcommands
 
 item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=98;" | sed -n 1p)
 if [[ $item != '' ]]; then
