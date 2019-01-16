@@ -62,6 +62,9 @@ if [[ "$ver" == "1.4.1" ]]; then
   ## ODROID XU4 changes in 1.5
     /root/nems/nems-admin/build/160-odroid-xu4
 
+  ## Change dpkg vendor name (Seen with dpkg-vendor --query Vendor)
+    /root/nems/nems-admin/build/235-dpkg-vendor
+
 else
   echo "Cannot uprade NEMS $ver to 1.5."
 fi
