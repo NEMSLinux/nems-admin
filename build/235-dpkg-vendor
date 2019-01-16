@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "Vendor: NEMS_Linux
+Vendor-URL: https://nemslinux.com/
+Bugs: http://forum.category5.tv/forum-38.html
+Parent: Debian
+" > /etc/dpkg/origins/nems_linux
+rm -f /etc/dpkg/origins/default
+ln -s /etc/dpkg/origins/nems_linux /etc/dpkg/origins/default
