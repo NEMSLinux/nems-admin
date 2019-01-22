@@ -1,4 +1,13 @@
 #!/bin/bash
+
+if [[ $ver == '' ]]; then
+  if [[ -e /usr/local/bin/nems-info ]]; then
+    ver=$(/usr/local/bin/nems-info nemsver)
+  else
+    ver='UNKNOWN'
+  fi
+fi
+
 a2enmod ssl
 apt -y install ssl-cert libapache2-mod-security2
 
@@ -6,11 +15,15 @@ apt -y install ssl-cert libapache2-mod-security2
 /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
 
 systemctl stop apache2
-cp -f /root/nems/nems-migrator/data/apache2/sites-available/000-default.conf /etc/apache2/sites-available
+cp -f /root/nems/nems-migrator/data/1.5/apache2/sites-available/nems-dashboard.conf /etc/apache2/sites-available
+
+a2dissite 000-default
+a2ensite nems-dashboard
 
 # Change Apache footer
 a2enmod security2
 a2enconf security
+/bin/sed -i~ '/SecServerSignature/d' /etc/apache2/conf-available/security.conf
 echo "SecServerSignature NEMS_Linux/$ver" >> /etc/apache2/conf-available/security.conf
 
 systemctl start apache2

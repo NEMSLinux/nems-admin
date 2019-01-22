@@ -32,11 +32,14 @@ if [[ "$ver" == "1.4.1" ]]; then
     fi
     ln -s /var/www/html/share/nagios/ /usr/local/nagios/share
 
-  # Install nagiosgraph
-    /root/nems/nems-admin/build/051-nagiosgraph
+  ## Configure Apache2
+    /root/nems/nems-admin/build/035-apache2
 
   ## Install PHPMailer
     /root/nems/nems-admin/build/040-phpmailer
+
+  ## Install nagiosgraph
+    /root/nems/nems-admin/build/051-nagiosgraph
 
   ## Compile nagios-plugins
     /root/nems/nems-admin/build/051-nagios-plugins
@@ -53,17 +56,18 @@ if [[ "$ver" == "1.4.1" ]]; then
   ## Recompile WMIC based on nems-wmic
     /root/nems/nems-admin/build/055-wmic
 
-  ## Install MOTD
-    /root/nems/nems-admin/build/230-motd
-
   ## Configure samba
     /root/nems/nems-admin/build/155-samba
 
   ## ODROID XU4 changes in 1.5
     /root/nems/nems-admin/build/160-odroid-xu4
 
+  ## Install MOTD
+    /root/nems/nems-admin/build/230-motd
+
   ## Change dpkg vendor name (Seen with dpkg-vendor --query Vendor)
     /root/nems/nems-admin/build/235-dpkg-vendor
+
 
 else
   echo "Cannot uprade NEMS $ver to 1.5."
