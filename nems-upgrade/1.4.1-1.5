@@ -14,6 +14,13 @@ if [[ "$ver" == "1.4.1" ]]; then
     apt update && apt -y upgrade
     apt -y dist-upgrade
 
+  ## Go through the package add list to add any missing packages that were added
+    for pkg in $(grep -vE "^\s*#" ../build/packages.add | tr "\n" " ")
+    do
+      apt --yes --no-install-recommends install $pkg
+    done
+
+
   ## Install CSF/LFD
     /root/nems/nems-admin/build/028-csf
     /root/nems/nems-admin/build/029-csf-conf
