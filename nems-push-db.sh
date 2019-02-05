@@ -87,129 +87,66 @@ mv mysql NEMS-Sample
 
 systemctl start mysql
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=47;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=47;"  # admin username
+# Delete commands obtained by manually doing this while having General Query Log enabled in MariaDB and monitoring the log file for DELETE queries
+# https://mariadb.com/kb/en/library/general-query-log/
+: '
+Empty:
+Hosts
+Hostgroups
+Services
+#Advanced Services
+Servicegroups
+Contacts
+Contactgroups
+#Checkcommands
+Misccommands
+Timeperiods
+Host templates
+Service templates
+Host deps.
+Service deps.
+Central monitors
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=55;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=55;"  # admin email
+Not Empty:
+OS
+Host presets
+Distrib. collectors
+'
+# Upon adding more services/checks/etc., observe the output database "clean" to then find and add the id_item for the new additions
+# As they will be the only remaining items after running this script
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=56;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=56;"  # admin phone
+# Delete NEMS Host, plus the services Internet Speed Test, NEMS SBC Temperature and Root Partition
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5460 OR id_item=5447 OR id_item=5350 OR id_item=5340"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=48;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=48;"  # admin name
+# Delete contact
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5443"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=51;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=51;"  # admin notifications
+# Delete the default timeperiods
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5305 OR id_item=5307 OR id_item=5306"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=52;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=52;"  # admin notifications
+# Delete all Hostgroups
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5449 OR id_item=5347 OR id_item=5445 OR id_item=5346 OR id_item=5422 OR id_item=5423 OR id_item=5345 OR id_item=5344"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=96;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=96;"  # admin type
+# Delete all Advanced Services
+#mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5383 OR id_item=5383 OR id_item=5369 OR id_item=5367 OR id_item=5356 OR id_item=5370 OR id_item=5361 OR id_item=5368 OR id_item=5358 OR id_item=5365 OR id_item=5355 OR id_item=5362 OR id_item=5363 OR id_item=5360 OR id_item=5359 OR id_item=5357 OR id_item=5364 OR id_item=5366"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=97;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=97;"  # admin enabled
+# Delete the one sample service group
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5275"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=58;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=58;"  # "Nagios Administrators"
+# Delete contact group
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5444"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=15;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=15;"  # hosts
+# Delete check commands
+#mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5419 OR id_item=5451 OR id_item=5450 OR id_item=5319 OR id_item=5463 OR id_item=5464 OR id_item=5457 OR id_item=5410 OR id_item=5314 OR id_item=5315 OR id_item=5317 OR id_item=5409 OR id_item=5322 OR id_item=5459 OR id_item=5456 OR id_item=5453 OR id_item=5452 OR id_item=5454 OR id_item=5455 OR id_item=5308 OR id_item=5309 OR id_item=5313 OR id_item=5310 OR id_item=5312 OR id_item=5311 OR id_item=5462 OR id_item=5432 OR id_item=5435 OR id_item=5434 OR id_item=5433 OR id_item=5431 OR id_item=5382 OR id_item=5326 OR id_item=5320 OR id_item=5321 OR id_item=5461 OR id_item=5458 OR id_item=5446 OR id_item=5323 OR id_item=5316 OR id_item=5411 OR id_item=5318 OR id_item=5324 OR id_item=5408 OR id_item=5325 OR id_item=5397 OR id_item=5398 OR id_item=5396 OR id_item=5414 OR id_item=5415 OR id_item=5394 OR id_item=5413 OR id_item=5407 OR id_item=5393 OR id_item=5392 OR id_item=5391 OR id_item=5404 OR id_item=5399 OR id_item=5405 OR id_item=5418 OR id_item=5416 OR id_item=5412 OR id_item=5406 OR id_item=5400 OR id_item=5401 OR id_item=5402 OR id_item=5403 OR id_item=5417 OR id_item=5395 OR id_item=5390 OR id_item=5421 OR id_item=5420"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=27;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=27;"  # hostgroups
+# Miscellaneous Commands
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5331 OR id_item=5327 OR id_item=5442 OR id_item=5436 OR id_item=5328 OR id_item=5441 OR id_item=5437 OR id_item=5329 OR id_item=5330 OR id_item=5448 OR id_item=5296"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=60;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=60;"  # services
+# Host templates
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5297 OR id_item=5298 OR id_item=5335 OR id_item=5338 OR id_item=5339 OR id_item=5336 OR id_item=5337"
 
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=182;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=182;" # advanced-services
-
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=70;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=70;"  # servicegroups
-
-#mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=12;"  # OS's
-
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=57;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=57;"  # contactgroups
-
-#item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=30;" | sed -n 1p)
-#if [[ $item != '' ]]; then
-#  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-#fi
-#mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=30;"  # checkcommands
-
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=98;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=98;"  # misccommands
-
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=32;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=32;"  # timeperiods
-
-#mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=73;"  # host-presets
-
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=108;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=108;" # host-templates
-
-item=$(mysql -s -r -u nconf -pnagiosadmin nconf -e "SELECT fk_id_item FROM ConfigValues WHERE fk_id_attr=129;" | sed -n 1p)
-if [[ $item != '' ]]; then
-  mysql -s -u nconf -pnagiosadmin nconf -e "DELETE FROM ItemLinks WHERE fk_id_item=$item;"
-fi
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigValues WHERE fk_id_attr=129;" # service-templates
+# Service templates
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5301 OR id_item=5302 OR id_item=5348 OR id_item=5349"
 
 systemctl stop mysql
 
