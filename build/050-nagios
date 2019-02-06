@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Delete the symlink to nems-www theme before installing (prevent overwrite)
+if [[ -L /usr/local/nagios/share ]]; then
+  rm -f /usr/local/nagios/share
+fi
+
 # Install Nagios Core
   useradd nagios
   groupadd nagcmd
@@ -25,6 +30,15 @@
 
   systemctl stop nagios
   cp -f /root/nems/nems-migrator/data/1.5/nagios/etc/nagios.cfg /usr/local/nagios/etc/
+
+# Restore nems-www theme
+if [[ -d /usr/local/nagios/share ]]; then
+  rm -rf /usr/local/nagios/share
+fi
+if [[ ! -e /usr/local/nagios/share ]]; then
+  ln -s /var/www/html/share/nagios /usr/local/nagios/share
+fi
+
   systemctl start nagios
 
 # Finished installing Nagios Core
