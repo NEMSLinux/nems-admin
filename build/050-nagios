@@ -48,3 +48,6 @@ apt install -y nagios-nrpe-plugin nagios-nrpe-server nagios-images
 
 # Set the nagios user shell
 usermod -s /bin/bash nagios
+
+# Reload daemon units in case Nagios was running while updated
+systemctl daemon-reload
