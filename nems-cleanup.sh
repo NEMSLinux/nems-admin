@@ -181,13 +181,7 @@ nameserver 2001:4860:4860::8844
   echo "\$USER1$=/usr/local/nagios/libexec" >> /usr/local/nagios/etc/resource.cfg
 
   # Import default Nagios configs
-  rm -rf /etc/nems/conf
-  mkdir /etc/nems/conf
-  cp -R /root/nems/nems-migrator/data/1.5/nagios/conf/default/* /etc/nems/conf/
-  if [[ ! -d /etc/nems/conf/okconfig ]]; then
-    mkdir /etc/nems/conf/okconfig
-  fi
-  chown -R www-data:www-data /etc/nems/conf/
+  /root/nems/nems-admin/nems-restore-sample-db.sh
 
   # Replace the database with Sample database
   systemctl stop mysql
