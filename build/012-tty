@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Perform some additional TTY setup without manipulating the splash (010-tty)
+# Don't output kernel messages (such as firewall blocks) to TTY
 
 if [[ ! -f /etc/rc.local ]]; then
   echo "#!/bin/sh -e
@@ -12,9 +12,9 @@ if grep -q '"exit 0"' /etc/rc.local; then
   sed -i~ '/"exit 0"/d' /etc/rc.local
 fi
 
-if ! grep -q "NEMS00000" /etc/rc.local; then
+if ! grep -q "NEMS00002" /etc/rc.local; then
 
-  addition="# NEMS00000 Do not blank TTY\nsetterm -blank 0\n\n"
+  addition="# NEMS00002 Do not output kernel log to TTY\n/bin/dmesg -n 1\n\n"
 
   if grep -q "exit" /etc/rc.local; then
     # This file contains an exit command, so make sure our new command comes before it
