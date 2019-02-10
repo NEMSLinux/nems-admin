@@ -32,7 +32,13 @@ cd /tmp/nems-wmic/build
 cmake ..
 make
 
-cp /tmp/nems-wmic/build/wmi/wmic /usr/local/bin
+# Install
+make install
+
+# Reload configs from /etc/ld.so.conf.d which includes the libc.conf
+# which tells environment to find libraries in /usr/local/lib/
+# else /usr/local/lib/libopenvas_wmiclient.so.1 will not be found by wmic
+/sbin/ldconfig
 
 # Stop here if not running NEMS Linux
 # (for those who want to use this installer on other distros)
@@ -49,3 +55,6 @@ cp -rf etc/check_wmi_plus /etc/
 
 # Install the NEMS conf file for check_wmi_plus
 cp -f /root/nems/nems-migrator/data/1.5/nagios/misc/check_wmi_plus.conf /etc/check_wmi_plus/
+
+# Clean up
+rm -rf /tmp/nems-wmic/
