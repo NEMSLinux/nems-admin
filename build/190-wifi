@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Set Network Manager WiFi MAC address to not change on boot
+
+if [[ -e /etc/NetworkManager/NetworkManager.conf ]]; then # Do this on any board that uses Network Manager
+
+  # Detect which is the wireless interface
+  interface=$(iw dev | awk '$1=="Interface"{print $2}')
+
+  # Disable MAC spoofing
+  if ! grep -q "NEMS00003" /etc/NetworkManager/NetworkManager.conf; then
+
+    echo "
+# NEMS00003 Set static MAC address for wlan
+[device]
+wifi.scan-rand-mac-address=no
+" >> /etc/NetworkManager/NetworkManager.conf
+
+    # Restart the wireless network interface
+      /sbin/wpa_cli -i $interface reconfigure
+
+  fi
+
+fi
