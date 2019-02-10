@@ -36,9 +36,3 @@
 # Install Cockpit
   apt update
   apt --yes install cockpit
-
-  if [[ -d /usr/share/cockpit/branding/debian/ ]]; then
-    rm -rf /usr/share/cockpit/branding/debian
-  fi
-  mkdir -p /usr/share/cockpit/branding/debian
-  cp -f /root/nems/nems-migrator/data/1.4/cockpit/branding/* /usr/share/cockpit/branding/debian/
