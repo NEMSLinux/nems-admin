@@ -21,6 +21,10 @@ if [[ "$ver" == "1.4.1" ]]; then
     done
 
 
+  ## Modify TTY
+    /root/nems/nems-admin/nems-upgrade/build/010-tty
+    /root/nems/nems-admin/nems-upgrade/build/012-tty
+
   ## Install CSF/LFD
     /root/nems/nems-admin/build/028-csf
     /root/nems/nems-admin/build/029-csf-conf
