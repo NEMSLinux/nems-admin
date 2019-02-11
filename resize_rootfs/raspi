@@ -1,8 +1,11 @@
 #!/bin/bash
 # Resize Raspberry Pi on first boot
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 
 if (( $platform >= 0 )) && (( $platform <= 9 )); then
   /usr/bin/raspi-config --expand-rootfs > /dev/null 2>&1
 fi
 
 /bin/sed -i~ '/\/root\/nems\/nems-admin\/resize_rootfs\/raspi/d' /etc/rc.local
+
+reboot
