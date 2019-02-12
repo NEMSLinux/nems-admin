@@ -1,0 +1,13 @@
+#!/bin/bash
+
+platform=$(/usr/local/bin/nems-info platform)
+
+if (( $platform >= 40 )) && (( $platform <= 49 )); then
+
+  # NIC on Pine64 boards need eth0 to be set to DHCP
+  # Could probably do this on all boards that use eth0
+  echo "auto eth0
+  iface eth0 inet dhcp" > /etc/network/interfaces
+
+fi
+
