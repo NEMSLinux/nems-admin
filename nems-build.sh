@@ -121,11 +121,16 @@ apt --yes upgrade && apt --yes dist-upgrade
 apt update
 apt --yes upgrade && apt --yes dist-upgrade
 
-# Disable firstrun
-systemctl disable firstrun
-rm /etc/init.d/firstrun # ARMbian
+# Disable firstrun (ARMbian)
+if [[ -e /etc/init.d/firstrun ]]; then
+  systemctl disable firstrun
+  rm /etc/init.d/firstrun
+fi
 
 echo "------------------------------"
+echo "You are on your own from here, Grasshopper."
+echo "Run ./build scripts manually, in order."
+exit
 
 # Run the scripts in the build folder
 run-parts --exit-on-error -v build
