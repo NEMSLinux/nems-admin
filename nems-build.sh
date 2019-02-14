@@ -128,32 +128,13 @@ if [[ -e /etc/init.d/firstrun ]]; then
 fi
 
 echo "------------------------------"
-echo "You are on your own from here, Grasshopper."
-echo "Run ./build scripts manually, in order."
-exit
-
 # Run the scripts in the build folder
 run-parts --exit-on-error -v build
-#echo "Now run parts manually..."
-#exit
+
+# If build is not completing, run parts manually to find out which script
+# is dying and stopping the installation
 
 echo "------------------------------"
-
-echo ""
-
-# NIC on Pine64 boards need eth0 to be set to DHCP
-# Could probably do this on all boards that use eth0
-if (( $1 >= 40 )) && (( $1 <= 49 )); then
-#echo "source /etc/network/interfaces.d/*" > /etc/network/interfaces # https://askubuntu.com/a/854226
-#echo "allow-hotplug eth0
-#iface eth0 inet dhcp" > /etc/network/interfaces.d/eth0
-#systemctl restart networking
-# Override for now:
-echo "auto eth0
-iface eth0 inet dhcp" > /etc/network/interfaces
-fi
-
-read -n 1 -s -r -p "Press any key to clean up our build..."
 
 echo ""
 
@@ -170,6 +151,5 @@ cat /tmp/errors.log
 
 echo "NEMS $ver compiled."
 echo ""
-echo "Don't forget to run: echo DEVID > /etc/.nems_hw_model_identifier"
 
-fi
+fi # end of else running as root
