@@ -46,18 +46,6 @@ if [[ ! -d /var/log/nems ]]; then
   mkdir /var/log/nems
 fi
 
-printf "The board's RTC reports: "
-date
-
-echo "Adjusting based on my nerdgasm..."
-# We know I have a valid cert, but we'll ignore it because IF the clock is indeed wrong, it will fail
-wget --no-check-certificate -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
-
-printf "New time is reported as: "
-date
-
-sleep 5
-
 echo Building NEMS $ver
 cd /usr/local/share/
 mkdir nems

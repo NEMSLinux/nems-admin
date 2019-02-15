@@ -11,6 +11,21 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+printf "RTC reports date/time as: "
+date
+
+echo "Adjusting based on my nerdgasm..."
+# We know I have a valid cert, but we'll ignore it because IF the clock is indeed wrong, it will fail
+# Note - 192 is America/Toronto. If you are building this elsewhere, make sure you change the tz=
+wget --no-check-certificate -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
+
+printf "New time is reported as: "
+date
+
+echo ""
+sleep 5
+
+
 # NEED TO ADD REPOS MANUALLY FOR NOW
 # Pi:
 #deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi firmware
