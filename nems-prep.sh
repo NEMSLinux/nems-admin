@@ -72,6 +72,23 @@ sleep 5
   # This requires the user to re-connect
   sed -i -e 's/    SendEnv LANG LC_*/#   SendEnv LANG LC_*/g' /etc/ssh/ssh_config
 
-  echo "System Prepped & Rebooting... re-connect, run screen, then run your build script (see ./notes)."
+  # Create nemsadmin user
+  adduser --disabled-password --gecos "" nemsadmin
+
+  # Allow user to become super-user
+  usermod -aG sudo nemsadmin
+
+  # Set the user password
+  echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
+
+  # Add nemsadmin to sudoers and disable root login if that's successful
+  usermod -aG sudo nemsadmin && passwd -l root
+
+  # Add files to nemsadmin home folder (which later get moved to NEMS user account at init)
+  cd /home/nemsadmin
+  wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+  cp /root/nems/nems-migrator/data/nems/changelog.txt .
+
+  echo "System Prepped & Rebooting... re-connect as nemsadmin, run screen, then run your build script (see ./notes)."
   reboot
 fi
