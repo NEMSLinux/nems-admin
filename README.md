@@ -15,6 +15,12 @@ Install Debian on your hardware with the following settings:
 ```bash
 apt update && apt install -y ca-certificates wget ssl-cert && /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite && wget --no-check-certificate -O /tmp/nems-prep.sh https://raw.githubusercontent.com/Cat5TV/nems-admin/master/nems-prep.sh && chmod +x /tmp/nems-prep.sh && /tmp/nems-prep.sh
 ```
+or
+```bash
+wget https://nemslinux.com/prep
+chmod +x prep
+./prep
+```
 
 - Convert Debian to NEMS Linux (as root):
 ```bash
