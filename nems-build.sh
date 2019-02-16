@@ -137,9 +137,6 @@ rm -f /etc/timezone
 rm -f /etc/localtime
 dpkg-reconfigure -f noninteractive tzdata
 
-echo "EXITING NOW so you can run parts manually and see what breaks!"
-exit
-
 echo "------------------------------"
 # Run the scripts in the build folder
 run-parts --exit-on-error -v build
