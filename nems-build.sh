@@ -16,6 +16,11 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+# Create the log folder
+if [[ ! -d /var/log/nems ]]; then
+  mkdir /var/log/nems
+fi
+
 # Detect hardware
 if [ ! -z $1 ]; then
   echo $1 > /etc/.nems_hw_model_identifier
@@ -23,6 +28,10 @@ fi
 wget -q -O /tmp/hw_model.sh https://raw.githubusercontent.com/Cat5TV/nems-scripts/master/hw_model.sh
 chmod +x /tmp/hw_model.sh
 /tmp/hw_model.sh
+if [[ ! -e /var/log/nems/hw_model ]]; then
+  echo "Cannot run hw_model detection. Fail."
+  exit
+fi
 hw_model=$(cat /var/log/nems/hw_model | sed -n 2p)
 printf "\e[97;1mDETECTED HARDWARE:\e[92;1m $hw_model\e[0m"
 echo ""
@@ -68,10 +77,6 @@ diskfree=$(($(stat -f --format="%a*%S" .)))
 if (( "$diskfree" < "8589934592" )); then
   echo You do not have enough free space to build. Did you resize the root fs?
   exit
-fi
-
-if [[ ! -d /var/log/nems ]]; then
-  mkdir /var/log/nems
 fi
 
 echo Building NEMS $ver
