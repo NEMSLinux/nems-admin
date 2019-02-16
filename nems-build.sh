@@ -16,7 +16,35 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+# Detect hardware
+if [ ! -z $1 ]; then
+  echo $1 > /etc/.nems_hw_model_identifier
+fi
+wget -q -O /tmp/hw_model.sh https://raw.githubusercontent.com/Cat5TV/nems-scripts/master/hw_model.sh
+chmod +x /tmp/hw_model.sh
+/tmp/hw_model.sh
+hw_model=$(cat /var/log/nems/hw_model | sed -n 2p)
+printf "\e[97;1mDETECTED HARDWARE:\e[92;1m $hw_model\e[0m"
+echo ""
+echo ""
+echo "If this is incorrect, press CTRL-C and rerun with the hw number on command line."
+echo ""
+echo "eg., $0 98000"
+echo ""
+sleep 10
+
+
 ver=$(cat /root/nems/nems-admin/build-version)
+
+# Create a script which can be used for troubleshooting
+# Provides a list of all the individual build components
+# Do not set the executable bit since it is highly destructive
+if [[ -d /root/nems/nems-admin/build ]]; then
+  run-parts -v --test /root/nems/nems-admin/build > /tmp/nems-build.sh
+else
+  echo "System not prepped. This is not a user script."
+  exit
+fi
 
 if [ -z $ver ]; then
 
@@ -52,19 +80,6 @@ mkdir nems
 cd nems
 echo "version=$ver" > nems.conf
 chown www-data:www-data nems.conf
-
-# Detect hardware
-if [ ! -z $1 ]; then
-  echo $1 > /etc/.nems_hw_model_identifier
-fi
-wget -O /tmp/hw_model.sh https://raw.githubusercontent.com/Cat5TV/nems-scripts/master/hw_model.sh
-chmod +x /tmp/hw_model.sh
-/tmp/hw_model.sh
-hw_model=$(cat /var/log/nems/hw_model | sed -n 2p)
-echo "Detected Hardware: $hw_model"
-echo "If this is incorrect, press CTRL-C and rerun with the hw number on command line."
-echo "eg., $0 $ver 98000"
-sleep 5
 
 cd /root/nems/nems-admin
 
@@ -115,6 +130,15 @@ if [[ -e /etc/init.d/firstrun ]]; then
   systemctl disable firstrun
   rm /etc/init.d/firstrun
 fi
+
+# Configure default timezone
+printf 'tzdata tzdata/Areas select America\ntzdata tzdata/Zones/America select Toronto\n' | sudo debconf-set-selections
+rm -f /etc/timezone
+rm -f /etc/localtime
+dpkg-reconfigure -f noninteractive tzdata
+
+echo "EXITING NOW so you can run parts manually and see what breaks!"
+exit
 
 echo "------------------------------"
 # Run the scripts in the build folder
