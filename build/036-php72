@@ -10,14 +10,19 @@ apt remove --purge -y php7.0-readline
 apt -y autoremove
 
 # Install PHP 7.2
+echo "Setting up new repository..."
 apt update
-echo "Installing PHP 7.2..."
 wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
 echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
-apt update
+
 # Sury has some updated packages that if not upgraded first will break install
+# First, hold packages that will break on Raspberry Pi if upgraded to Sury's version
+echo "libpcre3 hold" | sudo dpkg --set-selections
+# Now, upgrade
+apt update
 apt -y upgrade
 
+echo "Installing PHP 7.2..."
 # Install PHP 7.2
 apt install -y php7.2
 apt install -y php7.2-cli
@@ -33,8 +38,6 @@ apt install -y php7.2-readline
 apt install -y php7.2-sqlite3
 apt install -y php7.2-xml
 apt install -y libapache2-mod-php7.2
-echo "Abort here - run remaining manually"
-exit
 apt install -y libargon2-1
 apt install -y libsodium23
 apt install -y php-curl
