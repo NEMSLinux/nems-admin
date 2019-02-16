@@ -16,7 +16,7 @@ wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
 echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
 
 # Tell apt not to update libpcre3 from Sury on Raspberry Pi 1/Zero (it will break _everything_, no lie)
-platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+platform=$(/usr/local/bin/nems-info platform)
 if [[ $platform = "0" ]] || [[ $platform = "1" ]]; then
 echo "Package: libpcre3
 Pin: origin packages.sury.org
