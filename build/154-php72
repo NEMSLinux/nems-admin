@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Uninstall PHP 7.0 residual packages
+apt remove --purge -y php7.0-cli
+apt remove --purge -y php7.0-common
+apt remove --purge -y php7.0-json
+apt remove --purge -y php7.0-opcache
+apt remove --purge -y php7.0-phpdbg
+apt remove --purge -y php7.0-readline
+apt -y autoremove
+
+# Install PHP 7.2
+echo "Setting up new repository..."
+apt update
+wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
+echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
+
+# Tell apt not to update libpcre3 from Sury on Raspberry Pi 1/Zero (it will break _everything_, no lie)
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+if [[ $platform = "0" ]] || [[ $platform = "1" ]]; then
+echo "Package: libpcre3
+Pin: origin packages.sury.org
+Pin-Priority: 10" > /etc/apt/preferences.d/libpcre3
+fi
+
+# Now, upgrade
+apt update
+apt -y upgrade
+
+echo "Installing PHP 7.2..."
+# Install PHP 7.2
+apt install -y php7.2
+apt install -y php7.2-cli
+apt install -y php7.2-common
+apt install -y php7.2-curl
+apt install -y php7.2-gd
+apt install -y php7.2-json
+apt install -y php7.2-mbstring
+apt install -y php7.2-mysql
+apt install -y php7.2-opcache
+apt install -y php7.2-phpdbg
+apt install -y php7.2-readline
+apt install -y php7.2-sqlite3
+apt install -y php7.2-xml
+apt install -y libapache2-mod-php7.2
+apt install -y libargon2-1
+apt install -y libsodium23
+apt install -y php-curl
+apt install -y php-rrd
+echo "Done."
+
+systemctl restart apache2
