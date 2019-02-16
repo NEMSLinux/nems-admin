@@ -13,7 +13,7 @@ apt -y autoremove
 apt update
 echo "Installing PHP 7.2..."
 wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
-echo "deb https://packages.sury.org/php/ stretch main" | tee /etc/apt/sources.list.d/php.list
+echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
 apt update
 apt install -y php7.2
 apt install -y php7.2-cli
