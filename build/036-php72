@@ -6,7 +6,7 @@ apt remove --purge -y php7.0-common
 apt remove --purge -y php7.0-json
 apt remove --purge -y php7.0-opcache
 apt remove --purge -y php7.0-phpdbg
-apt remove --purge -y php7.0-readline ssh
+apt remove --purge -y php7.0-readline
 apt -y autoremove
 
 # Install PHP 7.2
