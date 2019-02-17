@@ -10,17 +10,32 @@ apt remove --purge -y php7.0-readline
 apt -y autoremove
 
 # Install PHP 7.2
-echo "Setting up new repository..."
-apt update
-wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
-echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
 
-# Tell apt not to update libpcre3 from Sury on Raspberry Pi 1/Zero (it will break _everything_, no lie)
+# Use Raspbian repo for Pi, Sury's Debian Repo for others.
 platform=$(/usr/local/bin/nems-info platform)
-if [[ $platform = "0" ]] || [[ $platform = "1" ]]; then
-echo "Package: *
-Pin: origin packages.sury.org
-Pin-Priority: 10" > /etc/apt/preferences.d/libpcre3
+if [[ $platform = "0" ]] ||
+   [[ $platform = "1" ]] ||
+   [[ $platform = "2" ]] ||
+   [[ $platform = "3" ]] ||
+   [[ $platform = "4" ]] ||
+   [[ $platform = "5" ]] ||
+   [[ $platform = "6" ]] ||
+   [[ $platform = "7" ]] ||
+   [[ $platform = "8" ]] ||
+   [[ $platform = "9" ]]; then
+  echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" > /etc/apt/sources.list.d/10-buster.list
+  echo "Package: *
+Pin: release n=stretch
+Pin-Priority: 900
+
+Package: *
+Pin: release n=buster
+Pin-Priority: 750" > /etc/apt/preferences.d/10-buster
+else
+  # Use Sury's Debian repository (will break Raspberry Pi Zero/1)
+  echo "Setting up new repository..."
+  wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
+  echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
 fi
 
 # Now, upgrade
