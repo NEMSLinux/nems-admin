@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Get the platform before removing php (as it requires PHP)
+platform=$(/usr/local/bin/nems-info platform)
+
 # Uninstall PHP 7.0 residual packages
 apt remove --purge -y php7.0-cli
 apt remove --purge -y php7.0-common
@@ -12,7 +15,6 @@ apt -y autoremove
 # Install PHP 7.2
 
 # Use Raspbian repo for Pi, Sury's Debian Repo for others.
-platform=$(/usr/local/bin/nems-info platform)
 if [[ $platform = "0" ]] ||
    [[ $platform = "1" ]] ||
    [[ $platform = "2" ]] ||
