@@ -18,7 +18,7 @@ echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt
 # Tell apt not to update libpcre3 from Sury on Raspberry Pi 1/Zero (it will break _everything_, no lie)
 platform=$(/usr/local/bin/nems-info platform)
 if [[ $platform = "0" ]] || [[ $platform = "1" ]]; then
-echo "Package: libpcre3
+echo "Package: *
 Pin: origin packages.sury.org
 Pin-Priority: 10" > /etc/apt/preferences.d/libpcre3
 fi
