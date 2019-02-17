@@ -1,0 +1,17 @@
+#!/bin/bash
+
+platform=$(/usr/local/bin/nems-info platform)
+
+if [[ $platform = "0" ]] || [[ $platform = "1" ]] || [[ $platform = "2" ]] || [[ $platform = "3" ]]; then
+  printf "Installing support for PiWatcher hardware... "
+  cd /tmp
+  git clone https://github.com/omzlo/piwatcher/
+  cd piwatcher
+  make
+  if [[ -e /tmp/piwatcher/piwatcher ]]; then
+    mv /tmp/piwatcher/piwatcher /usr/local/bin/
+    echo "Success."
+  else
+    echo "Failed."
+  fi
+fi

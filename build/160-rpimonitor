@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# STILL NEED TO ADD TEMPLATE FOR NEMS 1.4
-
 printf "Installing rpimonitor... "
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why we have to do this after 150-nems
 
