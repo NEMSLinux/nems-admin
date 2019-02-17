@@ -97,3 +97,16 @@ netcat
   # Raspberry Pi WiFi support
   raspberrypi-net-mods
   
+# Various build tools required by various build scripts
+autoconf
+cpanminus
+libclass-std-storable-perl
+cmake
+gnutls-dev
+heimdal-dev
+libpopt-dev
+libglib2.0-dev
+gcc-mingw-w64
+gcc
+pkg-config
+perl-base
