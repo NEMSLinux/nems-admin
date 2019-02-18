@@ -2,8 +2,42 @@
 
 # Once GCC 7 is available upstream, we can upgrade to 1.5, which requires C++17 to compile.
 
+# Get the platform before removing php (as it requires PHP)
+platform=$(/usr/local/bin/nems-info platform)
+
+# Use Raspbian repo for Pi, Sury's Debian Repo for others.
+if [[ $platform = "0" ]] ||
+   [[ $platform = "1" ]] ||
+   [[ $platform = "2" ]] ||
+   [[ $platform = "3" ]] ||
+   [[ $platform = "4" ]] ||
+   [[ $platform = "5" ]] ||
+   [[ $platform = "6" ]] ||
+   [[ $platform = "7" ]] ||
+   [[ $platform = "8" ]] ||
+   [[ $platform = "9" ]]; then
+  repo="-t buster"
+else
+  repo=""
+fi
+
+
 # Install and configure check-mk-livestatus
-apt install --yes php-net-socket php7.2-sqlite3 sqlite3 graphviz php7.2-gd rrdtool librrd-dev libboost-all-dev libncurses5-dev libreadline-dev libxml2-dev libssl-dev
+
+# Need to do an update because a lot of time has passed by now
+apt update
+apt install $repo -y php-net-socket
+apt install $repo -y php7.2-sqlite3
+apt install $repo -y sqlite3
+apt install $repo -y graphviz
+apt install $repo -y php7.2-gd
+apt install $repo -y rrdtool
+apt install $repo -y librrd-dev
+apt install $repo -y libboost-all-dev
+apt install $repo -y libncurses5-dev
+apt install $repo -y libreadline-dev
+apt install $repo -y libxml2-dev
+apt install $repo -y libssl-dev
 
 # This is the full Check_MK OSE bundle
 
@@ -61,65 +95,4 @@ echo " done."
 chmod 666 /usr/local/nagios/var/rw/live.sock
 
 # /usr/local/nagios/var/rw
-
-
-# ABORT, this doesn't work anymore. Switched to Adagios for NEMS 1.4
-exit
-
-# Install Check_MK Multisite (web interface)
-echo "
-bindir='/usr/bin'
-confdir='/etc/check_mk'
-sharedir='/usr/share/check_mk'
-docdir='/usr/share/doc/check_mk'
-checkmandir='/usr/share/doc/check_mk/checks'
-vardir='/var/lib/check_mk'
-python_lib_dir='/usr/lib/python2.7'
-agentslibdir='/usr/lib/check_mk_agent'
-agentsconfdir='/etc/check_mk'
-nagiosuser='nagios'
-wwwuser='www-data'
-wwwgroup='www-data'
-nagios_binary='/usr/local/nagios/bin/nagios'
-nagios_config_file='/usr/local/nagios/etc/nagios.cfg'
-nagconfdir='/etc/nems/conf/global'
-nagios_startscript='/etc/init.d/nagios'
-nagpipe='/var/log/nagios/rw/nagios.cmd'
-check_result_path='/usr/local/nagios/var/spool/checkresults'
-nagios_status_file='/var/cache/nagios/status.dat'
-check_icmp_path='/usr/local/nagios/libexec/check_icmp'
-url_prefix='/'
-apache_config_dir='/etc/apache2/conf-available'
-htpasswd_file='/var/www/htpasswd'
-nagios_auth_name='Nagios Access'
-pnptemplates='/usr/share/check_mk/pnp-templates'
-rrd_path='/var/lib/nagios/rrd'
-rrdcached_socket='/tmp/rrdcached.sock'
-enable_livestatus='no'
-enable_mkeventd='yes'
-mkeventdstatedir='/var/lib/mkeventd'
-livesock='/usr/local/nagios/var/rw/live.sock'
-" > ~/.check_mk_setup.conf
-if [[ ! -f /var/www/htpasswd ]]; then
-  touch /var/www/htpasswd
-#  chown www-data:www-data /var/www/htpasswd
-  chmod 644 /var/www/htpasswd
-fi
-./setup.sh --yes
-
-if [[ ! -f /usr/share/check_mk/web/htdocs/livestatus.py ]]; then
- ln -s /usr/share/doc/check_mk/livestatus/api/python/livestatus.py /usr/share/check_mk/web/htdocs/livestatus.py
-fi
-
-# Add to Apache2
-cp /root/nems/nems-migrator/data/1.4/apache2/conf-available/zzz_check_mk.conf /etc/apache2/conf-available/
-a2enconf zzz_check_mk.conf
-a2dismod wsgi
-a2enmod python
-cp -rf /root/nems/nems-migrator/data/1.4/check_mk/config/* /etc/check_mk/
-systemctl restart apache2
-
-# Create the Check_MK Multisite log and make it writeable by the interface
-touch /var/log/web.log
-chown www-data:www-data /var/log/web.log
 
