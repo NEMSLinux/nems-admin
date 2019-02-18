@@ -35,4 +35,4 @@
 
 # Install Cockpit
   apt update
-  apt --yes install cockpit
+  apt -t stretch-backports -y install cockpit
