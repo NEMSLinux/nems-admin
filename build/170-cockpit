@@ -1,4 +1,11 @@
 #!/bin/bash
+
+platform=$(/usr/local/bin/nems-info platform)
+if [[ $platform = "0" ]] ||
+   [[ $platform = "1" ]]; then
+  echo "Incompatible SBC. Leaving Cockpit off."
+else
+
 # Update *before* adding Stretch Backports
   apt update
 # Add the Stretch Backports repository
@@ -36,3 +43,5 @@
 # Install Cockpit
   apt update
   apt -t stretch-backports -y install cockpit
+
+fi
