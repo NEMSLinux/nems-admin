@@ -1,5 +1,4 @@
 #!/bin/bash
-echo $0 > /var/www/html/index.html
 
 if [[ -d /boot/grub/ ]]; then
   # Determine the platform

@@ -1,5 +1,4 @@
 #!/bin/bash
-echo $0 > /var/www/html/index.html
 
 # Fix the cert bug in 5.20
 # It seems this has been patched upstream, so can comment this out - but leaving until confirmed

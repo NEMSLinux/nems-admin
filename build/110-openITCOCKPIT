@@ -1,5 +1,4 @@
 #!/bin/bash
-echo $0 > /var/www/html/index.html
 #apt-key adv --recv --keyserver hkp://keyserver.ubuntu.com 1148DA8E
 #echo 'deb https://packages.openitcockpit.com/repositories/stretch stretch main' > /etc/apt/sources.list.d/openitcockpit.list
 #apt update

@@ -1,5 +1,4 @@
 #!/bin/bash
-echo $0 > /var/www/html/index.html
 
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
   # This script is run during initial NEMS compile, but because sometimes   #

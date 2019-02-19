@@ -1,5 +1,4 @@
 #!/bin/bash
-echo $0 > /var/www/html/index.html
 
 printf "Installing rpimonitor... "
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why we have to do this after 150-nems
