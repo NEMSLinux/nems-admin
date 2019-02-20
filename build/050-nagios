@@ -11,6 +11,13 @@ fi
   usermod -a -G nagios www-data
   usermod -a -G nagcmd nagios
   usermod -a -G nagcmd www-data
+
+# Add var folder
+if [[ ! -e /var/lib/nagios/ ]]; then
+  mkdir /var/lib/nagios/
+  chown -R nagios:nagios /var/lib/nagios/
+fi
+
   cd /tmp
   # NEMS 1.4.1
 #  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.3.4.tar.gz
