@@ -12,7 +12,7 @@ if [[ "$ver" == "1.4.1" ]]; then
 
   ## Update the core OS
     apt update && apt -y upgrade
-    apt -y dist-upgrade
+#    apt -y dist-upgrade
 
   ## Go through the package add list to add any missing packages that were added
     for pkg in $(grep -vE "^\s*#" ../build/packages.add | tr "\n" " ")

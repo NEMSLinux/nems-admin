@@ -121,14 +121,17 @@ done
 apt --yes install -f
 
 # Be up to date
-apt --yes upgrade && apt --yes dist-upgrade
+apt --yes upgrade
+#apt --yes dist-upgrade
 
 # Upgrade firmware (Removed; will stick with stable firmware via raspberrypi-bootloader)
 # rpi-update
 
 # Upgrade again in case anything changed on the new kernel
+# Or if anything was held back for the upgraded packages
 apt update
-apt --yes upgrade && apt --yes dist-upgrade
+apt --yes upgrade
+#apt --yes dist-upgrade
 
 # Disable firstrun (ARMbian)
 if [[ -e /etc/init.d/firstrun ]]; then
