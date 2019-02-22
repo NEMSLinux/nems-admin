@@ -15,16 +15,7 @@ apt -y autoremove
 # Install PHP 7.2
 
 # Use Raspbian repo for Pi, Sury's Debian Repo for others.
-if [[ $platform = "0" ]] ||
-   [[ $platform = "1" ]] ||
-   [[ $platform = "2" ]] ||
-   [[ $platform = "3" ]] ||
-   [[ $platform = "4" ]] ||
-   [[ $platform = "5" ]] ||
-   [[ $platform = "6" ]] ||
-   [[ $platform = "7" ]] ||
-   [[ $platform = "8" ]] ||
-   [[ $platform = "9" ]]; then
+if [[ $platform < 10 ]]; then
   echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" > /etc/apt/sources.list.d/10-buster.list
   echo "Package: *
 Pin: release n=stretch

@@ -1,10 +1,11 @@
 #!/bin/bash
 
+# move to self-compile
+# https://tech.maweki.de/installing-cockpit-on-raspbian.html
+# https://github.com/cockpit-project/cockpit/releases
+
+exit
 platform=$(/usr/local/bin/nems-info platform)
-if [[ $platform = "0" ]] ||
-   [[ $platform = "1" ]]; then
-  echo "Incompatible SBC. Leaving Cockpit off."
-else
 
 # Update *before* adding Stretch Backports
   apt update
@@ -43,5 +44,3 @@ else
 # Install Cockpit
   apt update
   apt -t stretch-backports -y install cockpit
-
-fi

@@ -2,15 +2,9 @@
 
 ## Remove Cockpit theme and replace with symlink to the NEMS theme
 platform=$(/usr/local/bin/nems-info platform)
-if [[ $platform = "0" ]] ||
-   [[ $platform = "1" ]]; then
-  echo "Incompatible SBC. Leaving Cockpit off."
-else
 
-  if [[ -d /usr/share/cockpit/branding/debian/ ]]; then
-    rm -rf /usr/share/cockpit/branding/debian
-  fi
-  mkdir -p /usr/share/cockpit/branding/debian
-  cp -f /root/nems/nems-migrator/data/1.4/cockpit/branding/* /usr/share/cockpit/branding/debian/
-
+if [[ -d /usr/share/cockpit/branding/debian/ ]]; then
+  rm -rf /usr/share/cockpit/branding/debian
 fi
+mkdir -p /usr/share/cockpit/branding/debian
+cp -f /root/nems/nems-migrator/data/1.4/cockpit/branding/* /usr/share/cockpit/branding/debian/
