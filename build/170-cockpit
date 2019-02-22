@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# move to self-compile
+# POSSIBLY move to self-compile
 # https://tech.maweki.de/installing-cockpit-on-raspbian.html
 # https://github.com/cockpit-project/cockpit/releases
 
-exit
 platform=$(/usr/local/bin/nems-info platform)
 
 # Update *before* adding Stretch Backports
