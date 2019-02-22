@@ -1,9 +1,9 @@
 #!/bin/bash
 
-printf "Installing rpimonitor... "
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why we have to do this after 150-nems
 
-if [[ $platform = "0" ]] || [[ $platform = "1" ]] || [[ $platform = "2" ]] || [[ $platform = "3" ]]; then
+if [[ $platform < 10 ]]; then
+  echo "Installing rpimonitor... "
   apt update
   apt -y install dirmngr libraspberrypi-bin
   echo "deb http://giteduberger.fr rpimonitor/" > /etc/apt/sources.list.d/rpimonitor.list
@@ -17,6 +17,4 @@ if [[ $platform = "0" ]] || [[ $platform = "1" ]] || [[ $platform = "2" ]] || [[
   cp -f /root/nems/nems-migrator/data/1.4/rpimonitor/template/* /etc/rpimonitor/template/
   systemctl start rpimonitor
   echo "Done."
-else
-  echo "This is not a Pi, skipping."
 fi

@@ -2,7 +2,7 @@
 
 platform=$(/usr/local/bin/nems-info platform)
 
-if [[ $platform = "0" ]] || [[ $platform = "1" ]] || [[ $platform = "2" ]] || [[ $platform = "3" ]]; then
+if [[ $platform < 10 ]]; then
   printf "Installing support for PiWatcher hardware... "
   cd /tmp
   git clone https://github.com/omzlo/piwatcher/
