@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Remove progress
+if [[ -e /var/www/html/userfiles/nems-build.cur ]]; then
+  rm /var/www/html/userfiles/nems-build.cur
+fi
+
+
