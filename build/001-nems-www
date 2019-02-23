@@ -4,7 +4,10 @@
 cd /var/www
 
 git clone https://github.com/Cat5TV/nems-www
+
+useradd www-data
 chown -R www-data:www-data nems-www
+
 if [[ -d html ]]; then
   rm -rf html
 fi
