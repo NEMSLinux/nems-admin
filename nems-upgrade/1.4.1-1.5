@@ -29,10 +29,10 @@ if [[ "$ver" == "1.4.1" ]]; then
     /root/nems/nems-admin/build/028-csf
     /root/nems/nems-admin/build/029-csf-conf
 
-  ## Upgrade PHP from 7.0 to 7.2
-    /root/nems/nems-admin/build/036-php72
+  ## Upgrade PHP from 7.0 to 7.3
+    /root/nems/nems-admin/build/036-php
 
-  ## Upgrade Nagios to from 4.3.4 to 4.4.2
+  ## Upgrade Nagios to from 4.3.4 to 4.4.3
     if [[ -d /tmp/libexec ]]; then rm -rf /tmp/libexec; fi
     mv /usr/local/nagios/libexec /tmp/ && rm -rf /usr/local/nagios/ && /root/nems/nems-admin/build/050-nagios && systemctl stop nagios && rm -rf /usr/local/nagios/libexec && mv /tmp/libexec /usr/local/nagios/ && systemctl start nagios
 
