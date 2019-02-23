@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # Once GCC 7 is available upstream, we can upgrade to 1.5, which requires C++17 to compile.
 
@@ -18,10 +19,8 @@ fi
 # Need to do an update because a lot of time has passed by now
 apt update
 apt install $repo -y php-net-socket
-apt install $repo -y php7.2-sqlite3
 apt install $repo -y sqlite3
 apt install $repo -y graphviz
-apt install $repo -y php7.2-gd
 apt install $repo -y rrdtool
 apt install $repo -y librrd-dev
 apt install $repo -y libboost-all-dev

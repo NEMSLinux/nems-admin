@@ -1,0 +1,15 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# nConf
+cd /var/www/
+apt update
+# Need to be able to use the MySQL database from PHP
+apt install -y libdbi-perl libdbd-mysql-perl
+systemctl restart apache2
+git clone https://github.com/Cat5TV/nconf && chown -R www-data:www-data nconf
+# Import nConf Configuration
+  cp -f /root/nems/nems-migrator/data/1.4/nconf/deployment.ini /var/www/nconf/config/
+  cp -f /root/nems/nems-migrator/data/1.4/nconf/authentication.php /var/www/nconf/config/
+  cp -f /root/nems/nems-migrator/data/1.4/nconf/mysql.php /var/www/nconf/config/
+  cp -f /root/nems/nems-migrator/data/1.4/nconf/nconf.php /var/www/nconf/config/
