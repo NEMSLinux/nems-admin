@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
 #apt-key adv --recv --keyserver hkp://keyserver.ubuntu.com 1148DA8E
 #echo 'deb https://packages.openitcockpit.com/repositories/stretch stretch main' > /etc/apt/sources.list.d/openitcockpit.list
 #apt update

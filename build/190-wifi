@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
 
 # Set Network Manager WiFi MAC address to not change on boot
 

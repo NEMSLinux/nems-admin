@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
 
 # Ping is missing from Pine64.
 apt -y install iputils-ping

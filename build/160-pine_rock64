@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
 
 # The Rock64 platform requires some extra fandangling to resize the filesystem
 # Thanks to Ayufan for doing all the legwork... I'd have scratched my head a while.

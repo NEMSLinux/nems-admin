@@ -1,3 +1,5 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
+
 echo "Reloading Daemon"
 systemctl daemon-reload

@@ -1,4 +1,6 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
+
 # Ensure git is installed before proceeding with build
 
 if [[ ! -e /usr/bin/git ]]; then

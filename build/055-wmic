@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
 # Thanks to Ryan Siegel for the contribution on NEMS 1.2.1
 # Updated for NEMS 1.5 since openvas stopped distributing the package
 

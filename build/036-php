@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
 
 # Get the platform before removing php (as it requires PHP)
 platform=$(/usr/local/bin/nems-info platform)

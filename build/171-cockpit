@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
 
 ## Remove Cockpit theme and replace with symlink to the NEMS theme
 platform=$(/usr/local/bin/nems-info platform)

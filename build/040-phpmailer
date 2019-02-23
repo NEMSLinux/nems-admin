@@ -1,4 +1,6 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
+
 cd /var/www/
 if [[ -d PHPMailer ]]; then
   rm -Rf PHPMailer

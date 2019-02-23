@@ -1,4 +1,6 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
+
 # Replace the screen with our bootscreen which shows some basic info to the user (like how to connect)
 
 apt install -y dialog

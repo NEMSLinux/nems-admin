@@ -1,4 +1,6 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
+
 hn=$(/bin/hostname)
 printf "Changing Hostname... "
 /bin/sed -i -- 's/'"$hn"'/nems/g' /etc/hosts

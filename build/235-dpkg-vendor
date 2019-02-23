@@ -1,4 +1,6 @@
 #!/bin/bash
+echo $0 > /tmp/nems-build.cur
+
 echo "Vendor: NEMS_Linux
 Vendor-URL: https://nemslinux.com/
 Bugs: http://forum.category5.tv/forum-38.html
