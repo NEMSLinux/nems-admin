@@ -1,5 +1,5 @@
 #!/bin/bash
-echo $0 > /tmp/nems-build.cur
+echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # POSSIBLY move to self-compile
 # https://tech.maweki.de/installing-cockpit-on-raspbian.html

@@ -1,5 +1,5 @@
 #!/bin/bash
-echo $0 > /tmp/nems-build.cur
+echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # Quick cheat to avoid errors if no files exist
   touch /etc/update-motd.d/dummy

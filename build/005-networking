@@ -1,5 +1,5 @@
 #!/bin/bash
-echo $0 > /tmp/nems-build.cur
+echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # This fixes hostname errors on Debian Stretch for ODROID XU4 (and possibly others)
 # Where a 127.0.1.1 host entry is missing from the default OS.

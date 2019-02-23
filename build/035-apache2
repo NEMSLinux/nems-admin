@@ -1,5 +1,5 @@
 #!/bin/bash
-echo $0 > /tmp/nems-build.cur
+echo $0 > /var/www/html/userfiles/nems-build.cur
 
 if [[ $ver == '' ]]; then
   if [[ -e /usr/local/bin/nems-info ]]; then
