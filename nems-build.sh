@@ -102,6 +102,9 @@ apt autoremove --purge -y
 rm -R /usr/share/fonts/*
 rm -R /usr/share/icons/*
 
+# Fix any broken packages to allow installation to occur in next step
+apt -y --fix-broken install
+
 echo "Usage after cruft removal:"
 df -hT /etc
 sleep 5
@@ -116,9 +119,6 @@ for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
 do
   apt -y --no-install-recommends install $pkg
 done
-
-# Fix any packages that didn't install due to dependency issues
-apt -y --fix-broken install
 
 # Install dependencies, if any
 apt -y install -f
