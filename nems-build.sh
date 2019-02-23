@@ -96,8 +96,8 @@ sleep 5
 
 # Remove cruft
 apt update
-apt --yes --allow-remove-essential clean
-apt --yes --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
+apt -y --allow-remove-essential clean
+apt -y --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
 apt autoremove --purge -y
 rm -R /usr/share/fonts/*
 rm -R /usr/share/icons/*
@@ -108,21 +108,24 @@ sleep 5
 
 for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
 do
-  apt --yes --no-install-recommends install $pkg
+  apt -y --no-install-recommends install $pkg
 done
 
 # Add packages from repositories
 for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
 do
-  apt --yes --no-install-recommends install $pkg
+  apt -y --no-install-recommends install $pkg
 done
 
+# Fix any packages that didn't install due to dependency issues
+apt -y --fix-broken install
+
 # Install dependencies, if any
-apt --yes install -f
+apt -y install -f
 
 # Be up to date
-apt --yes upgrade
-#apt --yes dist-upgrade
+apt -y upgrade
+#apt -y dist-upgrade
 
 # Upgrade firmware (Removed; will stick with stable firmware via raspberrypi-bootloader)
 # rpi-update
@@ -130,8 +133,8 @@ apt --yes upgrade
 # Upgrade again in case anything changed on the new kernel
 # Or if anything was held back for the upgraded packages
 apt update
-apt --yes upgrade
-#apt --yes dist-upgrade
+apt -y upgrade
+#apt -y dist-upgrade
 
 # Disable firstrun (ARMbian)
 if [[ -e /etc/init.d/firstrun ]]; then
@@ -159,7 +162,7 @@ echo ""
 # Final cleanup...
 
 cd /tmp
-apt --yes autoremove
+apt -y autoremove
 
 echo "Usage after build:"
 df -hT /etc
