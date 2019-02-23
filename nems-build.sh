@@ -173,4 +173,9 @@ cat /tmp/errors.log
 echo "NEMS $ver compiled."
 echo ""
 
+# Remove progress
+if [[ -e /var/www/html/userfiles/nems-build.cur ]]; then
+  rm /var/www/html/userfiles/nems-build.cur
+fi
+
 fi # end of else running as root
