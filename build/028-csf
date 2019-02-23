@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# Not yet functional in buster
+exit
   ## Install CSF/LFD
   cd /usr/src
   wget -O /tmp/csf.tgz https://download.configserver.com/csf.tgz

@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# not yet functional in buster
+exit
   ## Add our default configuration
   cp -f /root/nems/nems-migrator/data/1.5/csf/* /etc/csf/
 
