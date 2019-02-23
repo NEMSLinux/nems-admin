@@ -20,6 +20,8 @@ cp -f /root/nems/nems-migrator/data/1.5/apache2/sites-available/nems-dashboard.c
 a2dissite 000-default
 a2ensite nems-dashboard
 
+a2enmod rewrite
+
 # Change Apache footer
 a2enmod security2
 a2enconf security
