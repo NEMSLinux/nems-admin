@@ -5,7 +5,8 @@ platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why w
 if [[ $platform < 10 ]]; then
   echo "Installing rpimonitor... "
   apt update
-  apt -y install dirmngr libraspberrypi-bin
+  apt -y install dirmngr
+  apt -y install libraspberrypi-bin
   echo "deb http://giteduberger.fr rpimonitor/" > /etc/apt/sources.list.d/rpimonitor.list
   echo ""
   apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F

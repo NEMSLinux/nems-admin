@@ -4,42 +4,8 @@
 # https://tech.maweki.de/installing-cockpit-on-raspbian.html
 # https://github.com/cockpit-project/cockpit/releases
 
-platform=$(/usr/local/bin/nems-info platform)
-
-# Update *before* adding Stretch Backports
-  apt update
-# Add the Stretch Backports repository
-  echo 'deb http://ftp.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/backports.list
-# Install dirmngr, required to import the Debian Backports keys
-  apt install dirmngr --install-recommends
-
-# Import the keys
-# Will try both MIT and Ubuntu servers - one should work!
-
-  key=8B48AD6246925553
-  while [[ ! $(gpg --list-keys | grep $key) ]]; do
-    echo Importing $key from MIT...
-    gpg --keyserver pgpkeys.mit.edu --recv-key $key
-    gpg -a --export $key | sudo apt-key add -
-    if [[ ! $(gpg --list-keys | grep $key) ]]; then
-      echo Importing $key from Canonical...
-      gpg --keyserver keyserver.ubuntu.com --recv-key $key
-      gpg -a --export $key | sudo apt-key add -
-    fi
-  done
-
-  key=7638D0442B90D010
-  while [[ ! $(gpg --list-keys | grep $key) ]]; do
-    echo Importing $key from MIT...
-    gpg --keyserver pgpkeys.mit.edu --recv-key $key
-    gpg -a --export $key | sudo apt-key add -
-    if [[ ! $(gpg --list-keys | grep $key) ]]; then
-      echo Importing $key from Canonical...
-      gpg --keyserver keyserver.ubuntu.com --recv-key $key
-      gpg -a --export $key | sudo apt-key add -
-    fi
-  done
+# May not be necessary since Buster now includes it in repos
 
 # Install Cockpit
   apt update
-  apt -t stretch-backports -y install cockpit
+  apt -y install cockpit

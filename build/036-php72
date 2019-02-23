@@ -12,53 +12,34 @@ apt remove --purge -y php7.0-phpdbg
 apt remove --purge -y php7.0-readline
 apt -y autoremove
 
-# Install PHP 7.2
-
-# Use Raspbian repo for Pi, Sury's Debian Repo for others.
-if [[ $platform < 10 ]]; then
-  echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" > /etc/apt/sources.list.d/10-buster.list
-  echo "Package: *
-Pin: release n=stretch
-Pin-Priority: 900
-
-Package: *
-Pin: release n=buster
-Pin-Priority: 750" > /etc/apt/preferences.d/10-buster
-repo="-t buster"
-else
-  # Use Sury's Debian repository (will break Raspberry Pi Zero/1)
-  echo "Setting up new repository..."
-  wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
-  echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
-  repo=""
-fi
+# Install PHP 7.3
 
 # Now, upgrade
 apt update
 apt -y upgrade
 
-echo "Installing PHP 7.2..."
+echo "Installing PHP 7.3..."
 # Install PHP 7.2
-apt install -y $repo php7.2
-apt install -y $repo php7.2-cli
-apt install -y $repo php7.2-common
-apt install -y $repo php7.2-curl
-apt install -y $repo php7.2-gd
-apt install -y $repo php7.2-json
-apt install -y $repo php7.2-mbstring
-apt install -y $repo php7.2-mysql
-apt install -y $repo php7.2-opcache
-apt install -y $repo php7.2-phpdbg
-apt install -y $repo php7.2-readline
-apt install -y $repo php7.2-sqlite3
-apt install -y $repo php7.2-xml
-apt install -y $repo libapache2-mod-php7.2
+apt install -y $repo php7.3
+apt install -y $repo php7.3-cli
+apt install -y $repo php7.3-common
+apt install -y $repo php7.3-curl
+apt install -y $repo php7.3-gd
+apt install -y $repo php7.3-json
+apt install -y $repo php7.3-mbstring
+apt install -y $repo php7.3-mysql
+apt install -y $repo php7.3-opcache
+apt install -y $repo php7.3-phpdbg
+apt install -y $repo php7.3-readline
+apt install -y $repo php7.3-sqlite3
+apt install -y $repo php7.3-xml
+apt install -y $repo libapache2-mod-php7.3
 apt install -y $repo libargon2-1
 apt install -y $repo libsodium23
 apt install -y $repo php-curl
 apt install -y $repo php-rrd
 # for check_mssql
-apt install -y $repo php7.2-sybase
+apt install -y $repo php7.3-sybase
 
 echo "Done."
 
