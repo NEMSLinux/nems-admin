@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ ! -e /usr/bin/git ]]; then
+  apt update
+  apt -y install git
+fi
+
 if [[ ! -d /usr/local/share/nems ]]; then
   mkdir /usr/local/share/nems
 fi
