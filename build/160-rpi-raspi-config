@@ -6,7 +6,19 @@ platform=$(/usr/local/bin/nems-info platform)
 if [[ $platform < 10 ]]; then
   if [ ! $(dpkg-query -W -f='${Status}' raspi-config 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
     wget -O /tmp/raspi-config.deb http://archive.raspberrypi.org/debian/pool/main/r/raspi-config/raspi-config_20180406+1_all.deb
-    apt -y install libnewt0.52 parted triggerhappy
+    apt -y install libnewt0.52
+    apt -y install parted
+    apt -y install triggerhappy
+
+    # While NEMS doesn't need this, it is a dependency and required to install raspi-config
+    apt -y install libasound2
+    apt -y install libasound2-data
+    apt -y install libfftw3-single3
+    apt -y install libsamplerate0
+    apt -y install alsa-utils
+    # Fix dependencies, just in case
+    apt -y --fix-broken install
+
     apt install -fy
     dpkg -i /tmp/raspi-config.deb
     rm -f /tmp/raspi-config.deb
