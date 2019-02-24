@@ -9,7 +9,9 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
     apt -y install libdatetime-perl
 
     # check_ipmi_sensor
-    apt -y install libipc-run-perl freeipmi
+    apt -y install libipc-run-perl
+    apt -y install freeipmi
+
     # check_esxi_hardware
     apt install -y python-pywbem
 
