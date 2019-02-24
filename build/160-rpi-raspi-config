@@ -4,6 +4,13 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 platform=$(/usr/local/bin/nems-info platform)
 
 if [[ $platform < 10 ]]; then
+
+  # Try apt first
+  echo "Installing raspi-config... "
+  apt update
+  apt -y install raspi-config
+
+  # if failed, install from debpack
   if [ ! $(dpkg-query -W -f='${Status}' raspi-config 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
     wget -O /tmp/raspi-config.deb http://archive.raspberrypi.org/debian/pool/main/r/raspi-config/raspi-config_20180406+1_all.deb
     apt -y install libnewt0.52
