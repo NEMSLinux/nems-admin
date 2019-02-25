@@ -1,6 +1,12 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+# Add var folder if didn't get created in 050
+if [[ ! -e /var/lib/nagios/ ]]; then
+  mkdir /var/lib/nagios/
+  chown -R nagios:nagios /var/lib/nagios/
+fi
+
 # Prepare sudo permissions
 if ! grep -q "# Adagios" /etc/sudoers; then
 echo '

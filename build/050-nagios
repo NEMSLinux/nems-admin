@@ -57,5 +57,11 @@ apt install -y nagios-nrpe-plugin nagios-nrpe-server nagios-images
 # Set the nagios user shell
 usermod -s /bin/bash nagios
 
+# Add var folder (again, in case it got removed)
+if [[ ! -e /var/lib/nagios/ ]]; then
+  mkdir /var/lib/nagios/
+  chown -R nagios:nagios /var/lib/nagios/
+fi
+
 # Reload daemon units in case Nagios was running while updated
 systemctl daemon-reload
