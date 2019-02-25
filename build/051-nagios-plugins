@@ -27,6 +27,8 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
   apt install -y openssl
   apt install -y openssl-devel
 
+  apt install -y gettext
+
   # BEGIN Fix NRPE and check_wmi_plus
 
     # Remove NRPE plugin if it is installed in the wrong folder
@@ -64,43 +66,21 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
     apt -y install automake
     automake=$(ls -r /usr/share/automake*/config.guess | head -1)
 
-  # Obtain the source for nagios-plugins
-    # Set version to download and deploy
-    npver="2.2.1"
-
-    if [[ -d /tmp/nagios-plugins-$npver/ ]]; then
-      rm -rf /tmp/nagios-plugins-$npver/
+  # Obtain the source for monitoring-plugins
+    if [[ -d /tmp/monitoring-plugins/ ]]; then
+      rm -rf /tmp/monitoring-plugins/
     fi
-    wget -O /tmp/nagios-plugins.tar.gz https://nagios-plugins.org/download/nagios-plugins-$npver.tar.gz
-    cd /tmp/
-    tar -zxvf /tmp/nagios-plugins.tar.gz
-    cd /tmp/nagios-plugins-$npver/
+    cd /tmp
+    git clone https://github.com/monitoring-plugins/monitoring-plugins
+    cd /tmp/monitoring-plugins
+
+    ./tools/setup
+
     # This is where automake's config gets written to the nagios-plugins src:
-    cp $automake /tmp/nagios-plugins-$npver/build-aux/
+    cp $automake /tmp/monitoring-plugins/build-aux/
+
     # Build it and install it
-      ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
-      make
-      make install
-
-    # Timeticks issue in 2.2.1 reported by Tech Dave: https://forum.category5.tv/thread-197-post-1549.html#pid1549
-    # Therefore, downgrade check_snmp to 2.1.1 while leaving everything else at 2.2.1
-    # Unfortunately the tradeoff is that 2.1.1 doesn't work with ipv6. Can't wait for 2.2.2!
-    if [[ $npver = '2.2.1' ]]; then
-      npver="2.1.1"
-
-      if [[ -d /tmp/nagios-plugins-$npver/ ]]; then
-        rm -rf /tmp/nagios-plugins-$npver/
-      fi
-      wget -O /tmp/nagios-plugins.tar.gz https://nagios-plugins.org/download/nagios-plugins-$npver.tar.gz
-      cd /tmp/
-      tar -zxvf /tmp/nagios-plugins.tar.gz
-      cd /tmp/nagios-plugins-$npver/
-      # This is where automake's config gets written to the nagios-plugins src:
-      cp $automake /tmp/nagios-plugins-$npver/build-aux/
-      # Build it and install it
-        ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
-        make
-        # do not make install it since we ONLY want check_snmp... instead:
-        cp -f plugins/check_snmp /usr/local/nagios/libexec/
-    fi
+    ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
+    make
+    make install
 
