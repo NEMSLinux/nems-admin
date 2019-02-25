@@ -80,7 +80,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
     cp $automake /tmp/monitoring-plugins/build-aux/
 
     # Build it and install it
-    ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
+    ./configure --prefix=/usr/local/nagios --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
     make
     make install
 
