@@ -5,6 +5,21 @@ platform=$(/usr/local/bin/nems-info platform)
 
 if [[ $platform < 10 ]]; then
   printf "Installing support for PiWatcher hardware... "
+
+  # enable I2C
+  apt install -y python-smbus
+  apt install -y i2c-tools
+  if ! grep -q "i2c-dev" /etc/modules; then
+    echo 'i2c-dev' >> /etc/modules
+  fi
+  if grep -q "#dtparam=i2c_arm=on" /boot/config.txt; then
+    /bin/sed -i -- 's,#dtparam=i2c_arm=on,dtparam=i2c_arm=on,g' /boot/config.txt
+  fi
+  # In case it wasn't commented in the file previously, so still does not exist
+  if ! grep -q "dtparam=i2c_arm=on" /boot/config.txt; then
+    echo 'dtparam=i2c_arm=on' >> /boot/config.txt
+  fi
+
   cd /tmp
   git clone https://github.com/omzlo/piwatcher/
   cd piwatcher
