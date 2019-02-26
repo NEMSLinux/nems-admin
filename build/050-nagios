@@ -63,5 +63,8 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   chown -R nagios:nagios /var/lib/nagios/
 fi
 
+# Create precache file for NEMS Mobile UI in /var/lib/nagios
+/usr/local/nagios/bin/nagios -pv /usr/local/nagios/etc/nagios.cfg
+
 # Reload daemon units in case Nagios was running while updated
 systemctl daemon-reload
