@@ -21,6 +21,12 @@ if [[ ! -d /var/log/nems ]]; then
   mkdir /var/log/nems
 fi
 
+# If /sbin is not in PATH, add it (bug in Buster)
+if [[ ! $PATH == *"/sbin"* ]]; then
+  export PATH=$PATH:/sbin
+fi
+
+
 # Detect hardware
 if [ ! -z $1 ]; then
   echo $1 > /etc/.nems_hw_model_identifier
