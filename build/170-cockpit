@@ -10,3 +10,12 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # Install Cockpit
   apt update
   apt -y install cockpit
+  apt -y install firewalld
+  apt -y install cokcpit-networking
+
+  systemctl unmask firewalld
+  systemctl enable firwalld
+  systemctl start firewalld
+
+  # Setup firewall rules
+  firewall-cmd --permanent --add-port=3306/tcp
