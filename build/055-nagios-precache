@@ -1,0 +1,15 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+systemctl stop nagios
+
+if [[ ! -e /var/lib/nagios/ ]]; then
+  mkdir /var/lib/nagios/
+  chown -R nagios:nagios /var/lib/nagios/
+  dpkg-statoverride --update --add nagios nagios 751 /var/lib/nagios
+fi
+
+# Create precache file for NEMS Mobile UI in /var/lib/nagios
+/usr/local/nagios/bin/nagios -pv /usr/local/nagios/etc/nagios.cfg
+
+systemctl start nagios

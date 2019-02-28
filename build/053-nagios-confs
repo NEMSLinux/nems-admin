@@ -40,7 +40,6 @@ fi
 # Change some permissions changes
 systemctl stop apache2
   dpkg-statoverride --update --add nagios www-data 2710 /usr/local/nagios/var/rw
-  dpkg-statoverride --update --add nagios nagios 751 /var/lib/nagios
   cp -f /root/nems/nems-migrator/data/1.4/apache2/conf-available/nagios.conf /etc/apache2/conf-available/
 systemctl start apache2
 
