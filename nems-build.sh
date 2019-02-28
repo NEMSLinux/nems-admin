@@ -21,9 +21,13 @@ if [[ ! -d /var/log/nems ]]; then
   mkdir /var/log/nems
 fi
 
-# If /sbin is not in PATH, add it (bug in Buster)
+# If /sbin is not in PATH, add it (eg., halt, reboot)
 if [[ ! $PATH == *"/sbin"* ]]; then
   export PATH=$PATH:/sbin
+fi
+# And again for /usr/sbin (eg., dpkg-reconfigure)
+if [[ ! $PATH == *"/usr/sbin"* ]]; then
+  export PATH=$PATH:/usr/sbin
 fi
 
 
@@ -153,6 +157,9 @@ printf 'tzdata tzdata/Areas select America\ntzdata tzdata/Zones/America select T
 rm -f /etc/timezone
 rm -f /etc/localtime
 dpkg-reconfigure -f noninteractive tzdata
+
+echo "Run manually parts"
+exit
 
 echo "------------------------------"
 # Run the scripts in the build folder
