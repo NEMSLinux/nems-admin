@@ -10,5 +10,5 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # Install Cockpit
   apt update
   apt -y install cockpit
-  apt -y install cockpit-networking
+  apt -y install cockpit-networkmanager
 
