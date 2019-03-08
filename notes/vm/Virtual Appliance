@@ -1,0 +1,10 @@
+OVA:
+- Deploy as normal using VHD as the drive type within VirtualBox, export as OVA will convert to VMDK within OVA.
+
+VHD:
+- Copy from dev master which was used to create OVA.
+
+QCOW2:
+- Install qemu-utils
+- Extract VMDK from OVA.
+- Convert: qemu-img convert -f vmdk -O qcow2 nems.vmdk nems.qcow2
