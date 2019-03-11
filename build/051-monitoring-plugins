@@ -7,6 +7,9 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
   # run this at any time to reinstall all plugins.                          #
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+  # Remove old apt installed version
+  apt -y remove --purge monitoring-plugins
+
   # Install dependencies
   # Doing one per apt instance to avoid it failing if one package is missing
   apt update
@@ -32,7 +35,9 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
   # BEGIN Fix NRPE and check_wmi_plus
     apt -y remove --purge nagios-nrpe-plugin
 
-    # remove libexed if it is a directory (not symlink)
+    apt -y autoremove
+
+    # remove libexec if it is a directory (not symlink)
     if [[ -d /usr/local/nagios/libexec ]]; then
       rm -rf /usr/local/nagios/libexec
     fi
@@ -55,4 +60,13 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
   # END Fix NRPE and check_wmi_plus
 
   # Install the plugins
-  apt install -y monitoring-plugins
+    cd /tmp
+    if [[ -e monitoring-plugins ]]; then
+      rm -rf monitoring-plugins
+    fi
+    git clone https://github.com/Cat5TV/monitoring-plugins
+    cd monitoring-plugins
+    ./tools/setup
+    ./configure --prefix=/usr/local/nagios/libexec/ --with-cgiurl=/nagios/cgi-bin
+    make
+    make install
