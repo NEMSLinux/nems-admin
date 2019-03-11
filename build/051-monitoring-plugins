@@ -42,6 +42,10 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
       rm -rf /usr/local/nagios/libexec
     fi
 
+    if [[ -e /usr/lib/nagios/plugins ]]; then
+      rm -rf /usr/lib/nagios/plugins
+    fi
+
     # Create the target folder if it doesn't exist
     if [[ ! -d /usr/lib/nagios ]]; then
       mkdir -p /usr/lib/nagios/plugins
