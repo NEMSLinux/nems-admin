@@ -71,6 +71,6 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
     git clone https://github.com/Cat5TV/monitoring-plugins
     cd monitoring-plugins
     ./tools/setup
-    ./configure --prefix=/usr/local/nagios/libexec/ --with-cgiurl=/nagios/cgi-bin
+    ./configure --prefix=/usr/local/nagios/ --with-cgiurl=/nagios/cgi-bin
     make
     make install
