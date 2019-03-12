@@ -57,14 +57,14 @@ if [[ "$ver" == "1.4.1" ]]; then
   ## Install NEMS Nagios Plugins
     /root/nems/nems-admin/build/052-nems-nagios-plugins
 
+  ## Recompile WMIC based on nems-wmic
+    /root/nems/nems-admin/build/052-wmic
+
   ## Reload config files
     /root/nems/nems-admin/build/053-nagios-confs
 
   ## Recompile livestatus with Nagios 4.4.2
     /root/nems/nems-admin/build/055-check_mk
-
-  ## Recompile WMIC based on nems-wmic
-    /root/nems/nems-admin/build/055-wmic
 
   ## Configure samba
     /root/nems/nems-admin/build/155-samba

@@ -54,6 +54,9 @@ cd /tmp/nems-wmic/extras/check_wmi_plus
 cp -f check_wmi_plus.pl /usr/local/nagios/libexec
 cp -rf etc/check_wmi_plus /etc/
 
+# Create the ini dir (which is designated in the conf below)
+mkdir /etc/check_wmi_plus/check_wmi_plus.d
+
 # Install the NEMS conf file for check_wmi_plus
 cp -f /root/nems/nems-migrator/data/1.5/nagios/misc/check_wmi_plus.conf /etc/check_wmi_plus/
 
