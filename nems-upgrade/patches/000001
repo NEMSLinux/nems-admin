@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# For early builds of NEMS Linux 1.5
+
+  # Reinstall monitoring-plugins to resolve stdout error and other issue with e$
+  # This is a major update and will take a while to run
+    if ! grep -q "PATCH-000001" /var/log/nems/patches.log; then
+      echo '****** PATCH-000001 *******'
+      echo '*** THIS IS A BIG PATCH ***'
+      echo 'Expect to wait a long time...'
+      sleep 5
+      /root/nems/nems-admin/build/046-plugins-prep && /root/nems/nems-admin/bui$
+    else
+      echo "This patch is already applied."
+    fi
+
+

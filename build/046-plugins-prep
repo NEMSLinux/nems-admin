@@ -1,0 +1,66 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# This script cleans up / removes all installed Nagios plugins to prepare for installation/re-installation
+
+  # Remove old apt installed version
+  apt -y remove --purge monitoring-plugins*
+
+  apt -y remove --purge nagios-nrpe-plugin
+
+  apt -y autoremove
+
+  # Install dependencies
+  # Doing one per apt instance to avoid it failing if one package is missing
+  apt update
+  apt install -y libnet-snmp-perl
+  apt install -y snmp
+  apt install -y snmpd
+  apt install -y snmp-mibs-downloader
+  apt install -y dnsutils
+  apt install -y fping
+  apt install -y iputils-ping
+  apt install -y libfreeradius-client-dev
+  apt install -y libldap2-dev
+  apt install -y default-libmysqlclient-dev
+  apt install -y libdbi-dev
+  apt install -y libdbi-perl
+  apt install -y smbclient
+  apt install -y qstat
+  apt install -y openssl
+  apt install -y openssl-devel
+  apt install -y gettext
+  apt install -y openssl
+
+# Install PostgreSQL development libraries so
+# check_psql (monitoring-plugins) can compile
+  apt install -y libpq-dev
+
+
+
+  # Cleanup residue and then prep folders
+
+    # remove libexec if it is a directory (not symlink)
+    if [[ -d /usr/local/nagios/libexec ]]; then
+      rm -rf /usr/local/nagios/libexec
+    fi
+
+    if [[ -e /usr/lib/nagios/plugins ]]; then
+      rm -rf /usr/lib/nagios/plugins
+    fi
+
+    # Create the target folder if it doesn't exist
+    if [[ ! -d /usr/lib/nagios ]]; then
+      mkdir -p /usr/lib/nagios/plugins
+    fi
+
+    # If the libexec symlink doesn't already exist, create it
+    if [[ ! -e /usr/local/nagios/libexec ]]; then
+      ln -s /usr/lib/nagios/plugins /usr/local/nagios/libexec
+    fi
+
+    # Reinstall check_nrpe, which will now pop into the correct folder due to the symlink
+    if [[ ! -e /usr/lib/nagios/plugins/check_nrpe ]]; then
+      apt install -y nagios-nrpe-plugin
+    fi
+
