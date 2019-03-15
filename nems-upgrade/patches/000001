@@ -9,7 +9,7 @@
       echo '*** THIS IS A BIG PATCH ***'
       echo 'Expect to wait a long time...'
       sleep 5
-      /root/nems/nems-admin/build/046-plugins-prep && /root/nems/nems-admin/build/051-monitoring-plugins && /root/nems/nems-admin/build/052-nems-nagios-plugins && /root/nems/nems-admin/build/052-wmic && echo "PATCH-000001" >> /var/log/nems/patches.log
+      /root/nems/nems-admin/build/046-plugins-prep && /root/nems/nems-admin/build/051-monitoring-plugins && /root/nems/nems-admin/build/052-nems-nagios-plugins && /root/nems/nems-admin/build/052-wmic && echo "PATCH-000001" >> /var/log/nems/patches.log && /root/nems/nems-admin/build/999-cleanup
     else
       echo "This patch is already applied."
     fi
