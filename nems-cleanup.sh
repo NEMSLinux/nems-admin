@@ -264,6 +264,12 @@ nameserver 2001:4860:4860::8844
   # This script removes any MOTD that were added during installs (annoying!)
   /root/nems/nems-admin/build/230-motd
 
+  # Clear patches.log
+  if [[ -e /var/log/nems/patches.log ]]; then
+    rm /var/log/nems/patches.log
+  fi
+  touch /var/log/nems/patches.log
+
   # Cleanup lingering logs and so-on
   /root/nems/nems-admin/build/999-cleanup
 

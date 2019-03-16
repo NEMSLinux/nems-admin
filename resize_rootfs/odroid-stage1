@@ -33,5 +33,6 @@ EOF
 
 do_resize
 touch /forcefsck
+
 sync
 reboot

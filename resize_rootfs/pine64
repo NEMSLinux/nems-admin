@@ -45,6 +45,12 @@ EOF
 
 resize
 
+# Log that patch (resize) has been applied to this system
+# Activates features such as bootscreen.sh
+if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
+  echo "PATCH-000002" >> /var/log/nems/patches.log
+fi
+
 echo "Done!"
 
 sed -i "s,/root/nems/nems-admin/resize_rootfs/pine64,,g" /etc/rc.local

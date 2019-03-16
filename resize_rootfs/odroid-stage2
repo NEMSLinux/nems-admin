@@ -17,5 +17,12 @@ echo "Done" >> $rslog
 df -h / >> $rslog
 # Force FSCK to run at next boot just for good measure
 touch /forcefsck
+
+# Log that patch (resize) has been applied to this system
+# Activates features such as bootscreen.sh
+if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
+  echo "PATCH-000002" >> /var/log/nems/patches.log
+fi
+
 sync
 reboot
