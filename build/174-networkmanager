@@ -1,0 +1,11 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# Disable networking and enable NetworkManager
+  systemctl enable NetworkManager
+  systemctl disable networking
+
+# Use NetworkManager to manage interfaces, even if configured within /etc/network/interfaces
+  if grep -q "managed=false" /etc/NetworkManager/NetworkManager.conf; then
+    /bin/sed -i -- 's,managed=false,managed=true,g' /etc/NetworkManager/NetworkManager.conf
+  fi
