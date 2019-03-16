@@ -160,16 +160,23 @@ nameserver 2001:4860:4860::8844
   rm /var/www/htpasswd
 
   # Reset NEMS Log Files
+  # Remove resize from patches.log
+  /bin/sed -i~ '/PATCH-000002/d' /var/log/nems/patches.log
+  # Move patches.log so it can persist after clear
+  mv /var/log/nems/patches.log /tmp
   find /var/log/nems/ -name "*" -type f -delete
+  # Restore patches.log so patches don't get reinstalled on new img
+  mv /tmp/patches.log /var/log/nems/
+
   if [[ ! -d /var/log/nems ]]; then
     mkdir /var/log/nems
   fi
   if [[ ! -d /var/log/nems/nems-tools ]]; then
     mkdir /var/log/nems/nems-tools
   fi
-  if [[ ! -d /var/log/nems/phoronix ]]; then
-    mkdir /var/log/nems/phoronix && chown -R www-data:www-data /var/log/nems/phoronix
-  fi
+#  if [[ ! -d /var/log/nems/phoronix ]]; then
+#    mkdir /var/log/nems/phoronix && chown -R www-data:www-data /var/log/nems/phoronix
+#  fi
 
   # Reset Nagios Core User
   cp -f /root/nems/nems-migrator/data/1.4/nagios/etc/cgi.cfg /usr/local/nagios/etc/
@@ -263,9 +270,6 @@ nameserver 2001:4860:4860::8844
   # Some final cleanup
   # This script removes any MOTD that were added during installs (annoying!)
   /root/nems/nems-admin/build/230-motd
-
-  # Remove resize from patches.log
-  /bin/sed -i~ '/PATCH-000002/d' /var/log/nems/patches.log
 
   # Cleanup lingering logs and so-on
   /root/nems/nems-admin/build/999-cleanup
