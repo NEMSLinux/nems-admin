@@ -1,7 +1,7 @@
 #!/bin/bash
 
     if ! grep -q "PATCH-000003" /var/log/nems/patches.log; then
-      /root/nems/nems-admin/build/174-networkmanager && "PATCH-000003" >> /var/log/nems/patches.log
+      /root/nems/nems-admin/build/174-networkmanager && echo "PATCH-000003" >> /var/log/nems/patches.log
     else
       echo "This patch is already applied."
     fi
