@@ -50,7 +50,7 @@ ntp
 locate
 
 # WiFi
-dhcpcd5
+#dhcpcd5
 firmware-brcm80211
 wireless-tools
 wpasupplicant
