@@ -2,8 +2,12 @@
 # Clean up any cruft left behind
 
 # Remove any MOTD items included with the base distro
-  rm /etc/update-motd.d/*
-  rm /etc/motd.d/*
+  if [[ -e /etc/update-motd.d/* ]]; then
+    rm /etc/update-motd.d/*
+  fi
+  if [[ -e /etc/motd.d/* ]]; then
+    rm /etc/motd.d/*
+  fi
 
 # Remove progress
 if [[ -e /var/www/html/userfiles/nems-build.cur ]]; then
