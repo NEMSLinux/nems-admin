@@ -8,4 +8,11 @@ if (( $platform == 20 )); then
   # VMWare Open Source implementation
     apt -y install open-vm-tools
 
+  # Log that patch (resize) has been applied to this system.
+  # Doesn't apply to VM so just do it here.
+  # Activates features such as bootscreen.sh
+  if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
+    echo "PATCH-000002" >> /var/log/nems/patches.log
+  fi
+
 fi
