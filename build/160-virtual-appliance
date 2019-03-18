@@ -1,0 +1,11 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+platform=$(/usr/local/bin/nems-info platform)
+
+if (( $platform == 20 )); then
+
+  # VMWare Open Source implementation
+    apt -y install open-vm-tools
+
+fi
