@@ -11,9 +11,7 @@ else
 
   if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution or the reboot option to reboot."; echo ""; fi;
 
-  echo "Did you set thermal thresholds in sbc-temperature for this board?"
-  echo "Press CTRL-C if not."
-  sleep 5
+  read -r -p "What build number is this? " buildnum
 
   if [[ -f /tmp/qf.sh ]]; then
     qfrunning=`ps aux | grep -i "myscript.sh" | grep -v "grep" | wc -l`
@@ -50,8 +48,8 @@ else
     echo "Looks like user accounts are ready to go."
   else
     echo "You have not removed your test users. Aborting."
-    echo "Run: userdel -r username"
-    echo "Then, reboot and login as nemsadmin"
+    echo "Run: userdel -fr username && reboot"
+    echo "Then login as nemsadmin after reboot completes."
     exit
   fi
 
@@ -100,7 +98,7 @@ else
   pdbedit -L | while read USER; do pdbedit -x -u $(echo $USER | cut -d: -f1); done
 
   # Empty old logs
-  find /var/log/ -type f -exec cp /dev/null {} \;
+  find /var/log/ -type f -not -path "/var/log/nems/*" -exec cp /dev/null {} \;
   find /var/log/ -iname "*.gz" -type f -delete
   find /var/log/ -iname "*.log.*" -type f -delete
   rm /var/log/nagios/archives/*.log
@@ -165,18 +163,15 @@ nameserver 2001:4860:4860::8844
   # Move patches.log so it can persist after clear
   mv /var/log/nems/patches.log /tmp
   find /var/log/nems/ -name "*" -type f -delete
-  # Restore patches.log so patches don't get reinstalled on new img
-  mv /tmp/patches.log /var/log/nems/
-
   if [[ ! -d /var/log/nems ]]; then
     mkdir /var/log/nems
   fi
   if [[ ! -d /var/log/nems/nems-tools ]]; then
     mkdir /var/log/nems/nems-tools
   fi
-#  if [[ ! -d /var/log/nems/phoronix ]]; then
-#    mkdir /var/log/nems/phoronix && chown -R www-data:www-data /var/log/nems/phoronix
-#  fi
+  # Restore patches.log so patches don't get reinstalled on new img
+  mv /tmp/patches.log /var/log/nems/
+  echo $buildnum > /var/log/nems/build
 
   # Reset Nagios Core User
   cp -f /root/nems/nems-migrator/data/1.4/nagios/etc/cgi.cfg /usr/local/nagios/etc/
