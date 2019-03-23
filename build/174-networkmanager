@@ -17,3 +17,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
     /bin/sed -i -- 's,managed=false,managed=true,g' /etc/NetworkManager/NetworkManager.conf
     /etc/init.d/network-manager restart
   fi
+
+  if ! grep -q "PATCH-000003" /var/log/nems/patches.log; then
+    echo "PATCH-000003" >> /var/log/nems/patches.log
+  fi

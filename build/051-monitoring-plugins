@@ -2,16 +2,10 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
   # Install monitoring-plugins (the continuation of the now dead nagios-plugins)
-#    cd /tmp
-#    if [[ -e monitoring-plugins ]]; then
-#      rm -rf monitoring-plugins
-#    fi
-#    git clone https://github.com/Cat5TV/monitoring-plugins
-#    cd monitoring-plugins
-#    ./tools/setup
-#    ./configure --prefix=/usr/local/nagios/ --with-cgiurl=/nagios/cgi-bin --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
-#    make
-#    make install
   apt -y install --reinstall monitoring-plugins-common
   apt -y install --reinstall monitoring-plugins-basic
   apt -y install --reinstall monitoring-plugins-standard
+
+  if ! grep -q "PATCH-000001" /var/log/nems/patches.log; then
+    echo "PATCH-000001" >> /var/log/nems/patches.log
+  fi
