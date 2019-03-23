@@ -17,7 +17,7 @@ Once booted from Ayufan's build and logged in as root, check if filesystem was s
 
 Ensure OS is fully up-to-date and is the version intended (eg., Buster instead of Stretch).
 
-Set the timezone: dpkg-reconfigure tzdata
+Set the timezone to America/Toronto: dpkg-reconfigure tzdata
 
 Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
 
