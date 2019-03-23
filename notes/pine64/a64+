@@ -1,6 +1,13 @@
 Deploy Debian Stretch:
+
+1.4
 Build 1 & 2 used https://forum.pine64.org/showthread.php?tid=4931 but has a timer bug + lack of support from developer.
 Build 3 switched to Ayufan's build: https://github.com/ayufan-pine64/linux-build/releases
+
+1.5
+Build 1 Based on Ayufan's stretch-minimal-pine64-bspkernel-0.7.30-140.img.xz
+
+-----------------------------
 
 Username and Password: pine64
 
@@ -10,7 +17,7 @@ Once booted from Ayufan's build and logged in as root, check if filesystem was s
 
 Prep as normal.
 
-Build: /root/nems/nems-admin/nems-build.sh 1.4.1 40
+Build: /root/nems/nems-admin/nems-build.sh 40
 
 Set the timezone: dpkg-reconfigure tzdata
 
