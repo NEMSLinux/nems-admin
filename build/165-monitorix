@@ -2,7 +2,7 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # Set the URL of the latest debpack from https://www.monitorix.org/downloads.html
-debpack=https://www.monitorix.org/monitorix_3.10.1-izzy1_all.deb
+debpack=https://www.monitorix.org/monitorix_3.11.0-izzy1_all.deb
 
 # Download the debpack
 wget --no-check-certificate -O /tmp/monitorix.deb $debpack
