@@ -1,4 +1,5 @@
 #!/bin/bash
+exit
 echo $0 > /var/www/html/userfiles/nems-build.cur
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why we have to do this after 150-nems
 
