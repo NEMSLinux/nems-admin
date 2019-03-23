@@ -21,7 +21,9 @@ Set the timezone to America/Toronto: dpkg-reconfigure tzdata
 
 Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
 
-Edit /etc/locale.gen and uncomment en_CA.UTF-8 UTF-8
+Edit /etc/locale.gen and uncomment
+- en_CA.UTF-8 UTF-8
+- en_US.UTF-8 UTF-8
 
 Run locale-gen
 
