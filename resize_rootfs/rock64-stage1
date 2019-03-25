@@ -1,6 +1,7 @@
 #!/bin/bash
-BOOTDEVICE=mmcblk1
-PARTITION=7
+rootdev=`/usr/local/bin/nems-info rootdev`
+rootpart=`/usr/local/bin/nems-info rootpart`
+
 PLATFORM=rock64 # Must match the filename $PLATFORM-stage#
 
 function do_resize
@@ -10,16 +11,16 @@ function do_resize
 	echo "Saving the log to $rsflog"
 	sleep 4
 
-	start=`/sbin/fdisk -l /dev/$BOOTDEVICE | grep ${BOOTDEVICE}p${PARTITION} | awk '{print $2}'`
-	end=$(((`/sbin/fdisk -l /dev/$BOOTDEVICE | head -n1 | grep -i bytes | awk '{print $5}'`/512)-34))
+	start=`/sbin/fdisk -l /dev/$rootdev | grep ${rootdev}p${rootpart} | awk '{print $2}'`
+	end=$(((`/sbin/fdisk -l /dev/$rootdev | head -n1 | grep -i bytes | awk '{print $5}'`/512)-34))
 
-	/sbin/fdisk /dev/$BOOTDEVICE <<EOF &>> $rsflog
+	/sbin/fdisk /dev/$rootdev <<EOF &>> $rsflog
 p
 d
-$PARTITION
+$rootpart
 n
 p
-$PARTITION
+$rootpart
 $start
 $end
 p

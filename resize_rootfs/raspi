@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# ******
+# need to re-write this to remove the dependency on raspi-config
+# ******
+
 # Resize Raspberry Pi on first boot
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 

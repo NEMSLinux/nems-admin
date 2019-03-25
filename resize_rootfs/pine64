@@ -1,13 +1,6 @@
 #!/bin/sh
-
-#FROM: https://github.com/longsleep/build-pine64-image/blob/master/simpleimage/platform-scripts/resize_rootfs.sh
-# The version included in the XU4 Stretch distro /root/scripts/resize is much sexier. Eventually integrate.
-
-#The MIT License (MIT)
-#Copyright (c) 2016 Simon Eisenmann <simon@longsleep.org>
-#Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-#The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+rootdev=`/usr/local/bin/nems-info rootdev`
+rootpart=`/usr/local/bin/nems-info rootpart`
 
 set -e
 
@@ -18,29 +11,26 @@ fi
 
 set -x
 
-DEVICE="/dev/mmcblk0"
-PART="2"
-
 resize() {
-	start=$(fdisk -l ${DEVICE}|grep ${DEVICE}p${PART}|awk '{print $2}')
+	start=$(fdisk -l /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
 	echo $start
 
 	set +e
-	fdisk ${DEVICE} <<EOF
+	fdisk /dev/${rootdev} <<EOF
 p
 d
-2
+$rootpart
 n
 p
-2
+$rootpart
 $start
 
 w
 EOF
 	set -e
 
-	partx -u ${DEVICE}
-	resize2fs ${DEVICE}p${PART}
+	partx -u /dev/${rootdev}
+	resize2fs /dev/${rootdev}p${rootpart}
 }
 
 resize

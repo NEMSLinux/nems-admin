@@ -1,15 +1,15 @@
 #!/bin/bash
+rootdev=`/usr/local/bin/nems-info rootdev`
+rootpart=`/usr/local/bin/nems-info rootpart`
+
 # Get the log filename passed from Stage 1.
 rslog=$(cat /var/log/nems/resize-logfile.tmp)
 rm -f /var/log/nems/resize-logfile.tmp
 
-BOOTDEVICE=`ls -l /dev/disk/by-uuid/ | grep 96C3-9298 | awk '{print $11}' | sed "s/\.\.\/\.\.\///" | sed "s/p1//"`
-NEMSPART=${BOOTDEVICE}p2
-
-echo "Stage 2 on $NEMSPART" >> $rslog
+echo "Stage 2 on ${rootdev}p${rootpart}" >> $rslog
 
 echo "-------- Resize --------" >> $rslog
-/sbin/resize2fs /dev/$NEMSPART >> $rslog 2>&1
+/sbin/resize2fs /dev/${rootdev}p${rootpart} >> $rslog 2>&1
 echo "-------- /Resize -------" >> $rslog
 
 sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage2,,g" /etc/rc.local

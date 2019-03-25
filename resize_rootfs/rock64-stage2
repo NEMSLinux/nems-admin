@@ -1,9 +1,10 @@
 #!/bin/bash
-BOOTDEVICE=mmcblk1
-PARTITION=7
+rootdev=`/usr/local/bin/nems-info rootdev`
+rootpart=`/usr/local/bin/nems-info rootpart`
+
 PLATFORM=rock64 # Must match the filename $PLATFORM-stage#
 
-/sbin/resize2fs /dev/${BOOTDEVICE}p${PARTITION}
+/sbin/resize2fs /dev/${rootdev}p${rootpart}
 sed -i "s,/root/nems/nems-admin/resize_rootfs/"'${PLATFORM}'"-stage2,,g" /etc/rc.local
 
 # Log that patch (resize) has been applied to this system

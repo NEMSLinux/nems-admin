@@ -1,6 +1,6 @@
 #!/bin/bash
-BOOT=/etc/rc.local
-BOOTDEVICE=`ls -l /dev/disk/by-uuid/ | grep 96C3-9298 | awk '{print $11}' | sed "s/\.\.\/\.\.\///" | sed "s/p1//"`
+rootdev=`/usr/local/bin/nems-info rootdev`
+rootpart=`/usr/local/bin/nems-info rootpart`
 
 function do_resize
 {
@@ -10,24 +10,24 @@ function do_resize
 	echo "Saving the log to $rsflog"
 	sleep 4
 
-	p2_start=`/sbin/fdisk -l /dev/$BOOTDEVICE | grep ${BOOTDEVICE}p2 | awk '{print $2}'`
-	p2_end=$(((`/sbin/fdisk -l /dev/$BOOTDEVICE | head -n1 | grep -i bytes | awk '{print $5}'`/512)-20))
-	echo $p2_end
+	part_start=`/sbin/fdisk -l /dev/$rootdev | grep ${rootdev}p${$rootpart} | awk '{print $2}'`
+	part_end=$(((`/sbin/fdisk -l /dev/$rootdev | head -n1 | grep -i bytes | awk '{print $5}'`/512)-20))
+	echo $part_end
 
-	/sbin/fdisk /dev/$BOOTDEVICE <<EOF &>> $rsflog
+	/sbin/fdisk /dev/$rootdev <<EOF &>> $rsflog
 p
 d
-2
+$rootpart
 n
 p
-2
-$p2_start
-$p2_end
+$rootpart
+$part_start
+$part_end
 p
 w
 EOF
 	sync && sync
-	sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage1,/root/nems/nems-admin/resize_rootfs/odroid-stage2,g" "$BOOT"
+	sed -i "s,/root/nems/nems-admin/resize_rootfs/odroid-stage1,/root/nems/nems-admin/resize_rootfs/odroid-stage2,g" "/etc/rc.local"
 	echo > /etc/udev/rules.d/70-persistent-net.rules
 }
 
