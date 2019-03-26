@@ -1,16 +1,23 @@
-Burn Ayufan's debian stretch: https://github.com/ayufan-pine64/linux-build/releases/download/0.7.19/stretch-minimal-sopine-bspkernel-0.7.19-118.img.xz
-
-Alt: Armbian Xenial: https://dl.armbian.com/pine64so/Ubuntu_xenial_default.7z
+Burn Ayufan's latest debian stretch minimal sopine image: https://github.com/ayufan-pine64/linux-build/releases
 
 Username and Password: pine64
 
 sudo su
 
-Once booted from Ayufan's build and logged in as root, run this and let it wait:
-sleep 600 && reboot
+Once booted from Ayufan's build and logged in as root, check if filesystem was successfully resized. If yes, continue. If not, run as root: sleep 600 && reboot
 
-Then let it sit a while (to ensure Ayufan's first boot scripts are complete).
+Ensure OS is fully up-to-date and is the version intended (eg., Buster instead of Stretch, Bionic instead of Xenial).
+
+Set the timezone to America/Toronto: dpkg-reconfigure tzdata
+
+Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
+
+Edit /etc/locale.gen and uncomment
+- en_CA.UTF-8 UTF-8
+- en_US.UTF-8 UTF-8
+
+Run locale-gen
 
 Prep as normal.
 
-Build: Build: /root/nems/nems-admin/nems-build.sh 1.4.1 44
+Build: Build: /root/nems/nems-admin/nems-build.sh 44
