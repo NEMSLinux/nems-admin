@@ -2,10 +2,12 @@
 # Clean up any cruft left behind
 
 # Remove any MOTD items included with the base distro
-  if [[ -e /etc/update-motd.d/* ]]; then
+  if [ -n "$(ls -A /etc/update-motd.d/ 2>/dev/null)" ]
+  then
     rm /etc/update-motd.d/*
   fi
-  if [[ -e /etc/motd.d/* ]]; then
+  if [ -n "$(ls -A /etc/motd.d/ 2>/dev/null)" ]
+  then
     rm /etc/motd.d/*
   fi
 
