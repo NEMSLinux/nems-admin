@@ -1,0 +1,11 @@
+#!/bin/bash
+
+    if ! grep -q "PATCH-000004" /var/log/nems/patches.log; then
+      cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/check_speedtest-cli.sh /usr/lib/nagios/plugins/
+      echo "PATCH-000004" >> /var/log/nems/patches.log
+    else
+      echo "This patch is already applied."
+    fi
+
+
+
