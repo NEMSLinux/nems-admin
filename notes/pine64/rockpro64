@@ -8,7 +8,7 @@ Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz
 
 Prep as normal.
 
-Build: /root/nems/nems-admin/nems-build.sh 46
+Build: /root/nems/nems-admin/nems-build.sh 48
 
 Reboot
 
