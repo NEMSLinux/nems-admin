@@ -1,0 +1,24 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# enable rc.local service
+if [[ ! -e /etc/systemd/system/rc-local.service ]]; then
+echo "[Unit]
+ Description=/etc/rc.local Compatibility
+ ConditionPathExists=/etc/rc.local
+
+[Service]
+ Type=forking
+ ExecStart=/etc/rc.local start
+ TimeoutSec=0
+ StandardOutput=tty
+ RemainAfterExit=yes
+ SysVStartPriority=99
+
+[Install]
+ WantedBy=multi-user.target" > /etc/systemd/system/rc-local.service
+fi
+                       
+chmod +x /etc/rc.local
+
+systemctl enable rc-local

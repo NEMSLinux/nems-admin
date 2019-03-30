@@ -235,8 +235,8 @@ nameserver 2001:4860:4860::8844
      rm -rf /root/scripts
   fi
 
-  if (( $platform >= 45 )) && (( $platform <= 47 )); then
-    # ROCK64
+  if (( $platform >= 45 )) && (( $platform <= 49 )); then
+    # ROCK64 and ROCKPRO64
     rm -rf /var/lib/rock64 # Ayufan's build places a file in that folder which stops it from resizing on boot
   fi
 
