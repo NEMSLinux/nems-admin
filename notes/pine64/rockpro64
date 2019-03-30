@@ -1,23 +1,10 @@
-Install latest version of minimal from https://github.com/ayufan-rock64/linux-build/releases
+Boot Bald Nerd's RockPro64 Base img.
 
-Username: rock64
-Password: rock64
+Once booted, check if filesystem was successfully resized. If yes, continue. If not, resize.
 
-sudo su
-
-Once booted from Ayufan's build and logged in as root, check if filesystem was successfully resized. If yes, continue. If not, run as root: sleep 600 && reboot
-
-Ensure OS is fully up-to-date and is the version intended (eg., Buster instead of Stretch, Bionic instead of Xenial).
-
-Set the timezone to America/Toronto: dpkg-reconfigure tzdata
+Ensure OS is fully up-to-date and is the version intended.
 
 Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
-
-Edit /etc/locale.gen and uncomment
-- en_CA.UTF-8 UTF-8
-- en_US.UTF-8 UTF-8
-
-Run locale-gen
 
 Prep as normal.
 
