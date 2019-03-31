@@ -1,0 +1,12 @@
+Ensure using a UHS-1 capable SD card: https://amzn.to/2vKMx67
+
+Install to SD Card: Bald Nerd Debian Buster Base Image for ODROID-N2
+
+Ensure the boot mode selection switch is set to SD mode.
+
+Verify the filesystem has been successfully resized. Run first-boot and resize in /root/scripts if not.
+
+Check filesystem space first, then prep NEMS as per normal.
+
+Then build NEMS with:
+/root/nems/nems-admin/nems-build.sh 15
