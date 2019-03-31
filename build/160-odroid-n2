@@ -1,0 +1,10 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+
+if (( $platform == 15 )); then
+
+  echo "No special config needed with the N2 yet."
+
+fi
