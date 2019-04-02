@@ -8,6 +8,8 @@ Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz
 
 Prep as normal.
 
+Comment out firmware-linux-nonfree in packages.build
+
 Build: /root/nems/nems-admin/nems-build.sh 67
 
 Reboot
