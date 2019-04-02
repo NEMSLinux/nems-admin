@@ -1,0 +1,15 @@
+Boot Bald Nerd's RockPro64 Base img.
+
+Once booted, check if filesystem was successfully resized. If yes, continue. If not, resize. M4 is compatible with Pine64 resizer on mmcblk0p1
+
+Ensure OS is fully up-to-date and is the version intended.
+
+Fix the time: wget -O - https://www.baldnerd.com/nerdgasms/linuxdate/ajax.php?tz=192 | { read gmt; date -s "$gmt"; }
+
+Prep as normal.
+
+Build: /root/nems/nems-admin/nems-build.sh 67
+
+Reboot
+
+Cleanup
