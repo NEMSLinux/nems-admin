@@ -41,11 +41,14 @@ wifi.cloned-mac-address=permanent
 
     fi
 
-  # Set the connection to persistent
+# Set the connection to persistent
+for uuid in $(nmcli -g uuid con); do
   echo "set ethernet.cloned-mac-address permanent
+set wifi.cloned-mac-address permanent
 save persistent
 quit
-" | nmcli connection edit $(nmcli -g uuid con)
+" | nmcli connection edit "${uuid}"
+done
 
   # Restart NetworkManger to re-establish all connections
   systemctl restart network-manager
