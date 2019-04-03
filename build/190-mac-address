@@ -39,9 +39,15 @@ ethernet.cloned-mac-address=permanent
 wifi.cloned-mac-address=permanent
 " >> /etc/NetworkManager/NetworkManager.conf
 
-      # Restart NetworkManger to re-establish all connections
-      systemctl restart network-manager
-
     fi
+
+  # Set the connection to persistent
+  echo "set ethernet.cloned-mac-address permanent
+save persistent
+quit
+" | nmcli connection edit $(nmcli -g uuid con)
+
+  # Restart NetworkManger to re-establish all connections
+  systemctl restart network-manager
 
 fi
