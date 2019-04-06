@@ -287,17 +287,18 @@ nameserver 2001:4860:4860::8844
 
   sync
 
-  # Write zeros to unused blocks before halting to create the img
-  echo "Filling empty space with zeros..."
-  dd if=/dev/zero bs=1M of=/root/.null && sync
-  while [ -f /root/.null ]
-  do
-    sync
-    rm -f /root/.null
-    sync
-    sleep 5
-  done
-
+  if (( $platform != 20 )); then
+    # Write zeros to unused blocks before halting to create the img
+    echo "Filling empty space with zeros..."
+    dd if=/dev/zero bs=1M of=/root/.null && sync
+    while [ -f /root/.null ]
+    do
+      sync
+      rm -f /root/.null
+      sync
+      sleep 5
+    done
+  fi
 
   if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
 
