@@ -5,11 +5,11 @@ OVA:
 - On a Windows machine, use OVF tool https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742
   - "C:\Program Files\VMware\VMware OVF Tool\ovftool.exe" --noSSLVerify "vi://root@10.0.0.105/NEMS Linux" NEMS.ova
 
-Optional method of obtaining VMDK: In ESXi, export to OVF/VMDK
 VHD:
 
 - ~~Copy from dev master which was used to create OVA.~~
-- On Windows, use Microsoft Virtual Machine Converter - https://www.microsoft.com/en-ca/download/details.aspx?id=42497
+- Extract VMDK file from OVA.
+- Using [vmdk2vhd](https://www.softpedia.com/get/System/File-Management/Vmdk2Vhd.shtml) convert the file.
 
 QCOW2:
 - Extract VMDK from OVA.
