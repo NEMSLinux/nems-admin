@@ -1,7 +1,8 @@
 OVA:
 
 - ~~Deploy as normal using VHD as the drive type within VirtualBox, export as OVA will convert to VMDK within OVA.~~
-- Deploy on vSphere, output to OVA.
+- Deploy on ESXi, export to OVF/VMDK.
+- Use OVF tool https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742
 
 VHD:
 
