@@ -43,7 +43,7 @@ sleep 5
   apt update
 
   apt install --yes git screen dialog gnupg nano apt-utils
-  
+
   # Setup default account info
   git config --global user.email "nems@baldnerd.com"
   git config --global user.name "NEMS Linux"
@@ -67,7 +67,7 @@ sleep 5
   export LC_ALL=en_US.UTF-8
   export LC_TIME=en_US.UTF-8
   #dpkg-reconfigure locales # Set second screen to UTF8
-  
+
   # Make it so SSH does not load the locale from the connecting machine (causes problems on Pine64)
   # This requires the user to re-connect
   sed -i -e 's/    SendEnv LANG LC_*/#   SendEnv LANG LC_*/g' /etc/ssh/ssh_config
@@ -88,6 +88,9 @@ sleep 5
   cd /home/nemsadmin
   wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
   cp /root/nems/nems-migrator/data/nems/changelog.txt .
+
+  # Setup default paths
+  echo 'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/games:/sbin"' > /etc/environment
 
   echo "System Prepped & Rebooting... re-connect as nemsadmin, run screen, then run your build script (see ./notes)."
   reboot
