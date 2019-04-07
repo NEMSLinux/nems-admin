@@ -9,7 +9,7 @@ VHD:
 
 - ~~Copy from dev master which was used to create OVA.~~
 - Extract VMDK file from OVA.
-- Using [vmdk2vhd](https://www.softpedia.com/get/System/File-Management/Vmdk2Vhd.shtml) convert the file.
+- With VirtualBox installed, convert the VMDK file with the following command: `"c:\Program Files\Oracle\VirtualBox\VBoxManage.exe" clonemedium --format vhd NEMS-disk1.vmdk NEMS.vhd`
 
 QCOW2:
 - Extract VMDK from OVA.
