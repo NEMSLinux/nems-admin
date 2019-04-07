@@ -158,8 +158,8 @@ rm -f /etc/timezone
 rm -f /etc/localtime
 dpkg-reconfigure -f noninteractive tzdata
 
-#echo "Run manually parts"
-#exit
+echo "Run manually parts"
+exit
 
 echo "------------------------------"
 # Run the scripts in the build folder

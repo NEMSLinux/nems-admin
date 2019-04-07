@@ -47,8 +47,8 @@ wireless-regdb
 crda
 grub2
 grub-common
-grub-efi-amd64
-grub-efi-amd64-bin
+#grub-efi-amd64
+#grub-efi-amd64-bin
 grub2-common
 #firmware-linux-nonfree
 ssh
