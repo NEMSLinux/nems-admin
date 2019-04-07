@@ -15,6 +15,10 @@ if ! grep -q "PATCH-000005" /var/log/nems/patches.log; then
   echo "PATCH-000005" >> /var/log/nems/patches.log
 fi
 
+if ! grep -q "PATCH-000006" /var/log/nems/patches.log; then
+  echo "PATCH-000006" >> /var/log/nems/patches.log
+fi
+
 
 
 

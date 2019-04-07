@@ -1,0 +1,12 @@
+#!/bin/bash
+
+  # While this is the same as Patch 5, it's required for those who already had Patch 5 installed when check_rpi_temperature was improved
+    if ! grep -q "PATCH-000006" /var/log/nems/patches.log; then
+      cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/check_rpi_temperature /usr/lib/nagios/plugins/
+      echo "PATCH-000006" >> /var/log/nems/patches.log
+    else
+      echo "This patch is already applied."
+    fi
+
+
+
