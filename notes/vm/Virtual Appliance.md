@@ -1,10 +1,11 @@
 OVA:
 
 - ~~Deploy as normal using VHD as the drive type within VirtualBox, export as OVA will convert to VMDK within OVA.~~
-- Deploy on ESXi, export to OVF/VMDK.
+- Deploy on ESXi.
 - On a Windows machine, use OVF tool https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742
   - "C:\Program Files\VMware\VMware OVF Tool\ovftool.exe" --noSSLVerify "vi://root@10.0.0.105/NEMS Linux" NEMS.ova
 
+Optional method of obtaining VMDK: In ESXi, export to OVF/VMDK
 VHD:
 
 - ~~Copy from dev master which was used to create OVA.~~
