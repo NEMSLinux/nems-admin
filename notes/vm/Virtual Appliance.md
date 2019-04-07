@@ -1,3 +1,5 @@
+**Ensure non-free repo is enabled!**
+
 OVA:
 
 - ~~Deploy as normal using VHD as the drive type within VirtualBox, export as OVA will convert to VMDK within OVA.~~
