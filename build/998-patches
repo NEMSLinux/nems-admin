@@ -1,0 +1,22 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# Add patches that are done during the build process, but won't be logged automatically
+
+# Do not run this script manually!!!!!!
+
+# This should only execute during an automatic build process, and should only include patches that are part of that build process
+
+if ! grep -q "PATCH-000004" /var/log/nems/patches.log; then
+  echo "PATCH-000004" >> /var/log/nems/patches.log
+fi
+
+if ! grep -q "PATCH-000005" /var/log/nems/patches.log; then
+  echo "PATCH-000005" >> /var/log/nems/patches.log
+fi
+
+
+
+
+
+

@@ -235,6 +235,13 @@ nameserver 2001:4860:4860::8844
      rm -rf /root/scripts
   fi
 
+  if (( $platform == 20 )); then
+    # Virtual Appliance does not need to resize the filesystem
+    if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
+      echo "PATCH-000002" >> /var/log/nems/patches.log
+    fi
+  fi
+
   if (( $platform >= 45 )) && (( $platform <= 49 )); then
     # ROCK64 and ROCKPRO64
     rm -rf /var/lib/rock64 # Ayufan's build places a file in that folder which stops it from resizing on boot
