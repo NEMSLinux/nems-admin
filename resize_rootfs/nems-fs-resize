@@ -1,22 +1,39 @@
 #!/bin/sh
-rootdev=`/usr/local/bin/nems-info rootdev`
-rootpart=`/usr/local/bin/nems-info rootpart`
+# nems-fs-resize
+#
+# Resize the root filesystem of any SBC
+# By Robbie Ferguson - https://baldnerd.com/
+# Designed for NEMS Linux - https://nemslinux.com/
+#
+# Feel free to include this in your projects, but I'd appreciate it
+# if the credit was left in place (though you can do whatever you want).
+#
+# Tip me at https://donate.category5.tv or https://patreon.com/nems
+#
+# Tested and works on Bald Nerd's Base Images:
+#   - Tinker Board
+#
+#########################################################################
 
 set -e
 
 if [ "$(id -u)" -ne "0" ]; then
-	echo "This script requires root."
-	exit 1
+  echo "This script requires root."
+  exit 1
 fi
 
 set -x
 
-resize() {
-	start=$(fdisk -l /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
-	echo $start
+# Detect the drive and partition
+fulldev=`/bin/mount | /bin/sed -n 's|^/dev/\(.*\) on / .*|\1|p'`
+rootdev=`echo $fulldev | cut -d "p" -f 1`
+rootpart=`echo $fulldev | cut -d "p" -f 2`
 
-	set +e
-	fdisk /dev/${rootdev} <<EOF
+resize() {
+  start=$(fdisk -l /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
+  echo $start
+  set +e
+  fdisk /dev/${rootdev} <<EOF
 p
 d
 $rootpart
@@ -27,21 +44,22 @@ $start
 
 w
 EOF
-	set -e
-
-	partx -u /dev/${rootdev}
-	resize2fs /dev/${rootdev}p${rootpart}
+  set -e
+  partx -u /dev/${rootdev}
+  resize2fs /dev/${rootdev}p${rootpart}
 }
 
 resize
 
 # Log that patch (resize) has been applied to this system
 # Activates features such as bootscreen.sh
-if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
-  echo "PATCH-000002" >> /var/log/nems/patches.log
+if [[ -d /var/log/nems ]]; then
+  if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
+    echo "PATCH-000002" >> /var/log/nems/patches.log
+  fi
 fi
 
-echo "Done!"
-
+# NEMS runs this script on first boot, so if this is NEMS, this entry will be removed
 sed -i "s,/root/nems/nems-admin/resize_rootfs/nems-fs-resize,,g" /etc/rc.local
 
+echo "Done! If you don't see the free space, reboot."
