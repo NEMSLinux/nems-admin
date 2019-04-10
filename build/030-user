@@ -19,7 +19,8 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
   cp /root/nems/nems-migrator/data/nems/changelog.txt .
 
 
-# Delete any non-root user and remove their home folder (eg: pi)
+# Delete any default users and remove their home folders
+  userdel -f -r baldnerd # Bald Nerd's Base Images
   userdel -f -r pi
   userdel -f -r test #armbian
   userdel -f -r odroid

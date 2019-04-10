@@ -93,5 +93,6 @@ sleep 5
   echo 'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/games:/sbin"' > /etc/environment
 
   echo "System Prepped & Rebooting... re-connect as nemsadmin, run screen, then run your build script (see ./notes)."
+
   reboot
 fi
