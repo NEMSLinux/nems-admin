@@ -209,7 +209,8 @@ nameserver 2001:4860:4860::8844
 
   # Make it so filesystem resizes at first boot
   # 100 = Tinker Board
-  if (( $platform == 100 )); then
+  # 101 = Tinker Board S
+  if (( $platform == 100 )) || (( $platform == 101 )); then
     # NEMS Universal Filesystem Restore
      addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize\n"
      if grep -q "exit" /etc/rc.local; then
