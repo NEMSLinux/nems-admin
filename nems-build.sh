@@ -16,6 +16,11 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+if [[ -e /usr/local/share/nems ]]; then
+  echo "NEMS is already built. Aborting.";
+  exit 1
+fi
+
 # Create the log folder
 if [[ ! -d /var/log/nems ]]; then
   mkdir /var/log/nems
