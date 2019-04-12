@@ -1,0 +1,18 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+
+if (( $platform == 100 )); then
+
+  # Lower the CPU frequency to reduce temperature and improve reliability
+  echo 1300000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+  echo 1300000 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+  echo 1300000 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq
+  echo 1300000 > /sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq
+  echo conservative > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  echo conservative > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+  echo conservative > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+  echo conservative > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+
+fi
