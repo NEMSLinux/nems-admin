@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # nems-fs-resize
 #
 # Resize the root filesystem of any SBC
@@ -47,9 +47,12 @@ EOF
   set -e
   partx -u /dev/${rootdev}
   resize2fs /dev/${rootdev}p${rootpart}
+  set +x
 }
 
 resize
+
+echo ""
 
 # Log that patch (resize) has been applied to this system
 # Activates features such as bootscreen.sh
