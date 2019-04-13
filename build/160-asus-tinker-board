@@ -30,3 +30,6 @@ if (( $platform == 100 )) || (( $platform == 101 )); then
   fi
 
 fi
+
+# Clear the build info (because this is called at boot time)
+rm /var/www/html/userfiles/nems-build.cur
