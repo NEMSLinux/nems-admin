@@ -209,9 +209,10 @@ nameserver 2001:4860:4860::8844
 
   # Make it so filesystem resizes at first boot
   # 32 = Orange Pi Zero
+  # 69 = NanoPi NEO Plus2
   # 100 = Tinker Board
   # 101 = Tinker Board S
-  if (( $platform == 32 )) || (( $platform == 100 )) || (( $platform == 101 )); then
+  if (( $platform == 32 )) || (( $platform == 69 )) || (( $platform == 100 )) || (( $platform == 101 )); then
     # NEMS Universal Filesystem Restore
      addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize\n"
      if grep -q "exit" /etc/rc.local; then
