@@ -44,7 +44,7 @@ sleep 5
 
   apt update
 
-  apt install --yes git screen dialog gnupg nano apt-utils
+  apt install --yes git screen dialog gnupg nano apt-utils sudo
 
   # Setup default account info
   git config --global user.email "nems@baldnerd.com"
