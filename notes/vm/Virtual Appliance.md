@@ -1,7 +1,6 @@
-**Ensure non-free repo is enabled!**
-
 - OVA:
   - Build on ESXi as per normal.
+    - Ensure non-free repo is enabled!
     - Use MAC address: 080027C75EC1
   - Export on a Windows machine, use [OVF Tool](https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742) to export the OVA: `"C:\Program Files\VMware\VMware OVF Tool\ovftool.exe" --noSSLVerify "vi://root@10.0.0.105/NEMS Linux" NEMS.ova`
 - VHD:
