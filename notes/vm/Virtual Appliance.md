@@ -4,8 +4,7 @@ OVA:
 
 - Deploy on ESXi.
   - MAC address: 080027C75EC1
-- On a Windows machine, use OVF tool to export the OVA https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742
-`"C:\Program Files\VMware\VMware OVF Tool\ovftool.exe" --noSSLVerify "vi://root@10.0.0.105/NEMS Linux" NEMS.ova`
+- On a Windows machine, use [OVF Tool](https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742) to export the OVA: `"C:\Program Files\VMware\VMware OVF Tool\ovftool.exe" --noSSLVerify "vi://root@10.0.0.105/NEMS Linux" NEMS.ova`
 
 VHD:
 
