@@ -45,6 +45,9 @@ sleep 5
   apt update
 
   apt install --yes git screen dialog gnupg nano apt-utils sudo
+  
+  # Make absolutely certain sudo is installed (as we'll be removing root login)
+  command -v sudo >/dev/null 2>&1 || { echo "sudo could not be installed.  Aborting." >&2; exit 1; }
 
   # Setup default account info
   git config --global user.email "nems@baldnerd.com"
