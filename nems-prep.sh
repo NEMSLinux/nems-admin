@@ -11,6 +11,8 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 else
 
+export PATH=$PATH:/sbin
+
 printf "RTC reports date/time as: "
 date
 
