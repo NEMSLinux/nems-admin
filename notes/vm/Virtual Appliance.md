@@ -5,6 +5,7 @@
   - Export to OVA using [OVF Tool](https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742)
     - Windows: `"C:\Program Files\VMware\VMware OVF Tool\ovftool.exe" --noSSLVerify "vi://root@10.0.0.105/NEMS Linux" NEMS.ova`
     - Linux: `ovftool --noSSLVerify "vi://root@10.0.0.105/NEMS Linux" NEMS.ova`
+    - NOTE: Would adding --shaAlgorithm=SHA1 as per https://kb.vmware.com/s/article/2151537 fix the issue reported by a few users in Build 3?
 - VHD:
   - Extract VMDK file from OVA.
   - With VirtualBox installed, convert the VMDK file with the following command: `"c:\Program Files\Oracle\VirtualBox\VBoxManage.exe" clonemedium --format vhd NEMS-disk1.vmdk NEMS.vhd`
