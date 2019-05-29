@@ -1,5 +1,6 @@
 - OVA:
   - Build on ESXi as per normal.
+    - See [this page](https://kb.vmware.com/s/article/2007240) for virtual hardware version compatibility.
     - Ensure non-free repo is enabled!
     - Use MAC address: 080027C75EC1
   - Export to OVA using [OVF Tool](https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742)
