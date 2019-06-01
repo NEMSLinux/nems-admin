@@ -3,6 +3,8 @@
     - See [this page](https://kb.vmware.com/s/article/2007240) for virtual hardware version compatibility.
     - Ensure non-free repo is enabled!
     - Use MAC address: 080027C75EC1
+    - Halt the machine
+    - Remove Optical drive and USB 2.0 controller
   - Export to OVA using [OVF Tool](https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742)
     - Linux: `ovftool --noSSLVerify --shaAlgorithm=SHA1 "vi://root@10.0.0.3/NEMS Linux 1.5" NEMS.ova` - Using SHA1 to ensure compatibility with older ESXi where SHA256 is not available.
 - VHD:
