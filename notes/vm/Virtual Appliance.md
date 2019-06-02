@@ -6,7 +6,7 @@
     - Halt the machine
     - Remove Optical drive and USB 2.0 controller
   - Export to OVA using [OVF Tool](https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742)
-    - `ovftool --noSSLVerify --shaAlgorithm=SHA1 "vi://root@10.0.0.3/NEMS Linux 1.5" NEMS.ova && mkdir ova-working && cd ova-working && tar -xf ../nems.ova && sed -i -E "/nvram/d" *.ovf && sed -i "/\.ovf/s/= .*/= `sha1sum *.ovf |cut -d " " -f 1`/;/nvram/d" *.mf && rm -f *.nvram && tar -cf ../nems.ova * && cd .. && rm -rf ova-working`
+    - `ovftool --noSSLVerify --shaAlgorithm=SHA1 "vi://root@10.0.0.3/NEMS Linux 1.5" NEMS.ova && mkdir ova-working && cd ova-working && tar -xf ../nems.ova && sed -i -E "/nvram/d" *.ovf && sed -i "/\.ovf/s/= .*/= \`sha1sum *.ovf |cut -d " " -f 1\`/;/nvram/d" *.mf && rm -f *.nvram && tar -cf ../nems.ova * && cd .. && rm -rf ova-working`
 - VHD:
   - Extract VMDK file from OVA.
   - With VirtualBox installed, convert the VMDK file with the following command: `"c:\Program Files\Oracle\VirtualBox\VBoxManage.exe" clonemedium --format vhd NEMS-disk1.vmdk NEMS.vhd`
