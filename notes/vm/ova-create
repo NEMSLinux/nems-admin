@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Create the working directory
+tmpdir=`mktemp -d -p /tmp/`
+
+# Run nems-cleanup.sh halt on the NEMS VM, then import OVA:
+ovftool --noSSLVerify --shaAlgorithm=SHA1 "vi://root@10.0.0.3/NEMS Linux 1.5" $tmpdir/NEMS.ova
+
+# Extract the files from OVA
+mkdir $tmpdir/ova-working
+cd $tmpdir/ova-working
+tar -xf ../NEMS.ova
+
+# Remove UEFI NVRAM, as it is only supported in ESXi 6.7+
+sed -i -E "/nvram/d" *.ovf
+
+# Update the manifest
+sed -i "/\.ovf/s/= .*/= $(sha1sum *.ovf |cut -d " " -f 1)/;/nvram/d" *.mf
+
+# Create the new OVA file
+# According to section 6.3 https://www.vmware.com/pdf/ovf_spec_draft.pdf
+# files must be in specific order, so need to add each individually
+tar -cf /tmp/NEMS.ova *.ovf
+tar -rf /tmp/NEMS.ova *.mf
+tar -rf /tmp/NEMS.ova *.vmdk
+
+# Remove the tmp files
+cd /tmp
+rm -rf $tmpdir
+
+echo "Done." && echo ""
+# Display the resulting file
+echo "File located at /tmp/NEMS.ova" && echo ""
+ls NEMS.ova -la
