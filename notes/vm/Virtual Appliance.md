@@ -6,7 +6,7 @@
     - Halt the machine
     - Remove Optical drive and USB 2.0 controller
   - Export to OVA using [OVF Tool](https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742)
-    - Simply run `ova-create`
+    - Simply run [ova-create](ova-create)
 - VHD:
   - Extract VMDK file from OVA.
   - With VirtualBox installed, convert the VMDK file with the following command: `"c:\Program Files\Oracle\VirtualBox\VBoxManage.exe" clonemedium --format vhd NEMS-disk1.vmdk NEMS.vhd`
