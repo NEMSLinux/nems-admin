@@ -1,18 +1,49 @@
 #!/bin/bash
+
+# Version to install corresponding to the tar.gz file from their mmonit.com
+ver=5.25.3
+
+# stop it if it is already running from a previous apt task
+systemctl stop monit.service
+
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
-# Fix the cert bug in 5.20
-# It seems this has been patched upstream, so can comment this out - but leaving until confirmed
-#apt -y install automake
-#cd /tmp
-#mkdir patch-monit
-#cd patch-monit
-#wget https://bitbucket.org/tildeslash/monit/get/master.tar.gz
-#tar -xzf master.tar.gz
-#cd tildeslash*
-#./boostrap
-#./configure
-#make
+yes | apt install libssl-dev libpam0g-dev gcc make
 
-cp -f /root/nems/nems-migrator/data/1.4/monit/conf.d/nems.conf /etc/monit/conf.d/
-systemctl restart monit
+tmpdir=`mktemp -d -p /tmp/`
+wget -O $tmpdir/monit.tar.gz https://mmonit.com/monit/dist/monit-$ver.tar.gz
+cd $tmpdir
+tar xvzf monit.tar.gz
+cd monit-$ver
+./configure --prefix=/usr/local/bin --bindir=/usr/local/bin --sysconfdir=/etc/monit/
+make && make install &&
+
+echo "[Unit]
+ Description=Pro-active monitoring utility for unix systems
+ After=network.target
+ Documentation=man:monit(1) https://mmonit.com/wiki/Monit/HowTo 
+
+ [Service]
+ Type=simple
+ KillMode=process
+ ExecStart=/usr/local/bin/monit -I
+ ExecStop=/usr/local/bin/monit quit
+ ExecReload=/usr/local/bin/monit reload
+ Restart = on-abnormal
+ StandardOutput=null
+
+ [Install]
+ WantedBy=multi-user.target" > /lib/systemd/system/monit.service
+
+cp -Rf /root/nems/nems-migrator/data/1.4/monit /etc/
+chmod 600 /etc/monit/monitrc
+# Don't need this folder, but makes it backward compatible with 1.4 confs
+if [[ ! -d /etc/monit/conf-enabled ]]; then
+  mkdir -p /etc/monit/conf-enabled
+fi
+if [[ ! -d /var/lib/monit ]]; then
+  mkdir -m 0750 -p /var/lib/monit
+fi
+
+systemctl enable monit.service
+systemctl start monit.service
