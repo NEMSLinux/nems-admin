@@ -12,3 +12,11 @@ Burn the img:
 ```
 burn-tool -v aml -b VIM3 -i "file.img"
 ```
+
+Create boot.png and convert with:
+
+```
+convert boot.png -type Palette -colors 224 -compress none -verbose BMP3:boot.bmp
+```
+
+Place in /boot
