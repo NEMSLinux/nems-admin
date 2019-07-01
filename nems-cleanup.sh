@@ -212,7 +212,9 @@ nameserver 2001:4860:4860::8844
   # 69 = NanoPi NEO Plus2
   # 100 = Tinker Board
   # 101 = Tinker Board S
-  if (( $platform == 32 )) || (( $platform == 69 )) || (( $platform == 100 )) || (( $platform == 101 )); then
+  # 120 = Khadas VIM3 Basic
+  # 121 = Khadas VIM3 Pro
+  if (( $platform == 32 )) || (( $platform == 69 )) || (( $platform == 100 )) || (( $platform == 101 )) || (( $platform == 120 )) || (( $platform == 121 )); then
     # NEMS Universal Filesystem Restore
      addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize\n"
      if grep -q "exit" /etc/rc.local; then
