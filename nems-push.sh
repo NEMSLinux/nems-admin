@@ -33,6 +33,14 @@ git commit -am "$comment"
 #git push origin master
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-www.git"
 
+cd /var/www/nems-tv/
+echo ""
+pwd
+git pull
+git add *
+git commit -am "$comment"
+git push "https://Cat5TV:$password@github.com/Cat5TV/nems-tv.git"
+
 cd /root/nems/nems-migrator/
 echo ""
 pwd
