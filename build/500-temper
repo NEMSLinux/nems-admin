@@ -1,0 +1,3 @@
+#!/bin/bash
+# Install needed packages for nems-info temper
+yes | apt install python3-serial
