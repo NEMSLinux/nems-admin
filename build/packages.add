@@ -71,8 +71,8 @@ hddtemp
 # For Nagios Core
 libgd-dev
 # nagios-images -- part of nems-www now
-nagios-nrpe-plugin
-nagios-nrpe-server
+#nagios-nrpe-plugin -- orphaned. Compile from github instead
+#nagios-nrpe-server
 
 # *.local Resolution
 avahi-daemon

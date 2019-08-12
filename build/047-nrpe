@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Set the version (see git releases)
+nrpeVer="3.2.1"
+
+APT_LISTCHANGES_FRONTEND=cat
+echo $0 > /var/www/html/userfiles/nems-build.cur
+systemctl stop nrpe
+yes | apt remove --purge nagios-nrpe-plugin
+yes | apt remove --purge nagios-nrpe-server
+yes | apt autoremove
+apt update
+yes | apt install libssl-dev dpatch debhelper libwrap0-dev autotools-dev
+tmpdir=`mktemp -d -p /tmp/`
+file="https://github.com/NagiosEnterprises/nrpe/archive/nrpe-$nrpeVer.tar.gz"
+cd $tmpdir
+wget -O $tmpdir/nrpe.tar.gz $file
+tar xvzf nrpe.tar.gz
+cd nrpe-*
+./configure --enable-command-args
+make all
+make install-groups-users
+make install-plugin
+make install-daemon
+make install-config
+make install-inetd
+make install-init
+
+systemctl stop nrpe
+
+cp -f /root/nems/nems-migrator/data/1.5/nagios/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
+
+systemctl start nrpe
+systemctl enable nrpe
+systemctl status nrpe --no-pager
+
