@@ -28,7 +28,7 @@ make install-init
 
 systemctl stop nrpe
 
-cp -f /root/nems/nems-migrator/data/1.5/nagios/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
+wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/nrpe.cfg
 
 systemctl start nrpe
 systemctl enable nrpe
