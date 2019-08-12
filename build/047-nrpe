@@ -11,6 +11,12 @@ yes | apt remove --purge nagios-nrpe-server
 yes | apt autoremove
 apt update
 yes | apt install libssl-dev dpatch debhelper libwrap0-dev autotools-dev
+if [[ ! -e $(pwd)/051-monitoring-plugins ]]; then
+  # Not running from nems-admin. Install plugins
+  apt -y install --reinstall monitoring-plugins-common
+  apt -y install --reinstall monitoring-plugins-basic
+  apt -y install --reinstall monitoring-plugins-standard
+fi
 tmpdir=`mktemp -d -p /tmp/`
 file="https://github.com/NagiosEnterprises/nrpe/archive/nrpe-$nrpeVer.tar.gz"
 cd $tmpdir
@@ -23,21 +29,12 @@ make install-groups-users
 make install-plugin
 make install-daemon
 make install-config
-make install-inetd
 make install-init
 
 systemctl stop nrpe
 
-wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/nrpe.cfg
-
-if [[ ! -e $(pwd)/051-monitoring-plugins ]]; then
-  # Not running from nems-admin. Install plugins
-  apt -y install --reinstall monitoring-plugins-common
-  apt -y install --reinstall monitoring-plugins-basic
-  apt -y install --reinstall monitoring-plugins-standard
-fi
+wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/misc/nrpe.cfg
 
 systemctl start nrpe
 systemctl enable nrpe
 systemctl status nrpe --no-pager
-
