@@ -30,6 +30,13 @@ systemctl stop nrpe
 
 wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/nrpe.cfg
 
+if [[ ! -e $(pwd)/051-monitoring-plugins ]]; then
+  # Not running from nems-admin. Install plugins
+  apt -y install --reinstall monitoring-plugins-common
+  apt -y install --reinstall monitoring-plugins-basic
+  apt -y install --reinstall monitoring-plugins-standard
+fi
+
 systemctl start nrpe
 systemctl enable nrpe
 systemctl status nrpe --no-pager
