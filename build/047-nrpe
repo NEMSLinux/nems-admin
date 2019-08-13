@@ -35,6 +35,9 @@ systemctl stop nrpe
 
 wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/misc/nrpe.cfg
 
+wget -O /usr/lib/nagios/plugins/custom_check_mem https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/plugins/custom_check_mem
+chmod +x /usr/lib/nagios/plugins/custom_check_mem
+
 systemctl start nrpe
 systemctl enable nrpe
 systemctl status nrpe --no-pager

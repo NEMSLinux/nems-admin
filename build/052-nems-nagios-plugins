@@ -23,7 +23,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
   fi
 
   # Grab the Migrator plugins
-    cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/* /usr/local/nagios/libexec/
+    cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/* /usr/lib/nagios/plugins/
 
   # Log patch of upgrade to speedtest
     if ! grep -q "PATCH-000004" /var/log/nems/patches.log; then
@@ -34,7 +34,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
     if [[ -f /usr/local/bin/telegram_nems.lua ]]; then
       rm -f /usr/local/bin/telegram_nems.lua
     fi
-    ln -s /usr/local/nagios/libexec/notify-by-telegram.lua /usr/local/bin/telegram_nems.lua
+    ln -s /usr/lib/nagios/plugins/notify-by-telegram.lua /usr/local/bin/telegram_nems.lua
 
 
   # Add IPMI sudoers access for nagios user
