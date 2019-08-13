@@ -10,7 +10,9 @@ yes | apt remove --purge nagios-nrpe-plugin
 yes | apt remove --purge nagios-nrpe-server
 yes | apt autoremove
 apt update
+
 yes | apt install libssl-dev dpatch debhelper libwrap0-dev autotools-dev
+
 if [[ ! -e $(pwd)/051-monitoring-plugins ]]; then
   # Not running from nems-admin. Install plugins
   apt -y install --reinstall monitoring-plugins-common
@@ -35,8 +37,11 @@ systemctl stop nrpe
 
 wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/misc/nrpe.cfg
 
-wget -O /usr/lib/nagios/plugins/custom_check_mem https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/plugins/custom_check_mem
-chmod +x /usr/lib/nagios/plugins/custom_check_mem
+# Install custom_check_mem
+  yes | apt install bc
+  yes | apt install dc
+  wget -O /usr/lib/nagios/plugins/custom_check_mem https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/plugins/custom_check_mem
+  chmod +x /usr/lib/nagios/plugins/custom_check_mem
 
 systemctl start nrpe
 systemctl enable nrpe
