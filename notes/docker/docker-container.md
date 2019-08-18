@@ -1,5 +1,4 @@
-  - Create the Debian container: `docker run -d --name nemslinux --cap-add SYS_ADMIN -v /sys/fs/cgroup:/sys/fs/cgroup:ro jrei/systemd-debian`
-  - Start the container: `docker start nemslinux`
+  - Create the Debian container: `docker run --name nemslinux -d -t -i -v /sys/fs/cgroup:/sys/fs/cgroup:ro dramaturg/debian-systemd`
   - Connect to the container: `docker exec -it nemslinux bash`
   - Prep as normal.
   - *exit* and restart the container: `docker restart nemslinux`
