@@ -1,6 +1,11 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+if [[ ! -e /etc/systemd/system/getty.target.wants ]]; then
+  echo "This platform does not have TTY"
+  exit 0
+fi
+
 # Don't output kernel messages (such as firewall blocks) to TTY
 
 if [[ ! -f /etc/rc.local ]]; then

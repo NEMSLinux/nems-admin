@@ -5,10 +5,9 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 apt install -y dialog
 
-systemtty=$(ls /etc/systemd/system/getty*)
-if [[ $systemtty == '' ]]; then
-  echo "This platform does not have a TTY"
-  exit
+if [[ ! -e /etc/systemd/system/getty.target.wants ]]; then
+  echo "This platform does not have TTY"
+  exit 0
 fi
 
 # Disable TTY1
