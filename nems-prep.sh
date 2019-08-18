@@ -92,7 +92,7 @@ sleep 5
   # Add files to nemsadmin home folder (which later get moved to NEMS user account at init)
   cd /home/nemsadmin
   wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-  cp /root/nems/nems-migrator/data/nems/changelog.txt .
+  wget https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/nems/changelog.txt
 
   # Setup default paths
   echo 'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/games:/sbin"' > /etc/environment
