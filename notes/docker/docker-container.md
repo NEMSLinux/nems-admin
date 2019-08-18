@@ -1,4 +1,4 @@
-  - Download and extract the `images` folder.
+  - Download, extract and enter the `image` folder.
   - Build with: `docker build -t nemslinux .`
   - Connect to the container: `docker exec -it nemslinux bash`
   - Ensure all packages are updated and system is upgraded to Buster.
