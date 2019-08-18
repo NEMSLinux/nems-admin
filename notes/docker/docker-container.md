@@ -1,3 +1,5 @@
   - Create the Debian container: `nemsid=$(docker run -dit debian) && docker rename $nemsid nemslinux`
   - Connect to the container: `docker exec -it nemslinux bash`
-  - Prep.
+  - Prep as normal.
+  - *exit* and restart the container: `docker restart nemslinux`
+  - Reconnect and build: `nems-build.sh 21`
