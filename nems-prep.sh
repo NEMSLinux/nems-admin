@@ -97,9 +97,9 @@ sleep 5
   # Setup default paths
   echo 'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/games:/sbin"' > /etc/environment
 
-  echo "System Prepped & Rebooting... re-connect as nemsadmin, run screen, then run your build script (see ./notes)."
+  echo "System Prepped. Please restart, re-connect as nemsadmin, run screen, then run your build script (see ./notes)."
 
-  if [[ -e /sbin/reboot ]]; then
-    /sbin/reboot
-  fi
+#  if [[ -e /sbin/reboot ]]; then
+#    /sbin/reboot
+#  fi
 fi
