@@ -1,4 +1,5 @@
-  - Create the Debian container: `docker run --name nemslinux -d -t -i -v /sys/fs/cgroup:/sys/fs/cgroup:ro dramaturg/debian-systemd`
+  - Download and extract the `images` folder.
+  - Build with: `docker build -t nemslinux .`
   - Connect to the container: `docker exec -it nemslinux bash`
   - Ensure all packages are updated and system is upgraded to Buster.
   - Prep as normal.
