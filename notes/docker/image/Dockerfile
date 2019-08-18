@@ -6,34 +6,27 @@ ENV DEBIAN_FRONTEND noninteractive
 
 MAINTAINER Robbie Ferguson <nems@category5.tv>
 
-# add contrib, non-free and backports repositories
+# Setup apt
 ADD sources.list /etc/apt/sources.list
-
 RUN apt-get update && \
     apt-get install -y apt-utils
 
+# Install a few prerequisites
 RUN apt-get update && \
-    apt-get install -y systemd \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    apt-get install -y ca-certificates wget ssl-cert git unzip make python3
 
-RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
-    /etc/systemd/system/*.wants/* \
-    /lib/systemd/system/local-fs.target.wants/* \
-    /lib/systemd/system/sockets.target.wants/*udev* \
-    /lib/systemd/system/sockets.target.wants/*initctl* \
-    /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
-    /lib/systemd/system/systemd-update-utmp*
-
-
-RUN apt-get update && \
-    apt-get install -y ca-certificates wget ssl-cert git
+# Setup faux systemctl
+RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-replacement/archive/v1.4.3000.zip && \
+    cd /tmp && \
+    unzip systemctl.zip && \
+    cd docker-systemctl-replacement* && \
+    make && \
+    mv ./files/docker/systemctl3.py /usr/local/bin/ && \
+    chmod +x /usr/local/bin/systemctl3.py && \
+    ln -s /usr/local/bin/systemctl3.py /usr/local/sbin/systemctl
+    
 
 RUN /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
-
-VOLUME [ "/sys/fs/cgroup" ]
-
-CMD ["/lib/systemd/systemd"]
 
 RUN wget --no-check-certificate -O /tmp/nems-prep.sh https://raw.githubusercontent.com/Cat5TV/nems-admin/master/nems-prep.sh && \
     chmod +x /tmp/nems-prep.sh && \
