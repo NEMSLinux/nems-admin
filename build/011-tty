@@ -1,6 +1,12 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+systemtty=$(ls /etc/systemd/system/getty*)
+if [[ $systemtty == '' ]]; then
+  echo "This platform does not have a TTY"
+  exit
+fi
+
 # Perform some additional TTY setup without manipulating the splash (010-tty)
 
 if [[ ! -f /etc/rc.local ]]; then
