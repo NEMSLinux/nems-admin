@@ -99,5 +99,7 @@ sleep 5
 
   echo "System Prepped & Rebooting... re-connect as nemsadmin, run screen, then run your build script (see ./notes)."
 
-  reboot
+  if [[ -e /sbin/reboot ]]; then
+    /sbin/reboot
+  fi
 fi
