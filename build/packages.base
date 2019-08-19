@@ -15,7 +15,6 @@ debconf-utils
 xz-utils
 fbset
 wpasupplicant
-resolvconf
 bc
 dbus
 bzip2
