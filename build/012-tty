@@ -1,6 +1,9 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+if (( $platform != 21 )); then
+
 if [[ ! -e /etc/systemd/system/getty.target.wants ]]; then
   echo "This platform does not have TTY"
   exit 0
@@ -34,3 +37,4 @@ if ! grep -q "NEMS00002" /etc/rc.local; then
   /bin/systemctl start rc-local.service
 fi
 
+fi

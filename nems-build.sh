@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# TO DO
-# Add removal of swap
-
 ####
 # This script is *DESTRUCTIVE*
 # This is how I build NEMS distros from scratch
@@ -139,17 +136,8 @@ done
 apt -y install -f
 
 # Be up to date
-apt -y upgrade
-#apt -y dist-upgrade
-
-# Upgrade firmware (Removed; will stick with stable firmware via raspberrypi-bootloader)
-# rpi-update
-
-# Upgrade again in case anything changed on the new kernel
-# Or if anything was held back for the upgraded packages
 apt update
 apt -y upgrade
-#apt -y dist-upgrade
 
 # Disable firstrun (ARMbian)
 if [[ -e /etc/init.d/firstrun ]]; then

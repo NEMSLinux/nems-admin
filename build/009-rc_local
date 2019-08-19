@@ -1,9 +1,13 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+
+if (( $platform != 21 )); then
+
 # enable rc.local service
 if [[ ! -e /etc/systemd/system/rc-local.service ]]; then
-echo "[Unit]
+  echo "[Unit]
  Description=/etc/rc.local Compatibility
  ConditionPathExists=/etc/rc.local
 
@@ -22,3 +26,5 @@ fi
 chmod +x /etc/rc.local
 
 /bin/systemctl enable rc-local
+
+fi

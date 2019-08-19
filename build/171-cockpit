@@ -3,6 +3,8 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # ** This file also gets called by NEMS daily fixes **
 
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+if (( $platform != 21 )); then
 
 ## Remove Cockpit theme and replace with symlink to the NEMS theme
 platform=$(/usr/local/bin/nems-info platform)
@@ -12,3 +14,5 @@ if [[ -d /usr/share/cockpit/branding/debian/ ]]; then
 fi
 mkdir -p /usr/share/cockpit/branding/debian
 cp -f /root/nems/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
+
+fi
