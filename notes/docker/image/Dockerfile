@@ -52,5 +52,3 @@ EXPOSE 2812/tcp
 EXPOSE 9090/tcp
 
 RUN /root/nems/nems-admin/nems-build.sh 21
-
-RUN rm -Rf /tmp/*
