@@ -1,3 +1,5 @@
+Key point is that NEMS' Docker Container requires systemd, but as that would pose a security risk, I have opted to instead go with docker-systemctl-replacement. I've setup an environment that should behave much like a virtual appliance.
+
   - Run in image folder: `docker build -t nemslinux .`
   - Get the Docker ID: Note the output of "Successfully built ####"
   - Run the container as daemon: `docker run --mount type=tmpfs,destination=/tmp,tmpfs-mode=1770 --name nemslinux -d ##DOCKERID##`
