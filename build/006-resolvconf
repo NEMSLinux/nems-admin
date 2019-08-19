@@ -1,0 +1,7 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# Remove resolvconf
+# No longer used in NEMS Linux, and causes grief in Docker if installed
+# So this script is just to ensure it is NOT installed before continuing
+  apt -y remove --purge resolvconf
