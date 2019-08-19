@@ -29,9 +29,8 @@ RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-repl
     unzip systemctl.zip && \
     cd docker-systemctl-replacement* && \
     make && \
-    mv ./files/docker/systemctl3.py /usr/local/bin/ && \
-    chmod +x /usr/local/bin/systemctl3.py && \
-    ln -s /usr/local/bin/systemctl3.py /bin/systemctl
+    mv -f ./files/docker/systemctl3.py /bin/systemctl && \
+    chmod +x /bin/systemctl
 
 CMD ["/bin/bash", "-c", "/bin/systemctl"]
 
