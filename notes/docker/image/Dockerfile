@@ -3,7 +3,14 @@ FROM debian:buster
 ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
-VOLUME /tmp/
+
+# Setup our data persistence
+#VOLUME /tmp/
+VOLUME /usr/local/
+VOLUME /var/log/
+VOLUME /var/www/
+VOLUME /usr/lib/nagios/
+VOLUME /etc/nems/
 
 MAINTAINER Robbie Ferguson <nems@category5.tv>
 
@@ -14,7 +21,7 @@ RUN apt-get update && \
 
 # Install a few prerequisites
 RUN apt-get update && \
-    apt-get install -y ca-certificates wget ssl-cert git unzip make python3
+    apt-get install -y ca-certificates wget ssl-cert git unzip make python3 procps
 
 # Setup faux systemctl environment
 RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-replacement/archive/v1.4.3000.zip && \
@@ -33,9 +40,8 @@ RUN wget --no-check-certificate -O /tmp/nems-prep.sh https://raw.githubuserconte
     chmod +x /tmp/nems-prep.sh && \
     /tmp/nems-prep.sh
 
-#RUN apt update && \
-#    /root/nems/nems-admin/nems-build.sh 21
-
+# SSH
+EXPOSE 22/tcp
 # apache2
 EXPOSE 80/tcp
 EXPOSE 443/tcp
@@ -43,3 +49,5 @@ EXPOSE 443/tcp
 EXPOSE 2812/tcp
 # cockpit
 EXPOSE 9090/tcp
+
+RUN /root/nems/nems-admin/nems-build.sh 21
