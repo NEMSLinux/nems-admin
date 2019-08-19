@@ -1,0 +1,15 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+platform=$(/usr/local/bin/nems-info platform)
+
+if (( $platform == 21 )); then
+
+  # Log that patch (resize) has been applied to this system.
+  # Doesn't apply to VM so just do it here.
+  # Activates features such as bootscreen.sh
+  if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
+    echo "PATCH-000002" >> /var/log/nems/patches.log
+  fi
+
+fi
