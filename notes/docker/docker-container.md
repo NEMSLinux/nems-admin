@@ -5,3 +5,8 @@
   - Connect to the container: `docker exec -it nemslinux bash`
   - Compile NEMS Linux as normal, platform 21.
   - Run NEMS Linux: `docker exec -d nemslinux`
+
+##How to operate
+
+  - nemslinux must first be running as daemon: `docker run -d nemslinux`
+  - To access terminal of NEMS Server: `docker exec -it nemslinux bash`
