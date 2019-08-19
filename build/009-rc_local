@@ -21,4 +21,4 @@ fi
                        
 chmod +x /etc/rc.local
 
-systemctl enable rc-local
+/bin/systemctl enable rc-local

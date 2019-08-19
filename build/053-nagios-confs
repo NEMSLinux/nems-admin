@@ -38,10 +38,10 @@ if ! grep -q "www-data ALL=NOPASSWD: /bin/systemctl restart nagios" /etc/sudoers
 fi
 
 # Change some permissions changes
-systemctl stop apache2
+/bin/systemctl stop apache2
   dpkg-statoverride --update --add nagios www-data 2710 /usr/local/nagios/var/rw
   cp -f /root/nems/nems-migrator/data/1.4/apache2/conf-available/nagios.conf /etc/apache2/conf-available/
-systemctl start apache2
+/bin/systemctl start apache2
 
 # Setup log for sendemail
 if [[ ! -f /var/log/sendemail.log ]]; then

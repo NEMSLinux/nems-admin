@@ -1,11 +1,11 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
-systemctl stop smbd
+/bin/systemctl stop smbd
 cp /root/nems/nems-migrator/data/1.5/samba/smb.conf /etc/samba/
 init=$(/usr/local/bin/nems-info init)
 if [[ $init == 1 ]]; then
   username=$(/usr/local/bin/nems-info username)
   /bin/sed -i -- 's/nemsadmin/'"$username"'/g' /etc/samba/smb.conf
 fi
-systemctl start smbd
+/bin/systemctl start smbd
 

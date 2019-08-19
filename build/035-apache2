@@ -15,7 +15,7 @@ apt -y install ssl-cert libapache2-mod-security2
 # Generating new Snakeoil cert
 /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
 
-systemctl stop apache2
+/bin/systemctl stop apache2
 cp -f /root/nems/nems-migrator/data/1.5/apache2/sites-available/nems-dashboard.conf /etc/apache2/sites-available
 
 a2dissite 000-default
@@ -29,5 +29,5 @@ a2enconf security
 /bin/sed -i~ '/SecServerSignature/d' /etc/apache2/conf-available/security.conf
 echo "SecServerSignature NEMS_Linux/$ver" >> /etc/apache2/conf-available/security.conf
 
-systemctl start apache2
+/bin/systemctl start apache2
 

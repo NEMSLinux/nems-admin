@@ -14,9 +14,9 @@ if (( $platform < '10' )); then
   apt update
   apt -y install rpimonitor
   /etc/init.d/rpimonitor update
-  systemctl stop rpimonitor
+  /bin/systemctl stop rpimonitor
   cp /root/nems/nems-migrator/data/1.4/rpimonitor/daemon.conf /etc/rpimonitor/
   cp -f /root/nems/nems-migrator/data/1.4/rpimonitor/template/* /etc/rpimonitor/template/
-  systemctl start rpimonitor
+  /bin/systemctl start rpimonitor
   echo "Done."
 fi

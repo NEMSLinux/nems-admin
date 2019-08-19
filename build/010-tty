@@ -14,15 +14,15 @@ fi
 if [[ -d /etc/systemd/system/getty@tty1.service.d ]]; then
   rm -rf /etc/systemd/system/getty@tty1.service.d
 fi
-systemctl disable getty@tty1.service
-systemctl stop getty@tty1.service
+/bin/systemctl disable getty@tty1.service
+/bin/systemctl stop getty@tty1.service
 
 # Use TTY7
 if [[ ! -d /etc/systemd/system/getty@tty7.service.d ]]; then
   mkdir /etc/systemd/system/getty@tty7.service.d
 fi
-systemctl disable getty@tty7.service
-systemctl stop getty@tty7.service
+/bin/systemctl disable getty@tty7.service
+/bin/systemctl stop getty@tty7.service
 echo "
 [Service]
 ExecStart=
@@ -30,9 +30,9 @@ ExecStart=-/usr/local/share/nems/nems-scripts/bootscreen.sh
 StandardInput=tty
 StandardOutput=tty
 " > /etc/systemd/system/getty@tty7.service.d/override.conf
-systemctl daemon-reload
-systemctl enable getty@tty7.service
-systemctl start getty@tty7.service
+/bin/systemctl daemon-reload
+/bin/systemctl enable getty@tty7.service
+/bin/systemctl start getty@tty7.service
 chvt 7
 
 if [[ ! -f /etc/rc.local ]]; then

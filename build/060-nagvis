@@ -23,4 +23,4 @@ cp -f /root/nems/nems-migrator/data/1.4/nagvis/nagvis.ini.php /etc/nagvis/etc/
 
 # Turn me on!
 a2enconf nagvis
-systemctl restart apache2
+/bin/systemctl restart apache2

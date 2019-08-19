@@ -4,7 +4,7 @@
 ver=5.25.3
 
 # stop it if it is already running from a previous apt task
-systemctl stop monit.service
+/bin/systemctl stop monit.service
 
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
@@ -45,8 +45,8 @@ if [[ ! -d /var/lib/monit ]]; then
   mkdir -m 0750 -p /var/lib/monit
 fi
 
-systemctl enable monit.service
-systemctl start monit.service
+/bin/systemctl enable monit.service
+/bin/systemctl start monit.service
 
 # don't error out of run-parts
 echo "Done."

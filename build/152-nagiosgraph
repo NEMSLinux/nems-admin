@@ -56,5 +56,5 @@ cp -f share/graph.gif /usr/local/nagios/share/images/action.gif
 # Cleanup backups of CSS files
 rm /var/www/html/share/nagios_themes/nems-1.3/nagiosgraph.css.*
 
-systemctl restart nagios
+/bin/systemctl restart nagios
 

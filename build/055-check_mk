@@ -71,7 +71,7 @@ cd ..
 touch /var/log/nagios/livestatus.log
 chown nagios:nagios /var/log/nagios/livestatus.log
 
-systemctl start nagios
+/bin/systemctl start nagios
 
 printf "Waiting for socket to open..."
 while [ ! -S /usr/local/nagios/var/rw/live.sock ]

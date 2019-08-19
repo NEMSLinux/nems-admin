@@ -31,8 +31,7 @@ RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-repl
     make && \
     mv ./files/docker/systemctl3.py /usr/local/bin/ && \
     chmod +x /usr/local/bin/systemctl3.py && \
-    ln -s /usr/local/bin/systemctl3.py /bin/systemctl \
-    ln -s /usr/local/bin/systemctl3.py /usr/bin/systemctl
+    ln -s /usr/local/bin/systemctl3.py /bin/systemctl
 
 CMD ["/bin/bash", "-c", "/bin/systemctl"]
 
@@ -53,3 +52,5 @@ EXPOSE 2812/tcp
 EXPOSE 9090/tcp
 
 RUN /root/nems/nems-admin/nems-build.sh 21
+
+RUN rm -Rf /tmp/*

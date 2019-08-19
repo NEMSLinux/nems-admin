@@ -16,12 +16,12 @@ if (( $platform == 21 )); then
 else
 
   # dhcpcd5 is a dependency of Raspberry Pi networking, so must remain installed, but will disable
-    systemctl stop dhcpcd
-    systemctl disable dhcpcd
+    /bin/systemctl stop dhcpcd
+    /bin/systemctl disable dhcpcd
 
   # Disable networking and enable NetworkManager
-    systemctl enable NetworkManager
-    systemctl disable networking
+    /bin/systemctl enable NetworkManager
+    /bin/systemctl disable networking
 
   # Use NetworkManager to manage interfaces, even if configured within /etc/network/interfaces
     if grep -q "managed=false" /etc/NetworkManager/NetworkManager.conf; then

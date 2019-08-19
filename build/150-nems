@@ -53,8 +53,8 @@ fi
 nems-cert
 
 # Restart related services
-systemctl restart apache2
-systemctl restart nagios
+/bin/systemctl restart apache2
+/bin/systemctl restart nagios
 
 
 # Install 9590

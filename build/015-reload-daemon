@@ -2,4 +2,4 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 echo "Reloading Daemon"
-systemctl daemon-reload
+/bin/systemctl daemon-reload

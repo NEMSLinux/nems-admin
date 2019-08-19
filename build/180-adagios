@@ -100,5 +100,5 @@ ln -s /opt/okconfig/usr/bin/okconfig /usr/local/bin/
 okconfig init
 okconfig verify
 
-systemctl restart apache2
+/bin/systemctl restart apache2
 

@@ -28,10 +28,10 @@ apt install -y libio-socket-ssl-perl
 dpkg -i /tmp/monitorix.deb
 
 # Use NEMS config files
-systemctl stop monitorix
+/bin/systemctl stop monitorix
 cp -f /root/nems/nems-migrator/data/1.4/monitorix/monitorix.conf /etc/monitorix/
 cp -f /root/nems/nems-migrator/data/1.4/monitorix/raspberrypi.rrd /var/lib/monitorix/
 
 # Make it so
-systemctl start monitorix
-systemctl enable monitorix
+/bin/systemctl start monitorix
+/bin/systemctl enable monitorix

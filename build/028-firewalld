@@ -10,10 +10,10 @@ platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why w
   apt -y install firewalld
 
   # Stop it if started so we can load new services
-  systemctl stop firewalld
+  /bin/systemctl stop firewalld
 
   # Unmask the service
-  systemctl unmask firewalld
+  /bin/systemctl unmask firewalld
 
   # Setup firewall rules
   if [[ -d /usr/lib/firewalld/services ]]; then
@@ -23,8 +23,8 @@ platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why w
   fi
 
   # Start the firewall
-  systemctl enable firewalld
-  systemctl start firewalld
+  /bin/systemctl enable firewalld
+  /bin/systemctl start firewalld
 
   # Set the default zone to public
   firewall-cmd --set-default-zone=public
@@ -50,4 +50,4 @@ platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why w
     fi
 
   # Reload the current services
-  systemctl reload firewalld
+  /bin/systemctl reload firewalld
