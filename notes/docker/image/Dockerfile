@@ -25,8 +25,6 @@ RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-repl
     mv ./files/docker/systemctl3.py /usr/local/bin/ && \
     chmod +x /usr/local/bin/systemctl3.py && \
     ln -s /usr/local/bin/systemctl3.py /bin/systemctl
-ADD files/nemsdocker /usr/local/bin/nemsdocker
-RUN chmod +x /usr/local/bin/nemsdocker
 CMD ["/bin/bash", "-c", "/bin/systemctl"]
 
 RUN /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
