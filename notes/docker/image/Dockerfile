@@ -43,3 +43,5 @@ EXPOSE 443/tcp
 EXPOSE 2812/tcp
 # cockpit
 EXPOSE 9090/tcp
+
+ENTRYPOINT ["exec /bin/systemctl"]
