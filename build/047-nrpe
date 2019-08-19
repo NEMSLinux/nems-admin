@@ -46,3 +46,6 @@ wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/
 systemctl start nrpe
 systemctl enable nrpe
 systemctl status nrpe --no-pager
+
+# so error code on failure doesn't fail run-parts
+echo "Done."
