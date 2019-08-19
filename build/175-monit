@@ -47,3 +47,6 @@ fi
 
 systemctl enable monit.service
 systemctl start monit.service
+
+# don't error out of run-parts
+echo "Done."
