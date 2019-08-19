@@ -34,4 +34,14 @@ RUN wget --no-check-certificate -O /tmp/nems-prep.sh https://raw.githubuserconte
 RUN apt update && \
     /root/nems/nems-admin/nems-build.sh 21
 
-CMD /usr/local/share/nems/nems-init
+# apache2
+EXPOSE 80/tcp
+EXPOSE 443/tcp
+# monit
+EXPOSE 2812/tcp
+# cockpit
+EXPOSE 9090/tcp
+
+VOLUME /tmp/
+
+CMD /bin/systemctl
