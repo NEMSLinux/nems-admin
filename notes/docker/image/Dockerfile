@@ -15,7 +15,7 @@ VOLUME /etc/nems/
 MAINTAINER Robbie Ferguson <nems@category5.tv>
 
 # Setup apt
-ADD sources.list /etc/apt/sources.list
+COPY files/sources.list /etc/apt/sources.list
 RUN apt-get update && \
     apt-get install -y apt-utils
 
