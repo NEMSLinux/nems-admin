@@ -30,9 +30,10 @@ RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-repl
     cd docker-systemctl-replacement* && \
     make && \
     mv -f ./files/docker/systemctl3.py /bin/systemctl && \
-    chmod +x /bin/systemctl
+    chmod +x /bin/systemctl \
+    cp -f /bin/systemctl /usr/bin/systemctl
 
-CMD ["/bin/bash", "-c", "/bin/systemctl"]
+#CMD ["/bin/bash", "-c", "/bin/systemctl"]
 
 RUN /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
 
@@ -40,14 +41,8 @@ RUN wget --no-check-certificate -O /tmp/nems-prep.sh https://raw.githubuserconte
     chmod +x /tmp/nems-prep.sh && \
     /tmp/nems-prep.sh
 
-# SSH
-EXPOSE 22/tcp
-# apache2
-EXPOSE 80/tcp
-EXPOSE 443/tcp
-# monit
-EXPOSE 2812/tcp
-# cockpit
-EXPOSE 9090/tcp
+EXPOSE 22/tcp 80/tcp 443/tcp 2812/tcp 9090/tcp
 
 RUN /root/nems/nems-admin/nems-build.sh 21
+
+ENTRYPOINT ["/usr/bin/systemctl","default","--init"]
