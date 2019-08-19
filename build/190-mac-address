@@ -54,3 +54,6 @@ done
   /bin/systemctl restart network-manager
 
 fi
+
+# Don't exit if systemctl fails to restart network-manager
+echo "Done."

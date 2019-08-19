@@ -102,3 +102,5 @@ okconfig verify
 
 /bin/systemctl restart apache2
 
+# Don't exit when systemctl fails to restart apache2
+echo "Done."
