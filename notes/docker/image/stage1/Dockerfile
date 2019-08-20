@@ -19,7 +19,6 @@ RUN apt-get update && \
     apt-get install -y ca-certificates wget ssl-cert git unzip make python3 procps
 
 # Setup faux systemctl environment
-RUN rm -f /bin/systemctl
 RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-replacement/archive/v1.4.3000.zip && \
     cd /tmp && \
     unzip systemctl.zip && \
@@ -27,8 +26,8 @@ RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-repl
     make && \
     mv -f ./files/docker/systemctl3.py /usr/bin/ && \
     chmod +x /usr/bin/systemctl3.py && \
-    ln -s /usr/bin/systemctl3.py /bin/systemctl && \
     ln -s /usr/bin/systemctl3.py /usr/bin/systemctl
+RUN test -L /bin/systemctl || ln -sf /usr/bin/systemctl /bin/systemctl
 
 RUN /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
 

@@ -4,5 +4,11 @@
 # Thanks to cube8021 for pointing out this feature on Discord
 # Done a bit differently here since the stages are all local (not public)
 
+# Prep Debian Buster for NEMS Linux conversion
 docker build -t nemsprep stage1
+
+# Deploy and compile NEMS Linux
 docker build -t nemslinux stage2
+
+# Prepare Image
+
