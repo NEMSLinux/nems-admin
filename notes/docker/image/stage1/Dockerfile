@@ -19,6 +19,7 @@ RUN apt-get update && \
     apt-get install -y ca-certificates wget ssl-cert git unzip make python3 procps
 
 # Setup faux systemctl environment
+RUN rm -f /bin/systemctl
 RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-replacement/archive/v1.4.3000.zip && \
     cd /tmp && \
     unzip systemctl.zip && \
