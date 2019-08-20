@@ -10,7 +10,7 @@ read -r -p "What build number is this? " buildnum
 docker build --label build="$nemsver" -t nemsprep stage1
 
 # Deploy and compile NEMS Linux
-docker build --label build="$nemsver" -t nemslinux stage2
+docker build --label build="$nemsver" -t nems15 stage2
 
 # Prepare Image
 
