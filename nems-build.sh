@@ -39,8 +39,9 @@ if [ ! -z $1 ]; then
 fi
 
 if (( $1 == 21 )); then
-  echo "Moving systemctl to PID-1"
-
+  echo "DOCKER :: Moving systemctl to PID-1"
+  exec /usr/bin/systemctl default --init
+  echo "" && ps -fp 1 && sleep 5
 fi
 
 wget -q -O /tmp/hw_model.sh https://raw.githubusercontent.com/Cat5TV/nems-scripts/master/hw_model.sh
