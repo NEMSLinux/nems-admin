@@ -37,6 +37,12 @@ fi
 if [ ! -z $1 ]; then
   echo $1 > /etc/.nems_hw_model_identifier
 fi
+
+if (( $1 == 21 )); then
+  echo "Moving systemctl to PID-1"
+
+fi
+
 wget -q -O /tmp/hw_model.sh https://raw.githubusercontent.com/Cat5TV/nems-scripts/master/hw_model.sh
 chmod +x /tmp/hw_model.sh
 /tmp/hw_model.sh

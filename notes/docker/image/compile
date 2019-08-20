@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Multi-Stage Build
+# Thanks to cube8021 for pointing out this feature on Discord
+# Done a bit differently here since the stages are all local (not public)
+
+docker build -t nemsprep stage1
+docker build -t nemslinux stage2

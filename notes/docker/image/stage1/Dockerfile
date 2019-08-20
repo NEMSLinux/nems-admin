@@ -4,8 +4,8 @@ ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
-# Setup our data persistence
-VOLUME ["/var/log/", "/tmp/"]
+# /tmp will be a tmpfs volume
+VOLUME ["/tmp/"]
 
 MAINTAINER Robbie Ferguson <nems@category5.tv>
 
@@ -29,8 +29,6 @@ RUN wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-repl
     ln -s /usr/bin/systemctl3.py /bin/systemctl && \
     ln -s /usr/bin/systemctl3.py /usr/bin/systemctl
 
-#CMD ["/bin/bash", "-c", "/bin/systemctl"]
-
 RUN /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
 
 RUN wget --no-check-certificate -O /tmp/nems-prep.sh https://raw.githubusercontent.com/Cat5TV/nems-admin/master/nems-prep.sh && \
@@ -38,7 +36,5 @@ RUN wget --no-check-certificate -O /tmp/nems-prep.sh https://raw.githubuserconte
     /tmp/nems-prep.sh
 
 EXPOSE 22/tcp 80/tcp 443/tcp 2812/tcp 9090/tcp
-
-RUN /root/nems/nems-admin/nems-build.sh 21
 
 ENTRYPOINT ["/usr/bin/systemctl","default","--init"]
