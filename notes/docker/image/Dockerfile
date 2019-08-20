@@ -5,7 +5,7 @@ ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
 # Setup our data persistence
-VOLUME ["/usr/local/", "/var/log/", "/var/www/", "/usr/lib/nagios/", "/etc/nems/"]
+VOLUME ["/var/log/", "/tmp/"]
 
 MAINTAINER Robbie Ferguson <nems@category5.tv>
 
