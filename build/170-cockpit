@@ -7,12 +7,12 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # May not be necessary since Buster now includes it in repos
 
-platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
-if (( $platform != 21 )); then
-
 # Install Cockpit
   apt update
   apt -y install cockpit
-  apt -y install cockpit-networkmanager
 
-fi
+  # Install cockpit-networkmanager on all but Docker
+  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  if (( $platform != 21 )); then
+    apt -y install cockpit-networkmanager
+  fi
