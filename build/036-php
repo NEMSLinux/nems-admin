@@ -56,3 +56,5 @@ apt install -y $repo php7.3-sybase
 echo "Done."
 
 /bin/systemctl restart apache2
+
+exit 0
