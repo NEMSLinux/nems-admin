@@ -2,3 +2,18 @@ Package: systemd
 Pin: release *
 Pin-Priority: -1
 
+Package: nagios-nrpe-plugin
+Pin: release *
+Pin-Priority: -1
+
+Package: monitoring-plugins
+Pin: release *
+Pin-Priority: -1
+
+Package: monitoring-plugins-basic
+Pin: release *
+Pin-Priority: -1
+
+Package: monitoring-plugins-standard
+Pin: release *
+Pin-Priority: -1
