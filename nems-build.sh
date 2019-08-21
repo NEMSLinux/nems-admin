@@ -125,10 +125,15 @@ if (( $1 != 21 )); then
   df -hT /etc
   sleep 5
 
-  for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
-  do
-    apt -y --no-install-recommends install $pkg
-  done
+fi
+
+# Install base packages (This will happen on all platforms including Docker)
+for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
+do
+  apt -y --no-install-recommends install $pkg
+done
+
+if (( $1 != 21 )); then
 
   # Add packages from repositories
   for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
@@ -136,10 +141,10 @@ if (( $1 != 21 )); then
     apt -y --no-install-recommends install $pkg
   done
 
-  # Install dependencies, if any
-  apt -y install -f
-
 fi
+
+# Install dependencies, if any
+apt -y install -f
 
 # Be up to date
 apt update
