@@ -11,6 +11,7 @@ MAINTAINER Robbie Ferguson <nems@category5.tv>
 
 # Setup apt
 COPY files/sources.list /etc/apt/sources.list
+COPY files/apt-blacklist /etc/apt/preferences
 RUN apt-get update && \
     apt-get install -y apt-utils
 
@@ -20,10 +21,6 @@ RUN apt-get update && \
 
 # Setup faux systemd environment
 RUN apt-get remove --purge systemd && \
-    echo "Package: systemd
-Pin: release *
-Pin-Priority: -1
-" > /etc/apt/preferences && \
     wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-replacement/archive/v1.4.3000.zip && \
     cd /tmp && \
     unzip systemctl.zip && \
