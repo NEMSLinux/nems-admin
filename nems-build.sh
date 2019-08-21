@@ -38,10 +38,6 @@ if [ ! -z $1 ]; then
   echo $1 > /etc/.nems_hw_model_identifier
 fi
 
-if (( $1 == 21 )); then
-  echo ":: DOCKER ::"
-fi
-
 wget -q -O /tmp/hw_model.sh https://raw.githubusercontent.com/Cat5TV/nems-scripts/master/hw_model.sh
 chmod +x /tmp/hw_model.sh
 /tmp/hw_model.sh
@@ -107,38 +103,43 @@ cd /root/nems/nems-admin
 
 echo "" > /tmp/errors.log
 
-echo "Usage before build:"
-df -hT /etc
-sleep 5
+# Don't do this for Docker - Keep Docker as slim as possible (No need to install Distro base)
+if (( $1 != 21 )); then
 
-# Remove cruft
-apt update
-apt -y --allow-remove-essential clean
-apt -y --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
-apt autoremove --purge -y
-rm -R /usr/share/fonts/*
-rm -R /usr/share/icons/*
+  echo "Usage before build:"
+  df -hT /etc
+  sleep 5
 
-# Fix any broken packages to allow installation to occur in next step
-apt -y --fix-broken install
+  # Remove cruft
+  apt update
+  apt -y --allow-remove-essential clean
+  apt -y --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
+  apt autoremove --purge -y
+  rm -R /usr/share/fonts/*
+  rm -R /usr/share/icons/*
 
-echo "Usage after cruft removal:"
-df -hT /etc
-sleep 5
+  # Fix any broken packages to allow installation to occur in next step
+  apt -y --fix-broken install
 
-for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
-do
-  apt -y --no-install-recommends install $pkg
-done
+  echo "Usage after cruft removal:"
+  df -hT /etc
+  sleep 5
 
-# Add packages from repositories
-for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
-do
-  apt -y --no-install-recommends install $pkg
-done
+  for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
+  do
+    apt -y --no-install-recommends install $pkg
+  done
 
-# Install dependencies, if any
-apt -y install -f
+  # Add packages from repositories
+  for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
+  do
+    apt -y --no-install-recommends install $pkg
+  done
+
+  # Install dependencies, if any
+  apt -y install -f
+
+fi
 
 # Be up to date
 apt update
