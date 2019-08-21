@@ -9,11 +9,11 @@ useradd www-data
 chown -R www-data:www-data nems-www
 
 # Detect if the snapshot folder is mounted (which means this is Docker)
-if [[ -e /var/www/html/backup/snapshots/ ]]; then
+if [[ -e /var/www/html/backup/snapshot/ ]]; then
   # Docker, so rsync instead of replace
   apt-get update
   apt-get install -y rsync
-  rsync -a nems-www/ html/
+  rsync -a nems-www/. html/
   rm -rf nems-www
 else
   # All other platforms (not Docker)
