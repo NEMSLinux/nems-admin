@@ -5,7 +5,7 @@ ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
 # /tmp will be a tmpfs volume
-VOLUME ["/tmp/"]
+#VOLUME ["/tmp/"]
 
 MAINTAINER Robbie Ferguson <nems@category5.tv>
 

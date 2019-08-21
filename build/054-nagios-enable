@@ -10,3 +10,5 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
   # nagios cannot be running yet since we have to install the socket first
   # See 055
+
+  exit 0
