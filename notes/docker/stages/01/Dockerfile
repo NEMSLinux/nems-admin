@@ -20,6 +20,10 @@ RUN apt-get update && \
 
 # Setup faux systemd environment
 RUN apt-get remove --purge systemd && \
+    echo "Package: systemd
+Pin: release *
+Pin-Priority: -1
+" > /etc/apt/preferences && \
     wget -O /tmp/systemctl.zip https://github.com/gdraheim/docker-systemctl-replacement/archive/v1.4.3000.zip && \
     cd /tmp && \
     unzip systemctl.zip && \

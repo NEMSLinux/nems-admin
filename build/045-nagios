@@ -69,7 +69,15 @@ fi
 /bin/systemctl daemon-reload
 
 if [[ ! -d /usr/local/nagios/var/rw ]]; then
-  echo "Something went wrong. The rw folder doesn't exist even after script completion."
-  exit 1
+  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  if (( $platform != 21 )); then
+    echo "Something went wrong. The rw folder doesn't exist even after script completion."
+    exit 1
+  else
+    # Docker
+    mkdir -p /usr/local/nagios/var/rw
+    chown nagios:nagios /usr/local/nagios/var/rw
+  fi
 fi
 
+exit 0
