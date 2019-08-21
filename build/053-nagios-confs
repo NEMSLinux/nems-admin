@@ -51,3 +51,5 @@ chown nagios:nagios /var/log/sendemail.log
 
 # Set permissions to allow Nagios to archive log files
 chmod ug+x /usr/local/nagios/var/archives
+
+exit 0
