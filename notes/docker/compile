@@ -7,10 +7,10 @@
 read -r -p "What build number is this? " buildnum
 
 # Prep Debian Buster for NEMS Linux conversion
-docker build --label build="$nemsver" -t nemsprep stage1
+docker build --label build="$nemsver" -t nemsprep stages/01
 
 # Deploy and compile NEMS Linux
-docker build --label build="$nemsver" -t nems15 stage2
+docker build --label build="$nemsver" -t nems_1.5 stages/02
 
 # Prepare Image
 

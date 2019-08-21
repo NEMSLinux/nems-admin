@@ -6,8 +6,8 @@ ENV container docker
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 
-# /tmp will be a tmpfs volume
-VOLUME ["/tmp/"]
+# tmpfs volumes (see deployment instructions)
+VOLUME ["/tmp/","/var/www/html/backup/snapshot/"]
 
 MAINTAINER Robbie Ferguson <nems@category5.tv>
 

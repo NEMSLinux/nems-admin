@@ -2,7 +2,8 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # Not yet functional in buster
-exit
+exit 0
+
   ## Install CSF/LFD
   cd /usr/src
   wget -O /tmp/csf.tgz https://download.configserver.com/csf.tgz
