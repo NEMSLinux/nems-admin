@@ -15,6 +15,10 @@ if [[ -e /var/www/html/backup/snapshot/ ]]; then
   apt-get install -y rsync
   rsync -a nems-www/. html/
   rm -rf nems-www
+  # Remove the Apache placeholder
+  if [[ -e /var/www/html/index.html ]]; then
+    rm -f /var/www/html/index.html
+  fi
 else
   # All other platforms (not Docker)
   if [[ -d html ]]; then
