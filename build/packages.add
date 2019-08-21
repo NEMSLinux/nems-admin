@@ -1,8 +1,5 @@
 # NEMS Linux - nemslinux.com
 # This is the package list to install on all platforms
-apache2
-avahi-dnsconfd
-avahi-utils
 build-essential
 ca-certificates
 cifs-utils
@@ -13,8 +10,6 @@ hdparm
 htop
 iotop
 keyboard-configuration
-libapache2-mod-python
-libapache2-mod-security2
 libcryptsetup4
 libgcrypt20
 libsqlite3-0
@@ -22,10 +17,6 @@ lm-sensors
 lua5.1
 luajit
 lua-sec
-mariadb-server
-monit
-#monitoring-plugins
-monitorix
 openssl
 perl
 perl-base
@@ -44,8 +35,6 @@ tzdata
 unzip
 vim
 w3m
-webmin
-wpasupplicant
 ntp
 locate
 
@@ -70,18 +59,20 @@ hddtemp
 
 # For Nagios Core
 libgd-dev
-# nagios-images -- part of nems-www now
-#nagios-nrpe-plugin -- orphaned. Compile from github instead
-#nagios-nrpe-server
 
 # *.local Resolution
+avahi-dnsconfd
+avahi-utils
 avahi-daemon
 libnss-mdns
 
 # Apache2 dependencies
+apache2
 libapache2-modsecurity
 modsecurity-crs
 php-curl
+libapache2-mod-python
+libapache2-mod-security2
 
 # NEMS
 

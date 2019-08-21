@@ -186,7 +186,7 @@ nameserver 2001:4860:4860::8844
   /root/nems/nems-admin/nems-restore-sample-db.sh
 
   # Replace the database with Sample database
-  /root/nems/nems-admin/build/153-mysql
+  /root/nems/nems-admin/build/034-mariadb
 
   # Remove nconf history, should it exist
   mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"

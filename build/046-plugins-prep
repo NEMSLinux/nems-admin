@@ -3,38 +3,36 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # This script cleans up / removes all installed Nagios plugins to prepare for installation/re-installation
 
-  # Remove old apt installed version
+  # Ensure apt installed versions don't exist
   apt -y remove --purge monitoring-plugins*
-
   apt -y remove --purge nagios-nrpe-plugin
-
   apt -y autoremove
 
   # Install dependencies
   # Doing one per apt instance to avoid it failing if one package is missing
-  apt update
-  apt install -y libnet-snmp-perl
-  apt install -y snmp
-  apt install -y snmpd
-  apt install -y snmp-mibs-downloader
-  apt install -y dnsutils
-  apt install -y fping
-  apt install -y iputils-ping
-  apt install -y libfreeradius-client-dev
-  apt install -y libldap2-dev
-  apt install -y default-libmysqlclient-dev
-  apt install -y libdbi-dev
-  apt install -y libdbi-perl
-  apt install -y smbclient
-  apt install -y qstat
-  apt install -y openssl
-  apt install -y openssl-devel
-  apt install -y gettext
-  apt install -y openssl
+  apt-get update
+  apt-get install -y libnet-snmp-perl
+  apt-get install -y snmp
+  apt-get install -y snmpd
+  apt-get install -y snmp-mibs-downloader
+  apt-get install -y dnsutils
+  apt-get install -y fping
+  apt-get install -y iputils-ping
+  apt-get install -y libfreeradius-client-dev
+  apt-get install -y libldap2-dev
+  apt-get install -y default-libmysqlclient-dev
+  apt-get install -y libdbi-dev
+  apt-get install -y libdbi-perl
+  apt-get install -y smbclient
+  apt-get install -y qstat
+  apt-get install -y openssl
+  apt-get install -y openssl-devel
+  apt-get install -y gettext
+  apt-get install -y openssl
 
 # Install PostgreSQL development libraries so
 # check_psql (monitoring-plugins) can compile
-  apt install -y libpq-dev
+  apt-get install -y libpq-dev
 
 
 
@@ -57,10 +55,5 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
     # If the libexec symlink doesn't already exist, create it
     if [[ ! -e /usr/local/nagios/libexec ]]; then
       ln -s /usr/lib/nagios/plugins /usr/local/nagios/libexec
-    fi
-
-    # Reinstall check_nrpe, which will now pop into the correct folder due to the symlink
-    if [[ ! -e /usr/lib/nagios/plugins/check_nrpe ]]; then
-      apt install -y nagios-nrpe-plugin
     fi
 

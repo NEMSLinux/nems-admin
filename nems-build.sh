@@ -103,45 +103,36 @@ cd /root/nems/nems-admin
 
 echo "" > /tmp/errors.log
 
-# Don't do this for Docker - Keep Docker as slim as possible (No need to install Distro base)
-if (( $1 != 21 )); then
+echo "Usage before build:"
+df -hT /etc
+sleep 5
 
-  echo "Usage before build:"
-  df -hT /etc
-  sleep 5
+# Remove cruft
+apt update
+apt -y --allow-remove-essential clean
+apt -y --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
+apt autoremove --purge -y
+rm -R /usr/share/fonts/*
+rm -R /usr/share/icons/*
 
-  # Remove cruft
-  apt update
-  apt -y --allow-remove-essential clean
-  apt -y --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
-  apt autoremove --purge -y
-  rm -R /usr/share/fonts/*
-  rm -R /usr/share/icons/*
+# Fix any broken packages to allow installation to occur in next step
+apt -y --fix-broken install
 
-  # Fix any broken packages to allow installation to occur in next step
-  apt -y --fix-broken install
+echo "Usage after cruft removal:"
+df -hT /etc
+sleep 5
 
-  echo "Usage after cruft removal:"
-  df -hT /etc
-  sleep 5
-
-fi
-
-# Install base packages (This will happen on all platforms including Docker)
+# Install base packages
 for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
 do
   apt -y --no-install-recommends install $pkg
 done
 
-if (( $1 != 21 )); then
-
-  # Add packages from repositories
-  for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
-  do
-    apt -y --no-install-recommends install $pkg
-  done
-
-fi
+# Add packages from repositories
+for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
+do
+  apt -y --no-install-recommends install $pkg
+done
 
 # Install dependencies, if any
 apt -y install -f

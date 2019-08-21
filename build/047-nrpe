@@ -6,6 +6,7 @@ nrpeVer="3.2.1"
 APT_LISTCHANGES_FRONTEND=cat
 echo $0 > /var/www/html/userfiles/nems-build.cur
 /bin/systemctl stop nrpe
+# these plugins shouldn't even exist anymore since they were pulled from packages.add and 045-nagios
 yes | apt remove --purge nagios-nrpe-plugin
 yes | apt remove --purge nagios-nrpe-server
 yes | apt autoremove
