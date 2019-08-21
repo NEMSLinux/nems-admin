@@ -31,3 +31,4 @@ echo "SecServerSignature NEMS_Linux/$ver" >> /etc/apache2/conf-available/securit
 
 /bin/systemctl start apache2
 
+exit 0
