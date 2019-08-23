@@ -11,8 +11,8 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
   apt update
   apt -y install cockpit
 
-  # Install cockpit-networkmanager on all but Docker
+  # Install cockpit-networkmanager on all but Docker and AWS
   platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
-  if (( $platform != 21 )); then
+  if (( $platform != 21 )) && (( $platform != 22 )); then
     apt -y install cockpit-networkmanager
   fi
