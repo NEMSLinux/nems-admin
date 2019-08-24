@@ -7,6 +7,8 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   chown -R nagios:nagios /var/lib/nagios/
 fi
 
+apt-get install -y python-django python-simplejson libgmp-dev python-dev python-paramiko
+
 # Prepare sudo permissions
 if ! grep -q "# Adagios" /etc/sudoers; then
 echo '
@@ -68,15 +70,18 @@ chown -R www-data:www-data /var/www/adagios/
 cp -f /root/nems/nems-migrator/data/1.5/adagios/templates/403.html /var/www/adagios/templates/
 cp -f /root/nems/nems-migrator/data/1.5/adagios/templates/base.html /var/www/adagios/templates/
 
+# Create the working folder for the WSGI daemon
+mkdir /var/www/adagios-working
+chown nagios:nagios /var/www/adagios-working
 
 cat << EOF > /etc/apache2/conf-available/adagios.conf
 WSGISocketPrefix /var/run/apache2/wsgi
-WSGIDaemonProcess adagios user=nagios group=nagios processes=1 threads=25 python-path=/var/www/adagios
+WSGIDaemonProcess adagios user=nagios home=/var/www/adagios-working group=nagios processes=1 threads=25 python-path=/var/www/adagios
 WSGIProcessGroup adagios
 WSGIScriptAlias /adagios /var/www/adagios/apache/adagios.wsgi
- 
+
 Alias /adagios/media /var/www/adagios/media
- 
+
 <Location /adagios>
    AuthName "Adagios Access"
    AuthType Basic
