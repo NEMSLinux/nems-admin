@@ -1,0 +1,27 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+platform=$(/usr/local/bin/nems-info platform)
+
+if (( $platform == 22 )); then
+
+  # Log that patch (resize) has been applied to this system.
+  # Doesn't apply to VM so just do it here.
+  # Activates features such as bootscreen.sh
+  if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
+    echo "PATCH-000002" >> /var/log/nems/patches.log
+  fi
+
+  addition="# Amazon Web Services Hostname Override\n/root/nems/nems-admin/build/200-hostname\n\n"
+  if grep -q "exit" /etc/rc.local; then
+    # This file contains an exit command, so make sure our new command comes before it
+    /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
+  else
+    # No exit command within the file, so just add it
+    echo "PLACEHERE" >> /etc/rc.local
+    /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
+  fi
+  /bin/systemctl stop rc-local.service
+  /bin/systemctl start rc-local.service
+
+fi

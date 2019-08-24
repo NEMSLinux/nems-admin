@@ -9,20 +9,21 @@ wget --no-check-certificate -O /tmp/monitorix.deb $debpack
 
 # Remove Izzy Repos
 rm -f /etc/apt/sources.list.d/monitorix.list
-apt update
+apt-get update
 
 # Install dependencies
-apt install -y rrdtool
-apt install -y perl
-apt install -y libwww-perl
-apt install -y libmailtools-perl
-apt install -y libmime-lite-perl
-apt install -y librrds-perl
-apt install -y libdbi-perl
-apt install -y libxml-simple-perl
-apt install -y libhttp-server-simple-perl
-apt install -y libconfig-general-perl
-apt install -y libio-socket-ssl-perl
+apt-get install -y rrdtool
+apt-get install -y perl
+apt-get install -y libwww-perl
+apt-get install -y libmailtools-perl
+apt-get install -y libmime-lite-perl
+apt-get install -y librrds-perl
+apt-get install -y libdbi-perl
+apt-get install -y libxml-simple-perl
+apt-get install -y libhttp-server-simple-perl
+apt-get install -y libconfig-general-perl
+apt-get install -y libio-socket-ssl-perl
+apt-get install -y xfonts-terminus
 
 # Install Monitorix
 dpkg -i /tmp/monitorix.deb
