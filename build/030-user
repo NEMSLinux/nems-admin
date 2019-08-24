@@ -21,7 +21,7 @@ platform=$(/usr/local/bin/nems-info platform)
 
 
 # Amazon Web Services uses a key pair instead of password
-#if (( $platform == 22 )); then
+if (( $platform == 22 )); then
 #  if [[ -e /home/admin/.ssh/authorized_keys ]]; then
 #    if [[ ! -e /home/nemsadmin/.ssh ]]; then
 #      mkdir /home/nemsadmin/.ssh
@@ -29,7 +29,11 @@ platform=$(/usr/local/bin/nems-info platform)
 #    cp /home/admin/.ssh/authorized_keys /home/nemsadmin/.ssh/
 #    chown nemsadmin:nemsadmin /home/nemsadmin/.ssh/authorized_keys
 #  fi
-#fi
+  echo "#cloud-config
+system_info:
+  default_user:
+    name: nemsadmin" > /etc/cloud/cloud.cfg.d/defaults.cfg
+fi
 
 # Delete any default users and remove their home folders
   userdel -f -r baldnerd # Bald Nerd's Base Images
