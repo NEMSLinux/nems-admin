@@ -19,22 +19,6 @@ platform=$(/usr/local/bin/nems-info platform)
   wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
   cp /root/nems/nems-migrator/data/nems/changelog.txt .
 
-
-# Amazon Web Services uses a key pair instead of password
-if (( $platform == 22 )); then
-#  if [[ -e /home/admin/.ssh/authorized_keys ]]; then
-#    if [[ ! -e /home/nemsadmin/.ssh ]]; then
-#      mkdir /home/nemsadmin/.ssh
-#    fi
-#    cp /home/admin/.ssh/authorized_keys /home/nemsadmin/.ssh/
-#    chown nemsadmin:nemsadmin /home/nemsadmin/.ssh/authorized_keys
-#  fi
-  echo "#cloud-config
-system_info:
-  default_user:
-    name: nemsadmin" > /etc/cloud/cloud.cfg.d/defaults.cfg
-fi
-
 # Delete any default users and remove their home folders
   userdel -f -r baldnerd # Bald Nerd's Base Images
   userdel -f -r pi

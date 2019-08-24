@@ -27,4 +27,7 @@ if (( $platform == 22 )); then
     /bin/systemctl start rc-local.service
   fi
 
+  # Change default user to nemsadmin
+  cp -f /root/nems/nems-migrator/data/1.5/platforms/aws/cloud.cfg /etc/cloud/
+
 fi
