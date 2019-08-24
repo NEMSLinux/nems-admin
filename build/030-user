@@ -43,5 +43,9 @@ fi
   userdel -f -r pine64 # Sopine
   userdel -f -r admin # Amazon Web Services
 
+# Ensure password authentication is enabled (otherwise cannot login to some features on AWS, nor become root)
+# It is up to you to ensure 1) you are using strong passwords and 2) you only have YOUR IP address(es) allowed to connect in your firewall
+  /bin/sed -i -- 's,PasswordAuthentication no,PasswordAuthentication yes,g' /etc/ssh/sshd_config
+
 # Remove sudo message
 echo "Defaults lecture = never" > /etc/sudoers.d/privacy
