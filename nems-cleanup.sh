@@ -31,12 +31,10 @@ else
 
   platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
 
-  if (( $platform != 22 )); then
-    # Check if nemsadmin exists, and create it if not
-    if [ ! -d /home/nemsadmin ]; then
-      # Create the nemsadmin user
-      /root/nems/nems-admin/build/030-user
-    fi
+  # Check if nemsadmin exists, and create it if not
+  if [ ! -d /home/nemsadmin ]; then
+    # Create the nemsadmin user
+    /root/nems/nems-admin/build/030-user
   fi
 
   if (( $platform >= 0 )) && (( $platform <= 9 )); then
@@ -138,6 +136,9 @@ else
 
   rm /var/log/lastlog
   touch /var/log/lastlog
+
+  # Remove Robbie's key pair
+  rm /home/nemsadmin/.ssh/authorized_keys
 
   if (( $platform != 22 )); then
     # Remove DNS Resolver config (will be auto-generated on first boot)
