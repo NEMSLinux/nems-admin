@@ -1,8 +1,7 @@
 #!/bin/bash
-echo $0 > /var/www/html/userfiles/nems-build.cur
-
 hn=$(/bin/hostname)
 if [[ $hn != "nems" ]]; then
+  echo $0 > /var/www/html/userfiles/nems-build.cur
   printf "Changing Hostname... "
   /bin/sed -i -- 's/'"$hn"'/nems/g' /etc/hosts
   /bin/sed -i -- 's/'"$hn"'/nems/g' /etc/hostname
@@ -16,4 +15,5 @@ if [[ $hn != "nems" ]]; then
   hostnamectl set-hostname nems
   echo Done.
   echo Change will take effect at next reboot.
+  rm /var/www/html/userfiles/nems-build.cur
 fi
