@@ -27,6 +27,7 @@ if (( $platform == 22 )); then
       mkdir /home/nemsadmin/.ssh
     fi
     cp /home/admin/.ssh/authorized_keys /home/nemsadmin/.ssh/
+    chown nemsadmin:nemsadmin /home/nemsadmin/.ssh/authorized_keys
   fi
 fi
 
