@@ -8,3 +8,10 @@ apt -y install iputils-ping
 if [[ ! -e /usr/bin/php ]]; then
   apt -y install php
 fi
+
+# Ensure systemctl resides at both common locations
+if [[ ! -e /usr/bin/systemctl ]]; then
+  if [[ -e /bin/systemctl ]]; then
+    ln -s /bin/systemctl /usr/bin/systemctl
+  fi
+fi
