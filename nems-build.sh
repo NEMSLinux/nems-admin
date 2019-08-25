@@ -87,7 +87,7 @@ If you run this program, you will lose everything!
 fi
 
 diskfree=$(($(stat -f --format="%a*%S" .)))
-if (( "$diskfree" < "7516192768" )); then
+if (( "$diskfree" < "6442450944" )); then
   echo You do not have enough free space to build. Did you resize the root fs?
   exit
 fi
