@@ -45,8 +45,8 @@ if [[ ! -d /var/lib/monit ]]; then
   mkdir -m 0750 -p /var/lib/monit
 fi
 
-/bin/systemctl enable monit.service
-/bin/systemctl start monit.service
+/bin/systemctl enable monit
+/bin/systemctl start monit
 
 # don't error out of run-parts
 echo "Done."

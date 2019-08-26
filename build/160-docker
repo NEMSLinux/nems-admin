@@ -12,7 +12,4 @@ if (( $platform == 21 )); then
     echo "PATCH-000002" >> /var/log/nems/patches.log
   fi
 
-  # Enable services that may not have been enabled automatically during build
-  systemctl enable monit
-
 fi
