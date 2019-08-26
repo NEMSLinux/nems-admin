@@ -9,7 +9,7 @@ Key point is that NEMS' Docker Container requires systemd, but as that would pos
 Publish when ready:
 
   - Stop the container: `docker stop nemslinux`
-  - `docker tag nems_1.5 baldnerd/nemslinux:1.5`
+  - `docker tag nems_1.5 baldnerd/nemslinux:latest`
   - `docker login && docker push baldnerd/nemslinux:latest`
   
 Deploy:
