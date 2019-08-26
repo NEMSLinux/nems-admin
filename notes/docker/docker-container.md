@@ -10,4 +10,8 @@ Publish when ready:
 
   - Stop the container: `docker stop nemslinux`
   - `docker tag nems_1.5 baldnerd/nemslinux:1.5`
-  - `docker login && docker push baldnerd/nemslinux:1.5`
+  - `docker login && docker push baldnerd/nemslinux:latest`
+  
+Deploy:
+
+`docker run --hostname nems --mount type=tmpfs,destination=/tmp,tmpfs-mode=1777 --mount type=tmpfs,destination=/var/www/html/backup/snapshot,tmpfs-mode=1770 --restart=unless-stopped --stop-timeout 120 --name nemslinux -d baldnerd/nemslinux:latest`
