@@ -5,3 +5,9 @@ Key point is that NEMS' Docker Container requires systemd, but as that would pos
   - Connect to the container: `docker exec -it nemslinux bash`
   - Compile NEMS Linux as normal, platform 21.
   - Run NEMS Linux: `docker exec -d nemslinux`
+
+Publish when ready:
+
+  - Stop the container: `docker stop nemslinux`
+  - `docker tag nems_1.5 baldnerd/nemslinux:1.5`
+  - `docker login && docker push baldnerd/nemslinux:1.5`
