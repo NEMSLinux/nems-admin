@@ -6,8 +6,15 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 ## Remove Cockpit theme and replace with symlink to the NEMS theme
 platform=$(/usr/local/bin/nems-info platform)
 
-if [[ -d /usr/share/cockpit/branding/debian/ ]]; then
-  rm -rf /usr/share/cockpit/branding/debian
+# Do not bother with cockpit branding on Docker (as cockpit is not installed)
+if (( $platform != 21 )); then
+
+  if [[ -d /usr/share/cockpit/branding/debian/ ]]; then
+    rm -rf /usr/share/cockpit/branding/debian
+  fi
+  mkdir -p /usr/share/cockpit/branding/debian
+  cp -f /root/nems/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
+
 fi
-mkdir -p /usr/share/cockpit/branding/debian
-cp -f /root/nems/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
+
+rm /var/www/html/userfiles/nems-build.cur
