@@ -10,7 +10,7 @@ function do_resize
 	echo "Saving the log to $rsflog"
 	sleep 4
 
-	part_start=`/sbin/fdisk -l /dev/$rootdev | grep ${rootdev}p${$rootpart} | awk '{print $2}'`
+	part_start=`/sbin/fdisk -l /dev/$rootdev | grep ${rootdev}p${rootpart} | awk '{print $2}'`
 	part_end=$(((`/sbin/fdisk -l /dev/$rootdev | head -n1 | grep -i bytes | awk '{print $5}'`/512)-20))
 	echo $part_end
 
