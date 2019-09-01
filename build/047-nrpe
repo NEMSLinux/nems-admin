@@ -48,5 +48,9 @@ wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/
 /bin/systemctl enable nrpe
 /bin/systemctl status nrpe --no-pager
 
+if ! grep -q "PATCH-000007" /var/log/nems/patches.log; then
+  echo "PATCH-000007" >> /var/log/nems/patches.log
+fi
+
 # so error code on failure doesn't fail run-parts
 echo "Done."
