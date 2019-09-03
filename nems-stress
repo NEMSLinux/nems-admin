@@ -1,17 +1,40 @@
 #!/bin/bash
+
+# This stress test will run for 5 minutes
 if [[ ! -f /usr/bin/stress ]]; then
   apt -y install stress
 fi
 
-cores=8
+# How many minutes to run for
+minutes=5
 
-# main test runs for 20 minutes, constantly
-stress --cpu $cores --timeout 1200 &
+printf "Running test for $minutes minutes"
 
-# After 5 minutes, increase the load, for 15 minutes
-sleep 300 && stress --cpu $cores --timeout 900 &
+touch /var/log/nems-stress-temperature.log
+touch /var/log/nems-stress-frequency.log
 
-# Get serious 10 minutes in and crank out 5 minutes of doom
-sleep 300 && stress --cpu $cores --timeout 300 &
+# Bring it to its knees...
+cores=$(nproc --all)
+stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
+stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
+stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
 
-# the stress test will stop after the timeouts are up.
+iterations=$((${minutes} * 6))
+while [ $iterations -gt 0 ];
+do
+  temperature=$(/usr/local/bin/nems-info temperature)
+  frequency=$(/usr/local/bin/nems-info frequency)
+  echo $temperature >> /var/log/nems-stress-temperature.log
+  echo $frequency >> /var/log/nems-stress-frequency.log
+  # Total sleep time of 10 seconds, with a period every 2 seconds
+  printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2
+  iterations=$(($iterations-1))
+done
+
+echo ""
+
+averagetemperature=$(awk '{ total += $2; count++ } END { print total/count }' /var/log/nems-stress-temperature.log)
+echo "Average Temperature: $averagetemperature (Lower is better)"
+
+averagefrequency=$(awk '{ total += $2; count++ } END { print total/count }' /var/log/nems-stress-frequency.log)
+echo "Average Frequency: $averagefrequency (Higher is better)"
