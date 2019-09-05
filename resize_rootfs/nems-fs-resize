@@ -26,8 +26,20 @@ set -x
 
 # Detect the drive and partition
 fulldev=`/bin/mount | /bin/sed -n 's|^/dev/\(.*\) on / .*|\1|p'`
+if [[ $fulldev == "" ]]; then
+  echo "Could not determine your root device."
+  exit 1
+fi
+
 rootdev=`echo $fulldev | cut -d "p" -f 1`
+if [[ $rootdev == $fulldev ]]; then
+  rootdev="${fulldev//[!a-z]/}"
+fi
+
 rootpart=`echo $fulldev | cut -d "p" -f 2`
+if [[ $rootpart == $fulldev ]]; then
+  rootpart="${fulldev//[!0-9]/}"
+fi
 
 resize() {
   start=$(fdisk -l /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
