@@ -10,8 +10,8 @@ minutes=5
 
 printf "Running test for $minutes minutes"
 
-touch /var/log/nems-stress-temperature.log
-touch /var/log/nems-stress-frequency.log
+touch /var/log/nems/nems-stress-temperature.log
+touch /var/log/nems/nems-stress-frequency.log
 
 # Bring it to its knees...
 cores=$(nproc --all)
@@ -24,8 +24,8 @@ while [ $iterations -gt 0 ];
 do
   temperature=$(/usr/local/bin/nems-info temperature)
   frequency=$(/usr/local/bin/nems-info frequency)
-  echo $temperature >> /var/log/nems-stress-temperature.log
-  echo $frequency >> /var/log/nems-stress-frequency.log
+  echo $temperature >> /var/log/nems/nems-stress-temperature.log
+  echo $frequency >> /var/log/nems/nems-stress-frequency.log
   # Total sleep time of 10 seconds, with a period every 2 seconds
   printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2
   iterations=$(($iterations-1))
@@ -33,8 +33,8 @@ done
 
 echo ""
 
-averagetemperature=$(awk '{ total += $2; count++ } END { print total/count }' /var/log/nems-stress-temperature.log)
+averagetemperature=$(awk '{ total += $1; count++ } END { print total/count }' /var/log/nems/nems-stress-temperature.log)
 echo "Average Temperature: $averagetemperature (Lower is better)"
 
-averagefrequency=$(awk '{ total += $2; count++ } END { print total/count }' /var/log/nems-stress-frequency.log)
+averagefrequency=$(awk '{ total += $1; count++ } END { print total/count }' /var/log/nems/nems-stress-frequency.log)
 echo "Average Frequency: $averagefrequency (Higher is better)"
