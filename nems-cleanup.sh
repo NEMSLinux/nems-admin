@@ -40,13 +40,16 @@ else
     /root/nems/nems-admin/build/030-user
   fi
 
+  # Ensure all upgrades have been performed
+  /usr/local/bin/nems-upgrade
+
   if (( $platform >= 0 )) && (( $platform <= 9 )); then
     # Reset the RPi-Monitor users
-    cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor
+    cp -f /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor/
   fi
 
   # Reset Samba users
-  cp /root/nems/nems-migrator/data/samba/smb.conf /etc/samba
+  cp -f /root/nems/nems-migrator/data/samba/smb.conf /etc/samba/
 
   usercount=$(find /home/* -maxdepth 0 -type d | wc -l)
   if (( $usercount == 1)); then
