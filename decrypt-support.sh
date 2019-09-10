@@ -5,10 +5,13 @@ if [[ $1 = "" ]] || [[ $2 = "" ]]; then
   exit
 fi
 
-/usr/bin/gpg --yes --batch --passphrase="$2" --decrypt $1 > /tmp/support.tar.gz
+mkdir support
+/usr/bin/gpg --yes --batch --passphrase="$2" --decrypt $1 > support/support.tar.gz
 
-if [[ -s /tmp/support.tar.gz ]]; then
-  echo File saved to /tmp/support.tar.gz
+if [[ -s support/support.tar.gz ]]; then
+  cd support
+  tar -xvzf support.tar.gz
+  rm support.tar.gz
 else
   echo Error decrypting file. Correct HWID?
 fi
