@@ -11,6 +11,9 @@ else
 
   if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution or the reboot option to reboot."; echo ""; fi;
 
+  ver=$(cat /root/nems/nems-admin/build-version)
+  echo "Cleaning up NEMS Linux $ver"
+  echo ""
   read -r -p "What build number is this? " buildnum
 
   if [[ -f /tmp/qf.sh ]]; then
@@ -60,8 +63,6 @@ else
   echo "Did you cp the database? This script will restore from Migrator. CTRL-C to abort."
   sleep 5
 
-  ver=$(/usr/local/bin/nems-info nemsver) 
-
   # Stop services which may be using these files
   systemctl stop webmin
   systemctl stop rpimonitor
@@ -69,7 +70,7 @@ else
   systemctl stop apache2
   systemctl stop nagios
   systemctl stop smbd
-  
+
   touch /tmp/nems.freeze
 
   # Delete system email
