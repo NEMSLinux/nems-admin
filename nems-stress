@@ -20,6 +20,7 @@ lowtemperature=$temperature
 toptemperature=$temperature
 lowfrequency=$frequency
 topfrequency=$frequency
+frequencywhenhot=999999999999
 
 # Bring this NEMS Server to its knees...
 cores=$(nproc --all)
@@ -38,6 +39,15 @@ while [ $iterations -gt 0 ];
 do
   temperature=$(/usr/local/bin/nems-info temperature)
   frequency=$(/usr/local/bin/nems-info frequency)
+
+  echo $frequency >> /var/log/nems/nems-stress-frequency.log
+  if [[ "$frequency" < "$lowfrequency" ]]; then
+    lowfrequency=$frequency
+  fi
+  if [[ "$frequency" > "$topfrequency" ]]; then
+    topfrequency=$frequency
+  fi
+
   echo $temperature >> /var/log/nems/nems-stress-temperature.log
   if [[ "$temperature" < "$lowtemperature" ]]; then
     lowtemperature=$temperature
@@ -45,12 +55,10 @@ do
   if [[ "$temperature" > "$toptemperature" ]]; then
     toptemperature=$temperature
   fi
-  echo $frequency >> /var/log/nems/nems-stress-frequency.log
-  if [[ "$frequency" < "$lowfrequency" ]]; then
-    lowfrequency=$frequency
-  fi
-  if [[ "$frequency" > "$topfrequency" ]]; then
-    topfrequency=$frequency
+  if [[ "$temperature" > "80" ]]; then
+    if [[ "$frequency" < "$frequencywhenhot" ]]; then
+      frequencywhenhot=$frequency
+    fi
   fi
   # Total sleep time of 10 seconds, with a period every 2 seconds
   printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2
@@ -64,8 +72,14 @@ echo "Lowest Temperature:  $lowtemperature"
 echo "Highest Temperature: $toptemperature"
 echo "Slowest Speed: $lowfrequency"
 echo "Maximum Speed: $topfrequency"
+echo ""
+echo "When the board was hot, the frequency was: $frequencywhenhot"
+echo ""
+
 averagetemperature=$(awk '{ total += $1; count++ } END { print total/count }' /var/log/nems/nems-stress-temperature.log)
 echo "Average Temperature: $averagetemperature (Lower is better)"
 
 averagefrequency=$(awk '{ total += $1; count++ } END { print total/count }' /var/log/nems/nems-stress-frequency.log)
 echo "Average Frequency: $averagefrequency (Higher is better)"
+
+echo ""
