@@ -8,13 +8,27 @@ fi
 # How many minutes to run for
 minutes=5
 
+echo ""
 printf "Running test for $minutes minutes"
 
+# Setup our base environment
 touch /var/log/nems/nems-stress-temperature.log
 touch /var/log/nems/nems-stress-frequency.log
+temperature=$(/usr/local/bin/nems-info temperature)
+frequency=$(/usr/local/bin/nems-info frequency)
+lowtemperature=$temperature
+toptemperature=$temperature
+lowfrequency=$frequency
+topfrequency=$frequency
 
-# Bring it to its knees...
+# Bring this NEMS Server to its knees...
 cores=$(nproc --all)
+stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
+stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
+stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
+stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
+stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
+stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
 stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
 stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
 stress --cpu $cores --timeout $((${minutes} * 60)) > /dev/null 2>&1 &
@@ -25,14 +39,31 @@ do
   temperature=$(/usr/local/bin/nems-info temperature)
   frequency=$(/usr/local/bin/nems-info frequency)
   echo $temperature >> /var/log/nems/nems-stress-temperature.log
+  if [[ "$temperature" < "$lowtemperature" ]]; then
+    lowtemperature=$temperature
+  fi
+  if [[ "$temperature" > "$toptemperature" ]]; then
+    toptemperature=$temperature
+  fi
   echo $frequency >> /var/log/nems/nems-stress-frequency.log
+  if [[ "$frequency" < "$lowfrequency" ]]; then
+    lowfrequency=$frequency
+  fi
+  if [[ "$frequency" > "$topfrequency" ]]; then
+    topfrequency=$frequency
+  fi
   # Total sleep time of 10 seconds, with a period every 2 seconds
   printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2 && printf "." && sleep 2
   iterations=$(($iterations-1))
 done
 
 echo ""
+echo ""
 
+echo "Lowest Temperature:  $lowtemperature"
+echo "Highest Temperature: $toptemperature"
+echo "Slowest Speed: $lowfrequency"
+echo "Maximum Speed: $topfrequency"
 averagetemperature=$(awk '{ total += $1; count++ } END { print total/count }' /var/log/nems/nems-stress-temperature.log)
 echo "Average Temperature: $averagetemperature (Lower is better)"
 
