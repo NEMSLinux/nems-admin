@@ -4,13 +4,16 @@
 # Thanks to cube8021 for pointing out this feature on Discord
 # Done a bit differently here since the stages are all local (not public)
 
+nemsver=$(cat ../../build-version)
+echo "Building NEMS Linux $nemsver"
+echo ""
 read -r -p "What build number is this? " buildnum
 
 # Prep Debian Buster for NEMS Linux conversion
 docker build --label build="$nemsver" -t nemsprep stages/01
 
 # Deploy and compile NEMS Linux
-docker build --label build="$nemsver" -t nems_1.5 stages/02
+docker build --label build="$nemsver" -t nems_$nemsver stages/02
 
 # Prepare Image
 
