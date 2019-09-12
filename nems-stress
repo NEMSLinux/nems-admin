@@ -12,8 +12,8 @@ echo ""
 printf "Running test for $minutes minutes"
 
 # Setup our base environment
-touch /var/log/nems/nems-stress-temperature.log
-touch /var/log/nems/nems-stress-frequency.log
+echo "" > /var/log/nems/nems-stress-temperature.log
+echo "" > /var/log/nems/nems-stress-frequency.log
 temperature=$(/usr/local/bin/nems-info temperature)
 frequency=$(/usr/local/bin/nems-info frequency)
 lowtemperature=$temperature
