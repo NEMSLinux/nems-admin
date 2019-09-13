@@ -132,10 +132,14 @@ else
 
   cd /root
   rm .nano_history
+  history -c
+  history -w
   rm .bash_history
 
   cd /home/nemsadmin
   rm .nano_history
+  su - nemsadmin -c "history -c"
+  su - nemsadmin -c "history -w"
   rm .bash_history
 
   rm /var/log/lastlog
