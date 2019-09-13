@@ -37,6 +37,6 @@ RUN wget --no-check-certificate -O /tmp/nems-prep.sh https://raw.githubuserconte
     chmod +x /tmp/nems-prep.sh && \
     /tmp/nems-prep.sh
 
-EXPOSE 80/tcp 443/tcp
+EXPOSE 80/tcp 443/tcp 2812/tcp
 
 ENTRYPOINT ["/usr/bin/systemctl","default","--init"]
