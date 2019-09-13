@@ -1,6 +1,6 @@
 FROM nemsprep:latest
 
-LABEL nemsver="1.5"
+LABEL nemsver="1.5.1"
 
 ENV container docker
 ENV LC_ALL C
