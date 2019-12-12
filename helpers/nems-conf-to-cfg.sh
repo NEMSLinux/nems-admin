@@ -4,7 +4,7 @@
 
 # Automatically replaces the config files in NEMS Migrator any time you update NEMS-Sample mysql db (so they match)
 
-dest=/root/nems/nems-migrator/data/1.5/nagios/conf
+dest=/root/nems/nems-migrator/data/1.6/nagios/conf
 
 echo ""
 echo "Ready to copy your /etc/nems/conf folder. Please open NConf and Generate Config."

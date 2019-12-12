@@ -26,9 +26,13 @@ fi
 #  tar -zxvf nagios-4.3.4.tar.gz
 #  cd /tmp/nagios-4.3.4/
   # NEMS 1.5
-  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.3.tar.gz
-  tar -zxvf nagios-4.4.3.tar.gz
-  cd /tmp/nagios-4.4.3/
+#  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.3.tar.gz
+#  tar -zxvf nagios-4.4.3.tar.gz
+#  cd /tmp/nagios-4.4.3/
+ # NEMS 1.6
+  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.5.tar.gz
+  tar -zxvf nagios-4.4.5.tar.gz
+  cd /tmp/nagios-4.4.5/
   ./configure --with-nagios-group=nagios --with-command-group=nagcmd --with-httpd_conf=/etc/apache2/conf-available/
   make all
   make install

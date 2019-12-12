@@ -6,12 +6,12 @@ Key point is that NEMS' Docker Container requires systemd, but as that would pos
 Publish when ready:
 
   - Stop the container: `docker stop nemslinux`
-  - `docker tag nems_1.5.1 baldnerd/nemslinux:1.5.1_build1`
-  - `docker login && docker push baldnerd/nemslinux:1.5.1_build1`
+  - `docker tag nems_1.6 baldnerd/nemslinux:1.6_build1`
+  - `docker login && docker push baldnerd/nemslinux:1.6_build1`
   
 Deploy (Install):
 
-`docker run --hostname nems --mount type=tmpfs,destination=/tmp,tmpfs-mode=1777 --mount type=tmpfs,destination=/var/www/html/backup/snapshot,tmpfs-mode=1770 --restart=unless-stopped --stop-timeout 120 --name nemslinux -d -p 80:80 -p 443:443 -p 2812:2812 baldnerd/nemslinux:1.5.1_build1`
+`docker run --hostname nems --mount type=tmpfs,destination=/tmp,tmpfs-mode=1777 --mount type=tmpfs,destination=/var/www/html/backup/snapshot,tmpfs-mode=1770 --restart=unless-stopped --stop-timeout 120 --name nemslinux -d -p 80:80 -p 443:443 -p 2812:2812 baldnerd/nemslinux:1.6_build1`
 
 Start/Stop NEMS Linux:
 

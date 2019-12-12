@@ -1,0 +1,39 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+if [[ -d /var/www/nagiostv ]]; then
+  echo 'Reinstalling NagiosTV...'
+  a2disconf nagiostv
+  rm /etc/apache2/conf-available/nagiostv.conf
+  rm -rf /var/www/nagiostv
+else
+  echo 'Installing NagiosTV...'
+fi
+
+tmpdir=`mktemp -d -p /tmp/`
+cd $tmpdir
+
+# Obtain NagiosTV
+wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.4.6/nagiostv-0.4.6.tar.gz
+tar xvfz nagiostv-0.4.6.tar.gz
+mv nagiostv /var/www/
+
+# If successful, enable NagiosTV
+if [[ -d /var/www/nagiostv ]]; then
+  # Add the apache2 conf
+  cp -f /root/nems/nems-migrator/data/1.6/nagiostv.conf /etc/apache2/conf-available/
+  echo '{"titleString":"NEMS Tactical Overview","baseUrl":"/nagios/cgi-bin/","alertDaysBack":14,"alertMaxItems":1000,"hideServicePending":false,"hideServiceWarning":false,"hideServiceUnknown":false,"hideServiceCritical":false,"hideServiceAcked":false,"hideServiceScheduled":false,"hideServiceFlapping":false,"serviceSortOrder":"newest","hideHostPending":false,"hideHostDown":false,"hideHostUnreachable":false,"hideHostAcked":false,"hideHostScheduled":false,"hideHostFlapping":false,"hideHistory":false,"hideHistoryTitle":false,"hideHistoryChart":false,"hostSortOrder":"newest","versionCheckDays":0,"language":"English","flynnEnabled":false,"flynnConcernedAt":1,"flynnAngryAt":4,"flynnBloodyAt":8,"flynnCssScale":"0.8","showEmoji":false,"speakItems":true,"speakItemsVoice":"","playSoundEffects":true,"soundEffectCritical":"./sample-audio/critical.mp3","soundEffectWarning":"./sample-audio/warning.mp3","soundEffectOk":"./sample-audio/ok.mp3"}' > /var/www/nagiostv/client-settings.json
+  # Hide cruft
+  echo '.SettingsBox, .FooterAreaRight, .FooterAreaMiddle, .softIcon { display:none; }' >> /var/www/nagiostv/static/css/main.*.css
+  # Set permissions
+  chown -R www-data:www-data /var/www/nagiostv
+  chown root:root /etc/apache2/conf-available/nagiostv.conf
+  # Enable nagiostv
+  a2enconf nagiostv
+  # Reload apache2
+  /usr/bin/systemctl reload apache2
+  echo 'Done installing NagiosTV Dashboard'
+else
+  echo 'Failed installing NagiosTV Dashboard'
+fi
+rm -rf $tmpdir
