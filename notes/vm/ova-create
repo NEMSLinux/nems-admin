@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create the working directory
-tmpdir=`mktemp -d -p /tmp/`
+tmpdir=`mktemp -d -p /usr/src/`
 
 # Run nems-cleanup.sh halt on the NEMS VM, then import OVA:
 ovftool --noSSLVerify --shaAlgorithm=SHA1 "vi://root@10.0.0.3/NEMS Linux 1.6" $tmpdir/NEMS.ova

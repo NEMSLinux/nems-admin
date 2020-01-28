@@ -10,7 +10,8 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 yes | apt install libssl-dev libpam0g-dev gcc make
 
-tmpdir=`mktemp -d -p /tmp/`
+tmpdir=`mktemp -d -p /usr/src/`
+echo $tmpdir
 wget -O $tmpdir/monit.tar.gz https://mmonit.com/monit/dist/monit-$ver.tar.gz
 cd $tmpdir
 tar xvzf monit.tar.gz
@@ -47,6 +48,10 @@ fi
 
 /bin/systemctl enable monit
 /bin/systemctl start monit
+
+# Remove the tmp files
+cd /tmp
+rm -rf $tmpdir
 
 # don't error out of run-parts
 echo "Done."

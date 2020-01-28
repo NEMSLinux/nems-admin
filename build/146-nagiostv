@@ -10,7 +10,7 @@ else
   echo 'Installing NagiosTV...'
 fi
 
-tmpdir=`mktemp -d -p /tmp/`
+tmpdir=`mktemp -d -p /usr/src/`
 cd $tmpdir
 
 # Obtain NagiosTV
@@ -36,4 +36,7 @@ if [[ -d /var/www/nagiostv ]]; then
 else
   echo 'Failed installing NagiosTV Dashboard'
 fi
+
+# Remove the tmp files
+cd /tmp
 rm -rf $tmpdir

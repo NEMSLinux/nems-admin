@@ -20,7 +20,7 @@ if [[ ! -e $(pwd)/051-monitoring-plugins ]]; then
   apt -y install --reinstall monitoring-plugins-basic
   apt -y install --reinstall monitoring-plugins-standard
 fi
-tmpdir=`mktemp -d -p /tmp/`
+tmpdir=`mktemp -d -p /usr/src/`
 file="https://github.com/NagiosEnterprises/nrpe/archive/nrpe-$nrpeVer.tar.gz"
 cd $tmpdir
 wget -O $tmpdir/nrpe.tar.gz $file
@@ -51,6 +51,10 @@ wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/
 if ! grep -q "PATCH-000007" /var/log/nems/patches.log; then
   echo "PATCH-000007" >> /var/log/nems/patches.log
 fi
+
+# Remove the tmp files
+cd /tmp
+rm -rf $tmpdir
 
 # so error code on failure doesn't fail run-parts
 echo "Done."

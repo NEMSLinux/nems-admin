@@ -4,9 +4,10 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # The conf gets imported by nems-init, so only need to install.
 
 # Go git 'er
-wget -O /tmp/nagvis.tar.gz http://www.nagvis.org/share/nagvis-1.9.8.tar.gz
-cd /tmp
-tar zxvf /tmp/nagvis.tar.gz
+tmpdir=`mktemp -d -p /usr/src/`
+wget -O $tmpdir/nagvis.tar.gz http://www.nagvis.org/share/nagvis-1.9.8.tar.gz
+cd $tmpdir
+tar zxvf nagvis.tar.gz
 cd nagvis-1.9.8/
 chmod +x install.sh
 
@@ -24,3 +25,7 @@ cp -f /root/nems/nems-migrator/data/1.4/nagvis/nagvis.ini.php /etc/nagvis/etc/
 # Turn me on!
 a2enconf nagvis
 /bin/systemctl restart apache2
+
+# Remove the tmp files
+cd /tmp
+rm -rf $tmpdir
