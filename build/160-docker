@@ -12,9 +12,10 @@ if (( $platform == 21 )); then
     echo "PATCH-000002" >> /var/log/nems/patches.log
   fi
 
-  # Docker doesn't support the usual "pretty" MOTD of NEMS, so at least have SOMETHING...
+  # Add our pretty MOTD to Docker
   if ! grep -q "NEMS MOTD for DOCKER" /etc/bash.bashrc; then
     echo "# NEMS MOTD for DOCKER" >> /etc/bash.bashrc
-    echo "echo \"Welcome to NEMS Linux $(/usr/local/bin/nems-info nemsver) for Docker\"" >> /etc/bash.bashrc
+    echo "USER=root tclsh /etc/motd.tcl" >> /etc/bash.bashrc
   fi
+
 fi
