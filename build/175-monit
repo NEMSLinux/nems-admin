@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Version to install corresponding to the tar.gz file from their mmonit.com
-ver=5.25.3
+ver=5.26.0
 
 # stop it if it is already running from a previous apt task
 /bin/systemctl stop monit.service
@@ -35,7 +35,7 @@ echo "[Unit]
  [Install]
  WantedBy=multi-user.target" > /lib/systemd/system/monit.service
 
-cp -Rf /root/nems/nems-migrator/data/1.4/monit /etc/
+cp -Rf /root/nems/nems-migrator/data/1.6/monit /etc/
 chmod 600 /etc/monit/monitrc
 # Don't need this folder, but makes it backward compatible with 1.4 confs
 if [[ ! -d /etc/monit/conf-enabled ]]; then
