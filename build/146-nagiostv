@@ -13,9 +13,13 @@ fi
 tmpdir=`mktemp -d -p /usr/src/`
 cd $tmpdir
 
+if [[ -e /var/www/nagiostv ]]; then
+  rm -rf /var/www/nagiostv
+fi
+
 # Obtain NagiosTV
-wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.4.6/nagiostv-0.4.6.tar.gz
-tar xvfz nagiostv-0.4.6.tar.gz
+wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.4.9/nagiostv-0.4.9.tar.gz
+tar xvfz nagiostv-0.4.9.tar.gz
 mv nagiostv /var/www/
 
 # If successful, enable NagiosTV
@@ -28,6 +32,9 @@ if [[ -d /var/www/nagiostv ]]; then
   # Set permissions
   chown -R www-data:www-data /var/www/nagiostv
   chown root:root /etc/apache2/conf-available/nagiostv.conf
+  mv /var/www/nagiostv/index.html /var/www/nagiostv/index.php
+  sed -i '/<\/body>/i<script src="/js/jquery.min.js"></script><script src="/js/jquery.backstretch.min.js"></script><?php require_once("/var/www/html/inc/wallpaper.php"); ?><style>#root > div > div > div:nth-child(9) { background: rgba(0,0,0,.4); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding: 2px 8px; } .highcharts-legend-item tspan { fill: #aaa !important; }</style>' /var/www/nagiostv/index.php
+
   # Enable nagiostv
   a2enconf nagiostv
   # Reload apache2
