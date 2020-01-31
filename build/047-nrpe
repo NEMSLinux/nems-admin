@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Set the version (see git releases)
-nrpeVer="3.2.1"
+#nrpeVer="3.2.1"
+nrpeVer="4.0.0"
 
 APT_LISTCHANGES_FRONTEND=cat
 echo $0 > /var/www/html/userfiles/nems-build.cur
@@ -12,7 +13,7 @@ yes | apt remove --purge nagios-nrpe-server
 yes | apt autoremove
 apt update
 
-yes | apt install libssl-dev dpatch debhelper libwrap0-dev autotools-dev
+yes | apt install libssl-dev dpatch debhelper libwrap0-dev autotools-dev build-essential
 
 if [[ ! -e $(pwd)/051-monitoring-plugins ]]; then
   # Not running from nems-admin. Install plugins
@@ -33,6 +34,9 @@ make install-plugin
 make install-daemon
 make install-config
 make install-init
+
+echo $tmpdir
+exit
 
 /bin/systemctl stop nrpe
 
