@@ -3,15 +3,25 @@ Key point is that NEMS' Docker Container requires systemd, but as that would pos
   - Build the image, compile NEMS Linux, and deploy: `./compile`
   - Connect to the container: `docker exec -it nemslinux bash`
 
-Publish when ready:
+Publish to DockerHub:
 
   - Stop the container: `docker stop nemslinux`
   - `docker tag nems_1.6 baldnerd/nemslinux:1.6_build1`
   - `docker login && docker push baldnerd/nemslinux:1.6_build1`
   
+Publish to Downloadable File:
+
+  - Stop the container: `docker stop nemslinux`
+  - docker save -o nemslinux.docker nemslinux
+
+Install from Downloadable File:
+
+  - docker load -i nemslinux.docker
+  - Follow normal install instructions in Docs (Docker will use your local copy now, rather than the one from DockerHub).
+
 Deploy (Install):
 
-`docker run --hostname nems --mount type=tmpfs,destination=/tmp,tmpfs-mode=1777 --mount type=tmpfs,destination=/var/www/html/backup/snapshot,tmpfs-mode=1770 --restart=unless-stopped --stop-timeout 120 --name nemslinux -d -p 80:80 -p 443:443 -p 2812:2812 baldnerd/nemslinux:1.6_build1`
+  - See [[https://docs.nemslinux.com/supported_platforms/docker|Docs]].
 
 Start/Stop NEMS Linux:
 
