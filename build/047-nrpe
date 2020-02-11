@@ -35,9 +35,6 @@ make install-daemon
 make install-config
 make install-init
 
-echo $tmpdir
-exit
-
 /bin/systemctl stop nrpe
 
 wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/misc/nrpe.cfg
