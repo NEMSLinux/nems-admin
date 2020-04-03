@@ -8,7 +8,7 @@ platform=$(/usr/local/bin/nems-info platform)
 
 # Use Raspbian repo for Pi, Sury's Debian Repo for others.
 if [[ $platform < 10 ]]; then
-  repo="-t buster"
+  repo="-t bullseye"
 else
   repo=""
 fi
