@@ -7,7 +7,13 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   chown -R nagios:nagios /var/lib/nagios/
 fi
 
-apt-get install -y python-django python-simplejson libgmp-dev python-dev python-paramiko
+# Install dependencies
+apt-get install -y libapache2-mod-wsgi
+apt-get install -y python3-django
+apt-get install -y python-simplejson
+apt-get install -y libgmp-dev
+apt-get install -y python-dev
+apt-get install -y python3-paramiko
 
 # Prepare sudo permissions
 if ! grep -q "# Adagios" /etc/sudoers; then
@@ -20,45 +26,49 @@ Defaults:%nagios !requiretty
 ' | sudo EDITOR='tee -a' visudo
 fi
 
-if ! grep -q "# Adagios 1.5" /etc/sudoers; then
+if ! grep -q "# Adagios 1.6" /etc/sudoers; then
 echo '
-# Adagios 1.5
+# Adagios 1.6
 Defaults:www-data    !requiretty
 www-data ALL = (root) NOPASSWD: /usr/sbin/service nagios *
 www-data ALL = (root) NOPASSWD: /usr/local/nagios/bin/nagios -v *
 ' | sudo EDITOR='tee -a' visudo
 fi
 
-# Install dependencies
-apt install -y libapache2-mod-wsgi python-simplejson libgmp-dev python-dev python-paramiko
-
 # Install Django
-python -m pip install --upgrade pip setuptools
-pip install django==1.6
-pip install django-clear-cache
+pip3 install --upgrade pip setuptools
+pip3 install --ignore-installed six
+pip3 install django==1.6
+pip3 install django-clear-cache
 
 # Install Pynag
 cd /tmp
-git clone git://github.com/pynag/pynag.git 
+git clone -b python3 git://github.com/pynag/pynag.git 
 cd pynag
-python setup.py build
-python setup.py install
+python3 setup.py build
+python3 setup.py install
 
 # Install Adagios
 cd /tmp/
-wget -O adagios.tar.gz https://github.com/opinkerfi/adagios/archive/adagios-1.6.3-2.tar.gz
-tar xzf adagios.tar.gz
-cd adagios-adagios-1.6.3-2
+#wget -O adagios.tar.gz https://github.com/opinkerfi/adagios/archive/adagios-1.6.6-1.tar.gz
+#cd adagios-adagios-1.6.6-1
+#tar xzf adagios.tar.gz
+git clone -b adagios-2.0.1-1 https://github.com/opinkerfi/adagios
+cd adagios
 if [[ -d /etc/adagios ]]; then
   rm -rf /etc/adagios
 fi
-if [[ -d /usr/local/lib/python2.7/dist-packages/adagios ]]; then
-  rm -rf /usr/local/lib/python2.7/dist-packages/adagios
+if [[ -d /usr/local/lib/python3.8/dist-packages/adagios ]]; then
+  rm -rf /usr/local/lib/python3.8/dist-packages/adagios
 fi
 cp -R adagios/etc/adagios /etc/
 cp -f /root/nems/nems-migrator/data/1.5/adagios/adagios.conf /etc/adagios/
-python setup.py install
-ln -s /usr/local/lib/python2.7/dist-packages/adagios /var/www/adagios
+python3 setup.py install
+# Remove old symlink
+if [[ -e /var/www/adagios ]]; then
+  rm -f /var/www/adagios
+fi
+ln -s /usr/local/lib/python3.8/dist-packages/adagios /var/www/adagios
 chown -R nagios:nagios /etc/adagios
 rm -fr /var/www/adagios/etc/
 mkdir -p /var/lib/adagios/userdata
@@ -71,8 +81,10 @@ cp -f /root/nems/nems-migrator/data/1.5/adagios/templates/403.html /var/www/adag
 cp -f /root/nems/nems-migrator/data/1.5/adagios/templates/base.html /var/www/adagios/templates/
 
 # Create the working folder for the WSGI daemon
-mkdir /var/www/adagios-working
-chown nagios:nagios /var/www/adagios-working
+if [[ ! -d /var/www/adagios-working ]]; then
+  mkdir /var/www/adagios-working
+  chown nagios:nagios /var/www/adagios-working
+fi
 
 cat << EOF > /etc/apache2/conf-available/adagios.conf
 WSGISocketPrefix /var/run/apache2/wsgi
@@ -96,7 +108,7 @@ a2enconf adagios
 
 # Install okconfig
 cd /opt
-git clone https://github.com/opinkerfi/okconfig.git
+git clone -b "okconfig-python2/3" https://github.com/opinkerfi/okconfig.git
 echo 'export PYTHONPATH=$PYTHONPATH:/opt/okconfig' > /etc/profile.d/okconfig.sh
 cp -f /root/nems/nems-migrator/data/1.5/adagios/okconfig.conf /etc/okconfig.conf
 source /etc/profile

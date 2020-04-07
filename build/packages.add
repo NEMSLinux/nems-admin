@@ -24,7 +24,7 @@ php-net-socket
 python
 python3-openssl
 python-dev
-python-pip
+python3-pip
 rsync
 samba
 screen
