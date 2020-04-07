@@ -29,6 +29,9 @@ a2enconf security
 /bin/sed -i~ '/SecServerSignature/d' /etc/apache2/conf-available/security.conf
 echo "SecServerSignature NEMS_Linux/$ver" >> /etc/apache2/conf-available/security.conf
 
+# Instal mod_wsgi (used by Adagios)
+apt -y install libapache2-mod-wsgi-py3
+
 /bin/systemctl start apache2
 
 exit 0
