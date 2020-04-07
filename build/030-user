@@ -2,6 +2,10 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 platform=$(/usr/local/bin/nems-info platform)
 
+# Create skeleton user data
+  wget -O /etc/skel/license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+  cp /root/nems/nems-migrator/data/nems/changelog.txt /etc/skel/
+
 # Create nemsadmin user
   adduser --disabled-password --gecos "" nemsadmin
 
@@ -16,8 +20,6 @@ platform=$(/usr/local/bin/nems-info platform)
 
 # Add files to nemsadmin home folder (which later get moved to NEMS user account at init)
   cd /home/nemsadmin
-  wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-  cp /root/nems/nems-migrator/data/nems/changelog.txt .
 
 # Delete any default users and remove their home folders
   userdel -f -r baldnerd # Bald Nerd's Base Images

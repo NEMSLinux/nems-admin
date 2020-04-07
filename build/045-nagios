@@ -21,15 +21,9 @@ if [[ ! -e /var/lib/nagios/ ]]; then
 fi
 
   cd /tmp
-  # NEMS 1.4.1
-#  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.3.4.tar.gz
-#  tar -zxvf nagios-4.3.4.tar.gz
-#  cd /tmp/nagios-4.3.4/
-  # NEMS 1.5
-#  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.3.tar.gz
-#  tar -zxvf nagios-4.4.3.tar.gz
-#  cd /tmp/nagios-4.4.3/
- # NEMS 1.6
+
+# Download from:
+# https://www.nagios.org/downloads/nagios-core/thanks/?product_download=nagioscore-source
   wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.5.tar.gz
   tar -zxvf nagios-4.4.5.tar.gz
   cd /tmp/nagios-4.4.5/
