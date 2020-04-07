@@ -21,9 +21,9 @@ openssl
 perl
 perl-base
 php-net-socket
-python
+python3
 python3-openssl
-python-dev
+python3-dev
 python3-pip
 rsync
 samba
@@ -71,7 +71,7 @@ apache2
 libapache2-modsecurity
 modsecurity-crs
 php-curl
-libapache2-mod-python
+#libapache2-mod-python
 libapache2-mod-security2
 
 # NEMS
