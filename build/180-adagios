@@ -54,8 +54,13 @@ cd /tmp/
 #wget -O adagios.tar.gz https://github.com/opinkerfi/adagios/archive/adagios-1.6.6-1.tar.gz
 #cd adagios-adagios-1.6.6-1
 #tar xzf adagios.tar.gz
+
+# Try PR 662 for Python 3.7 support
 git clone -b adagios-2.0.1-1 https://github.com/opinkerfi/adagios
 cd adagios
+git fetch origin pull/662/head:pr_662
+git checkout pr_662
+
 if [[ -d /etc/adagios ]]; then
   rm -rf /etc/adagios
 fi
