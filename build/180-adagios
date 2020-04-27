@@ -8,7 +8,7 @@ if [[ ! -e /var/lib/nagios/ ]]; then
 fi
 
 # Install dependencies
-apt-get install -y libapache2-mod-wsgi
+apt-get install -y libapache2-mod-wsgi-py3
 apt-get install -y python3-django
 apt-get install -y python3-simplejson
 apt-get install -y libgmp3-dev
@@ -71,7 +71,7 @@ cp -R adagios/etc/adagios /etc/
 cp -f /root/nems/nems-migrator/data/1.5/adagios/adagios.conf /etc/adagios/
 python3 setup.py install
 # Remove old symlink
-if [[ -e /var/www/adagios ]]; then
+if [[ -L /var/www/adagios ]]; then
   rm -f /var/www/adagios
 fi
 ln -s /usr/local/lib/python3.8/dist-packages/adagios /var/www/adagios
