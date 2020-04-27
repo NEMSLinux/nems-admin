@@ -23,8 +23,7 @@ if [[ ! -d nagios-api ]]; then
   git clone https://github.com/zorkian/nagios-api
   cd nagios-api
   apt update
-  python -m pip3 install --upgrade pip3 setuptools
-#  apt install -y python-setuptools libffi-dev
+  python3 -m pip install -U pip setuptools
   apt install -y libffi-dev
   pip3 install wheel
   pip3 install -r requirements.txt
