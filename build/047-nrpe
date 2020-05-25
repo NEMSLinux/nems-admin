@@ -51,6 +51,8 @@ wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/
   wget -O /usr/lib/nagios/plugins/custom_check_mem https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/plugins/custom_check_mem
   chmod +x /usr/lib/nagios/plugins/custom_check_mem
 
+systemctl daemon-reload
+
 /bin/systemctl start nrpe
 /bin/systemctl enable nrpe
 /bin/systemctl status nrpe --no-pager
