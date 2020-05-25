@@ -38,7 +38,7 @@ fi
     apt-get -y install git
     git clone https://github.com/cat5tv/nems-migrator
     # Grab the Migrator plugins
-    cp -f $tmpdir/data/1.6/nagios/plugins/* /usr/lib/nagios/plugins/
+    cp -f $tmpdir/nems-migrator/data/1.6/nagios/plugins/* /usr/lib/nagios/plugins/
     rm -rf $tmpdir
   fi
 
