@@ -4,6 +4,19 @@
 nrpeVer="3.2.1"
 #nrpeVer="4.0.0"
 
+tmpdir=`mktemp -d -p /usr/src/`
+cd $tmpdir
+
+# Determine if this is NEMS or not.
+if [[ -e /var/log/nems/ ]]; then
+  isnems=1
+else
+  isnems=0
+  # Run the prep script before continuing since this is not NEMS Linux
+  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/046-plugins-prep | bash
+  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/051-monitoring-plugins | bash
+fi
+
 APT_LISTCHANGES_FRONTEND=cat
 echo $0 > /var/www/html/userfiles/nems-build.cur
 /bin/systemctl stop nrpe
@@ -15,15 +28,7 @@ apt update
 
 yes | apt install libssl-dev dpatch debhelper libwrap0-dev autotools-dev build-essential
 
-if [[ ! -e $(pwd)/051-monitoring-plugins ]]; then
-  # Not running from nems-admin. Install plugins
-  apt -y install --reinstall monitoring-plugins-common
-  apt -y install --reinstall monitoring-plugins-basic
-  apt -y install --reinstall monitoring-plugins-standard
-fi
-tmpdir=`mktemp -d -p /usr/src/`
 file="https://github.com/NagiosEnterprises/nrpe/archive/nrpe-$nrpeVer.tar.gz"
-cd $tmpdir
 wget -O $tmpdir/nrpe.tar.gz $file
 tar xvzf nrpe.tar.gz
 cd nrpe-*
@@ -49,8 +54,10 @@ wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/
 /bin/systemctl enable nrpe
 /bin/systemctl status nrpe --no-pager
 
-if ! grep -q "PATCH-000007" /var/log/nems/patches.log; then
-  echo "PATCH-000007" >> /var/log/nems/patches.log
+if [[ $isnems == 1 ]]; then
+  if ! grep -q "PATCH-000007" /var/log/nems/patches.log; then
+    echo "PATCH-000007" >> /var/log/nems/patches.log
+  fi
 fi
 
 # Remove the tmp files

@@ -1,12 +1,14 @@
 #!/bin/bash
-echo $0 > /var/www/html/userfiles/nems-build.cur
+if [[ -e /var/log/nems/ ]]; then
+  echo $0 > /var/www/html/userfiles/nems-build.cur
+fi
 
 # This script cleans up / removes all installed Nagios plugins to prepare for installation/re-installation
 
   # Ensure apt installed versions don't exist
-  apt -y remove --purge monitoring-plugins*
-  apt -y remove --purge nagios-nrpe-plugin
-  apt -y autoremove
+  apt-get -y remove --purge monitoring-plugins*
+  apt-get -y remove --purge nagios-nrpe-plugin
+  apt-get -y autoremove
 
   # Install dependencies
   # Doing one per apt instance to avoid it failing if one package is missing
@@ -29,6 +31,8 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
   apt-get install -y openssl-devel
   apt-get install -y gettext
   apt-get install -y openssl
+  apt-get install -y bc
+  apt-get install -y dc
 
 # Install PostgreSQL development libraries so
 # check_psql (monitoring-plugins) can compile
@@ -56,4 +60,20 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
     if [[ ! -e /usr/local/nagios/libexec ]]; then
       ln -s /usr/lib/nagios/plugins /usr/local/nagios/libexec
     fi
+
+
+# Setup the environment to make compatible with non-NEMS systems
+if [[ ! -e /usr/lib/nagios/plugins/ ]]; then
+  mkdir -p /usr/lib/nagios/plugins/
+fi
+if [[ ! -e /usr/local/nagios/etc/ ]]; then
+  mkdir -p /usr/local/nagios/etc/
+fi
+
+# "Fix" Ubuntu and the fact that NRPE's install-init uses /usr/lib/systemd/system instead of /etc/systemd/system
+if [[ ! -e /usr/lib/systemd/system/ ]]; then
+  if [[ -e /etc/systemd/system/ ]]; then
+    ln -s /etc/systemd/system /usr/lib/systemd/system
+  fi
+fi
 

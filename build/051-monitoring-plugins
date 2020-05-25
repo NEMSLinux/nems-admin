@@ -1,11 +1,15 @@
 #!/bin/bash
-echo $0 > /var/www/html/userfiles/nems-build.cur
+if [[ -e /var/log/nems/ ]]; then
+  echo $0 > /var/www/html/userfiles/nems-build.cur
+fi
 
   # Install monitoring-plugins (the continuation of the now dead nagios-plugins)
   apt -y install --reinstall monitoring-plugins-common
   apt -y install --reinstall monitoring-plugins-basic
   apt -y install --reinstall monitoring-plugins-standard
 
+if [[ -e /var/log/nems/ ]]; then
   if ! grep -q "PATCH-000001" /var/log/nems/patches.log; then
     echo "PATCH-000001" >> /var/log/nems/patches.log
   fi
+fi
