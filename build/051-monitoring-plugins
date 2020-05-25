@@ -4,9 +4,9 @@ if [[ -e /var/log/nems/ ]]; then
 fi
 
   # Install monitoring-plugins (the continuation of the now dead nagios-plugins)
-  apt -y install --reinstall monitoring-plugins-common
-  apt -y install --reinstall monitoring-plugins-basic
-  apt -y install --reinstall monitoring-plugins-standard
+  apt-get -y install --reinstall monitoring-plugins-common
+  apt-get -y install --reinstall monitoring-plugins-basic
+  apt-get -y install --reinstall monitoring-plugins-standard
 
 if [[ -e /var/log/nems/ ]]; then
   if ! grep -q "PATCH-000001" /var/log/nems/patches.log; then
