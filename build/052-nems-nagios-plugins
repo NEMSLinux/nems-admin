@@ -1,19 +1,21 @@
 #!/bin/bash
-echo $0 > /var/www/html/userfiles/nems-build.cur
+if [[ -e /var/log/nems/ ]]; then
+  echo $0 > /var/www/html/userfiles/nems-build.cur
+fi
 
   # Dependencies
     # CISCO
-    apt -y install libnet-snmp-perl snmp
+    apt-get -y install libnet-snmp-perl snmp
     # WMIC
-    apt -y install libdatetime-timezone-perl
-    apt -y install libdatetime-perl
+    apt-get -y install libdatetime-timezone-perl
+    apt-get -y install libdatetime-perl
 
     # check_ipmi_sensor
-    apt -y install libipc-run-perl
-    apt -y install freeipmi
+    apt-get -y install libipc-run-perl
+    apt-get -y install freeipmi
 
     # check_esxi_hardware
-    apt install -y python-pywbem
+    apt-get install -y python-pywbem
 
   # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
   if [[ ! -f /usr/local/bin/php ]]; then
@@ -22,13 +24,23 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
     fi
   fi
 
-  # Grab the Migrator plugins
+  if [[ -e /var/log/nems/ ]]; then # NEMS
+    # Grab the Migrator plugins
     cp -f /root/nems/nems-migrator/data/1.6/nagios/plugins/* /usr/lib/nagios/plugins/
 
-  # Log patch of upgrade to speedtest
+    # Log patch of upgrade to speedtest
     if ! grep -q "PATCH-000004" /var/log/nems/patches.log; then
       echo "PATCH-000004" >> /var/log/nems/patches.log
     fi
+  else # Not NEMS
+    tmpdir=`mktemp -d -p /usr/src/`
+    cd $tmpdir
+    apt-get -y install git
+    git clone https://github.com/cat5tv/nems-migrator
+    # Grab the Migrator plugins
+    cp -f $tmpdir/data/1.6/nagios/plugins/* /usr/lib/nagios/plugins/
+    rm -rf $tmpdir
+  fi
 
   # Add backward compatibility for notify-by-telegram (in case user has NEMS 1.3-1.4 config)
     if [[ -f /usr/local/bin/telegram_nems.lua ]]; then

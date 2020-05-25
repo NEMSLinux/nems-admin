@@ -15,6 +15,7 @@ else
   # Run the prep script before continuing since this is not NEMS Linux
   wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/046-plugins-prep | bash
   wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/051-monitoring-plugins | bash
+  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/052-nems-nagios-plugins | bash
 fi
 
 APT_LISTCHANGES_FRONTEND=cat
