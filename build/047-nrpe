@@ -43,7 +43,7 @@ make install-init
 
 /bin/systemctl stop nrpe
 
-wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/misc/nrpe.cfg
+wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.6/nagios/misc/nrpe.cfg
 
 # Install custom_check_mem
   yes | apt install bc
