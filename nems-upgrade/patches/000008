@@ -1,0 +1,11 @@
+#!/bin/bash
+
+    if ! grep -q "PATCH-000008" /var/log/nems/patches.log; then
+      /root/nems/nems-admin/build//146-nagiostv
+      echo "PATCH-000008" >> /var/log/nems/patches.log
+    else
+      echo "This patch is already applied."
+    fi
+
+
+
