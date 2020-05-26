@@ -58,7 +58,7 @@ cp -rf etc/check_wmi_plus /etc/
 mkdir /etc/check_wmi_plus/check_wmi_plus.d
 
 # Install the NEMS conf file for check_wmi_plus
-cp -f /root/nems/nems-migrator/data/1.5/nagios/misc/check_wmi_plus.conf /etc/check_wmi_plus/
+cp -f /root/nems/nems-migrator/data/1.6/nagios/misc/check_wmi_plus.conf /etc/check_wmi_plus/
 
 # Clean up
 rm -rf /tmp/nems-wmic/
