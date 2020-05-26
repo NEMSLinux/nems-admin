@@ -17,6 +17,9 @@ fi
     # check_esxi_hardware
     apt-get install -y python-pywbem
 
+    # gawk command is required to parse data for custom_check_mem
+    apt-get install -y gawk
+
   # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
   if [[ ! -f /usr/local/bin/php ]]; then
     if [[ -f /usr/bin/php ]]; then
