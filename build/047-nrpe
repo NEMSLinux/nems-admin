@@ -14,8 +14,6 @@ else
   isnems=0
   # Run the prep script before continuing since this is not NEMS Linux
   wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/046-plugins-prep | bash
-  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/051-monitoring-plugins | bash
-  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/052-nems-nagios-plugins | bash
 fi
 
 APT_LISTCHANGES_FRONTEND=cat
@@ -61,6 +59,11 @@ if [[ $isnems == 1 ]]; then
   if ! grep -q "PATCH-000007" /var/log/nems/patches.log; then
     echo "PATCH-000007" >> /var/log/nems/patches.log
   fi
+  /root/nems/nems-admin/build/051-monitoring-plugins
+  /root/nems/nems-admin/build/052-nems-nagios-plugins
+else
+  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/051-monitoring-plugins | bash
+  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/052-nems-nagios-plugins | bash
 fi
 
 # Remove the tmp files
