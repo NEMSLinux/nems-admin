@@ -33,7 +33,8 @@ if [[ -d /var/www/nagiostv ]]; then
   chown -R www-data:www-data /var/www/nagiostv
   chown root:root /etc/apache2/conf-available/nagiostv.conf
   mv /var/www/nagiostv/index.html /var/www/nagiostv/index.php
-  sed -i '/<\/body>/i<script src="/js/jquery.min.js"></script><script src="/js/jquery.backstretch.min.js"></script><?php require_once("/var/www/html/inc/wallpaper.php"); ?><style>#root > div > div > div:nth-child(9) { background: rgba(0,0,0,.4); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding: 2px 8px; } .highcharts-legend-item tspan { fill: #aaa !important; }</style>' /var/www/nagiostv/index.php
+#  sed -i 's|<\/body>|<script src="/js/jquery.min.js"></script><script src="/js/jquery.backstretch.min.js"></script><?php require_once("/var/www/html/inc/wallpaper.php"); ?><style>.App { background: none; } .Base { background: rgba(0,0,0,.4); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding: 2px 8px; } .highcharts-legend-item tspan { fill: #aaa !important; }</style>' /var/www/nagiostv/index.php
+  sed -i 's|</body>|<script src="/js/jquery.min.js"></script><script src="/js/jquery.backstretch.min.js"></script><?php require_once("/var/www/html/inc/wallpaper.php"); ?><style>.App { background: none; } .Base { background: rgba(0,0,0,.4); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding: 2px 8px; } .highcharts-legend-item tspan { fill: #aaa !important; }</style>&|' /var/www/nagiostv/index.php
 
   # Enable nagiostv
   a2enconf nagiostv
