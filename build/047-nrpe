@@ -7,6 +7,10 @@ nrpeVer="3.2.1"
 tmpdir=`mktemp -d -p /usr/src/`
 cd $tmpdir
 
+if [[ ! -e /usr/lib/nagios/plugins/ ]]; then
+  mkdir -p /usr/lib/nagios/plugins
+fi
+
 # Determine if this is NEMS or not.
 if [[ -e /var/log/nems/ ]]; then
   isnems=1
