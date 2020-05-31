@@ -17,8 +17,10 @@ fi
     # check_esxi_hardware
     apt-get install -y python-pywbem
 
-    # gawk command is required to parse data for custom_check_mem
+    # Commands required for custom_check_mem
     apt-get install -y gawk
+    apt-get install -y bc
+    apt-get install -y dc
 
   # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
   if [[ ! -f /usr/local/bin/php ]]; then
@@ -57,6 +59,4 @@ fi
     echo "# IPMI" >> /etc/sudoers
     echo "nagios ALL=(root) NOPASSWD: /usr/sbin/ipmi-sensors, /usr/sbin/ipmi-sel" >> /etc/sudoers
   fi
-
-
 

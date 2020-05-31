@@ -1,0 +1,89 @@
+
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# Once GCC 7 is available upstream, we can upgrade to 1.5, which requires C++17 to compile.
+
+# Get the platform before removing php (as it requires PHP)
+platform=$(/usr/local/bin/nems-info platform)
+
+# Use Raspbian repo for Pi, Sury's Debian Repo for others.
+if [[ $platform < 10 ]]; then
+  repo="-t bullseye"
+else
+  repo=""
+fi
+
+
+# Install and configure check-mk-livestatus
+
+# Need to do an update because a lot of time has passed by now
+apt update
+apt install $repo -y php-net-socket
+apt install $repo -y sqlite3
+apt install $repo -y graphviz
+apt install $repo -y rrdtool
+apt install $repo -y librrd-dev
+apt install $repo -y libboost-all-dev
+apt install $repo -y libncurses5-dev
+apt install $repo -y libreadline-dev
+apt install $repo -y libxml2-dev
+apt install $repo -y libssl-dev
+
+# This is the full Check_MK OSE bundle
+
+# NEMS 1.4.1 - 1.4.0p31
+# wget -O /tmp/mk.tar.gz --no-check-certificate https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
+# cd /tmp
+# tar xzf mk.tar.gz
+# cd check_mk-1.4.0p31
+
+# NEMS 1.5 - 1.4.0p37
+ wget -O /tmp/mk.tar.gz --no-check-certificate https://mathias-kettner.de/support/1.4.0p37/check_mk-1.4.0p37.tar.gz
+ cd /tmp
+ tar xzf mk.tar.gz
+ cd check_mk-1.4.0p37
+
+# Install livestatus
+# Need to determine the lib directory for boost to compile correctly
+if [[ -d /usr/lib/arm-linux-gnueabihf ]]; then
+  # Raspberry Pi / ARM
+  libdir=/usr/lib/arm-linux-gnueabihf
+elif [[ -d /usr/lib/i386-linux-gnu ]]; then
+  # 32-Bit
+  libdir=/usr/lib/i386-linux-gnu
+elif [[ -d /usr/lib/x86_64-linux-gnu ]]; then
+  # 64-Bit
+  libdir=/usr/lib/x86_64-linux-gnu
+elif [[ -d /usr/lib/aarch64-linux-gnu ]]; then
+  # Pine A64+ aarch64
+  libdir=/usr/lib/aarch64-linux-gnu
+fi
+
+mkdir livestatus
+cd livestatus
+tar xzf ../livestatus.tar.gz
+./configure --with-nagios4 --with-boost-libdir=$libdir
+make
+make install
+cd ..
+
+# Create log for livestatus
+touch /var/log/nagios/livestatus.log
+chown nagios:nagios /var/log/nagios/livestatus.log
+
+/bin/systemctl start nagios
+
+printf "Waiting for socket to open..."
+while [ ! -S /usr/local/nagios/var/rw/live.sock ]
+do
+  sleep 2
+  printf "."
+done
+echo " done."
+
+# Allow nagvis to read the socket
+chmod 666 /usr/local/nagios/var/rw/live.sock
+
+# /usr/local/nagios/var/rw
+

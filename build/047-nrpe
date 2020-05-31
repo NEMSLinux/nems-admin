@@ -14,6 +14,8 @@ fi
 # Determine if this is NEMS or not.
 if [[ -e /var/log/nems/ ]]; then
   isnems=1
+  # Run the prep script before continuing to remove the previous installation
+  /root/nems/nems-admin/build/046-plugins-prep
 else
   isnems=0
   # Run the prep script before continuing since this is not NEMS Linux
@@ -24,12 +26,17 @@ APT_LISTCHANGES_FRONTEND=cat
 echo $0 > /var/www/html/userfiles/nems-build.cur
 /bin/systemctl stop nrpe
 # these plugins shouldn't even exist anymore since they were pulled from packages.add and 045-nagios
-yes | apt remove --purge nagios-nrpe-plugin
-yes | apt remove --purge nagios-nrpe-server
-yes | apt autoremove
-apt update
+apt-get remove -y --purge nagios-nrpe-plugin
+apt-get remove -y --purge nagios-nrpe-server
+apt-get -y autoremove
+apt-get update
 
-yes | apt install libssl-dev dpatch debhelper libwrap0-dev autotools-dev build-essential
+apt-get install -y libssl-dev
+apt-get install -y dpatch
+apt-get install -y debhelper
+apt-get install -y libwrap0-dev
+apt-get install -y autotools-dev
+apt-get install -y build-essential
 
 file="https://github.com/NagiosEnterprises/nrpe/archive/nrpe-$nrpeVer.tar.gz"
 wget -O $tmpdir/nrpe.tar.gz $file
@@ -46,12 +53,6 @@ make install-init
 /bin/systemctl stop nrpe
 
 wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.6/nagios/misc/nrpe.cfg
-
-# Install custom_check_mem
-  yes | apt install bc
-  yes | apt install dc
-  wget -O /usr/lib/nagios/plugins/custom_check_mem https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.5/nagios/plugins/custom_check_mem
-  chmod +x /usr/lib/nagios/plugins/custom_check_mem
 
 systemctl daemon-reload
 

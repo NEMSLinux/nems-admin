@@ -38,12 +38,10 @@ fi
 # check_psql (monitoring-plugins) can compile
   apt-get install -y libpq-dev
 
-
-
   # Cleanup residue and then prep folders
 
     # remove libexec if it is a directory (not symlink)
-    if [[ -d /usr/local/nagios/libexec ]]; then
+    if [[ -e /usr/local/nagios/libexec ]]; then
       rm -rf /usr/local/nagios/libexec
     fi
 
@@ -52,7 +50,7 @@ fi
     fi
 
     # Create the target folder if it doesn't exist
-    if [[ ! -d /usr/lib/nagios ]]; then
+    if [[ ! -d /usr/lib/nagios/plugins ]]; then
       mkdir -p /usr/lib/nagios/plugins
     fi
 
@@ -61,14 +59,10 @@ fi
       ln -s /usr/lib/nagios/plugins /usr/local/nagios/libexec
     fi
 
-
-# Setup the environment to make compatible with non-NEMS systems
-if [[ ! -e /usr/lib/nagios/plugins/ ]]; then
-  mkdir -p /usr/lib/nagios/plugins/
-fi
-if [[ ! -e /usr/local/nagios/etc/ ]]; then
-  mkdir -p /usr/local/nagios/etc/
-fi
+    # Setup the environment to make compatible with non-NEMS systems
+    if [[ ! -e /usr/local/nagios/etc/ ]]; then
+      mkdir -p /usr/local/nagios/etc/
+    fi
 
 # "Fix" Ubuntu and the fact that NRPE's install-init uses /usr/lib/systemd/system instead of /etc/systemd/system
 if [[ ! -e /usr/lib/systemd/system/ ]]; then
@@ -76,4 +70,3 @@ if [[ ! -e /usr/lib/systemd/system/ ]]; then
     ln -s /etc/systemd/system /usr/lib/systemd/system
   fi
 fi
-
