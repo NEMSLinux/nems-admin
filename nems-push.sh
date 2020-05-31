@@ -6,6 +6,13 @@ echo Pushing NEMS update: $comment
 echo ""
 read -s -p "Github Password: " password
 
+ram=$(grep MemTotal /proc/meminfo | awk '{print $2 * 1024}')
+ramMB=$(grep MemTotal /proc/meminfo | awk '{print $2 / 1024}')
+echo ""
+echo ""
+echo "Setting postBuffer to $ram bytes ($ramMB MB)."
+echo ""
+
 cd /root/nems/nems-admin
 echo ""
 pwd
@@ -13,6 +20,7 @@ git pull
 git add *
 git commit -am "$comment"
 #git push origin master
+git config http.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-admin.git"
 
 cd /usr/local/share/nems/nems-scripts/
@@ -22,6 +30,7 @@ git pull
 git add *
 git commit -am "$comment"
 #git push origin master
+git config http.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-scripts.git"
 
 cd /var/www/html/
@@ -31,6 +40,7 @@ git pull
 git add *
 git commit -am "$comment"
 #git push origin master
+git config http.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-www.git"
 
 cd /var/www/nems-tv/
@@ -39,6 +49,7 @@ pwd
 git pull
 git add *
 git commit -am "$comment"
+git config http.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-tv.git"
 
 cd /root/nems/nems-migrator/
@@ -48,6 +59,7 @@ git pull
 git add *
 git commit -am "$comment"
 #git push origin master
+git config http.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-migrator.git"
 
 cd /var/www/nconf/
@@ -57,6 +69,7 @@ git pull
 git add *
 git commit -am "$comment"
 #git push origin develop
+git config http.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nconf.git"
 
 if [[ -d /root/nems/nems-tools ]]; then
@@ -67,5 +80,6 @@ if [[ -d /root/nems/nems-tools ]]; then
   git add *
   git commit -am "$comment"
   #git push origin master
+  git config http.postBuffer $ram
   git push "https://Cat5TV:$password@github.com/Cat5TV/nems-tools.git"
 fi
