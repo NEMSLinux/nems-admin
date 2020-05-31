@@ -72,10 +72,10 @@ systemctl stop nagios
 
 systemctl stop mysql
 
-if [[ ! -d /root/nems/nems-migrator/data/1.5/mysql ]]; then
-  mkdir -p /root/nems/nems-migrator/data/1.5/mysql
+if [[ ! -d /root/nems/nems-migrator/data/1.6/mysql ]]; then
+  mkdir -p /root/nems/nems-migrator/data/1.6/mysql
 fi
-cd /root/nems/nems-migrator/data/1.5/mysql
+cd /root/nems/nems-migrator/data/1.6/mysql
 
 if [[ -d NEMS-Sample ]]; then
   rm -rf NEMS-Sample
@@ -150,7 +150,7 @@ mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=530
 
 systemctl stop mysql
 
-cd /root/nems/nems-migrator/data/1.5/mysql
+cd /root/nems/nems-migrator/data/1.6/mysql
 
 if [[ -d NEMS-Clean ]]; then
   rm -rf NEMS-Clean
