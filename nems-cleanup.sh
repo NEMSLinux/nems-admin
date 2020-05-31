@@ -192,7 +192,7 @@ nameserver 2001:4860:4860::8844
   echo $buildnum > /var/log/nems/build
 
   # Reset Nagios Core User
-  cp -f /root/nems/nems-migrator/data/1.4/nagios/etc/cgi.cfg /usr/local/nagios/etc/
+  cp -f /root/nems/nems-migrator/data/1.5/nagios/etc/cgi.cfg /usr/local/nagios/etc/
 
   # Clear Nagios' resource.cfg file
   echo "################################################################################" > /usr/local/nagios/etc/resource.cfg
