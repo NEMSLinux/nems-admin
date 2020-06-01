@@ -14,4 +14,6 @@ MAINTAINER Robbie Ferguson <nems@category5.tv>
 
 ENTRYPOINT ["/usr/bin/systemctl","default","--init"]
 
+EXPOSE 80/tcp 443/tcp 2812/tcp 5666/tcp
+
 RUN /root/nems/nems-admin/nems-build.sh 21

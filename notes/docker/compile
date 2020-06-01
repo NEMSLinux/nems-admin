@@ -16,4 +16,4 @@ docker build --label build="$nemsver" -t nemsprep stages/01
 docker build --label build="$nemsver" -t nems_$nemsver stages/02
 
 # Deploy NEMS Linux on this machine
-docker run --hostname nems --mount type=tmpfs,destination=/tmp,tmpfs-mode=1777 --mount type=tmpfs,destination=/var/www/html/backup/snapshot,tmpfs-mode=1770 --restart=unless-stopped --stop-timeout 120 --name nemslinux -d nems_$nemsver
+docker run --hostname nems --mount type=tmpfs,destination=/tmp,tmpfs-mode=1777 --mount type=tmpfs,destination=/var/www/html/backup/snapshot,tmpfs-mode=1770 --restart=unless-stopped --stop-timeout 120 --name nemslinux -d nems_$nemsver -p 5666
