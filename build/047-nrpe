@@ -48,7 +48,8 @@ make install-groups-users
 make install-plugin
 make install-daemon
 make install-config
-make install-init
+#make install-init
+/usr/bin/install -c -m 644 startup/default-service /lib/systemd/system/nrpe.service
 
 /bin/systemctl stop nrpe
 
