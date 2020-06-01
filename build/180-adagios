@@ -7,8 +7,14 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   chown -R nagios:nagios /var/lib/nagios/
 fi
 
-pipcommand=pip
+pipcommand="python -m pip"
 #pipcommand=pip3
+
+pythoncommand=python
+#pythoncommand=python3
+
+# the number in /usr/local/lib/ptyhon${pythondir}
+pythondir=2.7
 
 # Install dependencies
 
@@ -46,46 +52,56 @@ www-data ALL = (root) NOPASSWD: /usr/local/nagios/bin/nagios -v *
 ' | sudo EDITOR='tee -a' visudo
 fi
 
-# Install Django
+# https://pypi.org/project/future/
+$pipcommand install future
+
 $pipcommand install --upgrade pip setuptools
 $pipcommand install --ignore-installed six
-#$pipcommand install django==1.6
-$pipcommand install django
+
+# Install Django
+$pipcommand install django==1.8
+#$pipcommand install django
 $pipcommand install django-clear-cache
 
 # Install Pynag
 cd /tmp
-git clone -b python3 git://github.com/pynag/pynag.git 
+#git clone -b python3 git://github.com/pynag/pynag.git
+git clone git://github.com/pynag/pynag.git
 cd pynag
-python3 setup.py build
-python3 setup.py install
+$pythoncommand setup.py build
+$pythoncommand setup.py install
 
 # Install Adagios
 cd /tmp/
-#wget -O adagios.tar.gz https://github.com/opinkerfi/adagios/archive/adagios-1.6.6-1.tar.gz
-#cd adagios-adagios-1.6.6-1
-#tar xzf adagios.tar.gz
+# Get the current release
+wget -O adagios.tar.gz https://github.com/opinkerfi/adagios/archive/adagios-1.6.6-1.tar.gz
+tar xzf adagios.tar.gz
+cd adagios-adagios-1.6.6-1
 
 # Try PR 662 for Python 3.7 support
-git clone -b adagios-2.0.1-1 https://github.com/opinkerfi/adagios
-cd adagios
-git fetch origin pull/662/head:pr_662
-git checkout pr_662
+#git clone -b adagios-2.0.1-1 https://github.com/opinkerfi/adagios
+#cd adagios
+#git fetch origin pull/662/head:pr_662
+#git checkout pr_662
 
 if [[ -d /etc/adagios ]]; then
   rm -rf /etc/adagios
 fi
-if [[ -d /usr/local/lib/python3.8/dist-packages/adagios ]]; then
-  rm -rf /usr/local/lib/python3.8/dist-packages/adagios
+if [[ -d /usr/local/lib/python${pythondir}/dist-packages/adagios ]]; then
+  rm -rf /usr/local/lib/python${pythondir}/dist-packages/adagios
 fi
 cp -R adagios/etc/adagios /etc/
 cp -f /root/nems/nems-migrator/data/1.5/adagios/adagios.conf /etc/adagios/
-python3 setup.py install
+echo "Installing to /usr/local/lib/python${pythondir}/dist-packages/adagios"
+$pythoncommand /tmp/adagios-adagios-1.6.6-1/setup.py install
+echo "Continuing."
+
 # Remove old symlink
 if [[ -L /var/www/adagios ]]; then
   rm -f /var/www/adagios
 fi
-ln -s /usr/local/lib/python3.8/dist-packages/adagios /var/www/adagios
+
+ln -s /usr/local/lib/python${pythondir}/dist-packages/adagios /var/www/adagios
 chown -R nagios:nagios /etc/adagios
 rm -fr /var/www/adagios/etc/
 mkdir -p /var/lib/adagios/userdata
