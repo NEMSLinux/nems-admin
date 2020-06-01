@@ -7,13 +7,24 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   chown -R nagios:nagios /var/lib/nagios/
 fi
 
+pipcommand=pip
+#pipcommand=pip3
+
 # Install dependencies
-apt-get install -y libapache2-mod-wsgi-py3
-#apt-get install -y python3-django
-apt-get install -y python3-simplejson
-apt-get install -y libgmp3-dev
-apt-get install -y python3-dev
-apt-get install -y python3-paramiko
+
+# When Python3 support is ready, uncomment:
+apt-get install -y libapache2-mod-wsgi
+apt-get install -y python-simplejson
+apt-get install -y libgmp-dev
+apt-get install -y python-dev
+apt-get install -y python-paramiko
+
+# When Python3 support is ready, uncomment:
+#apt-get install -y libapache2-mod-wsgi-py3
+#apt-get install -y python3-simplejson
+#apt-get install -y libgmp3-dev
+#apt-get install -y python3-dev
+#apt-get install -y python3-paramiko
 
 # Prepare sudo permissions
 if ! grep -q "# Adagios" /etc/sudoers; then
@@ -36,11 +47,11 @@ www-data ALL = (root) NOPASSWD: /usr/local/nagios/bin/nagios -v *
 fi
 
 # Install Django
-pip3 install --upgrade pip setuptools
-pip3 install --ignore-installed six
-#pip3 install django==1.6
-pip3 install django
-pip3 install django-clear-cache
+$pipcommand install --upgrade pip setuptools
+$pipcommand install --ignore-installed six
+#$pipcommand install django==1.6
+$pipcommand install django
+$pipcommand install django-clear-cache
 
 # Install Pynag
 cd /tmp
