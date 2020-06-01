@@ -6,8 +6,8 @@ Key point is that NEMS' Docker Container requires systemd, but as that would pos
 Publish to DockerHub:
 
   - Stop the container: `docker stop nemslinux`
-  - `docker tag nems_1.6 baldnerd/nemslinux:1.6_build1`
-  - `docker login && docker push baldnerd/nemslinux:1.6_build1`
+  - `docker tag nems_1.5.2 baldnerd/nemslinux:1.5.2_build1`
+  - `docker login && docker push baldnerd/nemslinux:1.5.2_build1`
   
 Publish to Downloadable File:
 
