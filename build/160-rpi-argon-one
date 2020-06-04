@@ -1,0 +1,10 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why we have to do this after 150-nems
+
+if (( $platform < '10' )); then
+  echo "Argon One... "
+  curl https://download.argon40.com/argon1.sh | bash
+  echo "Done."
+fi
