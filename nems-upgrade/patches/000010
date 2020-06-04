@@ -1,0 +1,12 @@
+#!/bin/bash
+
+    if ! grep -q "PATCH-000010" /var/log/nems/patches.log; then
+      /root/nems/nems-admin/build/060-nagvis
+      /root/nems/nems-admin/build/999-cleanup
+      echo "PATCH-000010" >> /var/log/nems/patches.log
+    else
+      echo "This patch is already applied."
+    fi
+
+
+

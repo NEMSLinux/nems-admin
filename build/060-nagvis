@@ -3,28 +3,49 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # The conf gets imported by nems-init, so only need to install.
 
+# NOTE: I am NOT removing the old install since the install script will upgrade in-place.
+#       This is to prevent loss of existing NagVis user maps.
+
+# Since this is run as a patch, I want to be able to upgrade the software WITHOUT damaging the user's config:
+if [[ ! -e /usr/local/nagvis ]]; then
+  freshinstall=1
+  echo "This is a fresh install of NagVis..."
+else
+  freshinstall=0
+  echo "This is an upgrade of NagVis..."
+fi
+
 # Go git 'er
 tmpdir=`mktemp -d -p /usr/src/`
-wget -O $tmpdir/nagvis.tar.gz http://www.nagvis.org/share/nagvis-1.9.8.tar.gz
+wget -O $tmpdir/nagvis.tar.gz https://github.com/NagVis/nagvis/archive/nagvis-1.9.20.tar.gz
 cd $tmpdir
 tar zxvf nagvis.tar.gz
-cd nagvis-1.9.8/
+cd nagvis-nagvis-1.9.20
 chmod +x install.sh
 
 # Let's go! I've pre-set the settings, so just hit enter a bunch of times
-./install.sh -n /usr/local/nagios -p /usr/local/nagvis -u www-data -g www-data -w /etc/apache2/conf-available -a y
+yes "" | ./install.sh -n /usr/local/nagios -p /usr/local/nagvis -u www-data -g www-data -w /etc/apache2/conf-available -a y
 
 # Compatibility with old fixes from legacy NEMS versions
-ln -s /usr/local/nagvis/ /etc/nagvis
+if [[ ! -L /etc/nagvis ]]; then
+  ln -s /usr/local/nagvis/ /etc/nagvis
+fi
 
-rm /etc/nagvis/etc/maps/*
-cp /root/nems/nems-migrator/data/1.4/nagvis/maps/* /etc/nagvis/etc/maps/
-cp -f /root/nems/nems-migrator/data/1.4/nagvis/nagvis.ini.php /etc/nagvis/etc/
+# Only clear the maps and replace if this is a fresh install. Don't remove existing configs.
+if [[ $freshinstall == 1 ]]; then
+  rm /etc/nagvis/etc/maps/*
+  cp /root/nems/nems-migrator/data/1.4/nagvis/maps/* /etc/nagvis/etc/maps/
+  cp -f /root/nems/nems-migrator/data/1.4/nagvis/nagvis.ini.php /etc/nagvis/etc/
+fi
 
+# Set permissions
+chown -R www-data:www-data /etc/nagvis/etc/
 
 # Turn me on!
-a2enconf nagvis
-/bin/systemctl restart apache2
+if [[ ! -e /etc/apache2/conf-enabled/nagvis.conf ]]; then
+  a2enconf nagvis
+  /bin/systemctl restart apache2
+fi
 
 # Remove the tmp files
 cd /tmp
