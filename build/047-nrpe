@@ -67,9 +67,11 @@ if [[ $isnems == 1 ]]; then
   fi
   /root/nems/nems-admin/build/051-monitoring-plugins
   /root/nems/nems-admin/build/052-nems-nagios-plugins
+  /root/nems/nems-admin/build/052-wmic
 else
   wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/051-monitoring-plugins | bash
   wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/052-nems-nagios-plugins | bash
+  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/052-wmic | bash
 fi
 
 # Remove the tmp files

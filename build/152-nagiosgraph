@@ -29,7 +29,7 @@ sed -i "s#/opt/nagiosgraph/etc#/usr/local/nagios/nagiosgraph/etc#g" cgi/*cgi
 cp cgi/*.cgi /usr/local/nagios/sbin
 
 sed -i "s#/opt/nagiosgraph/etc#/usr/local/nagios/nagiosgraph/etc#g" lib/insert.pl
-cp lib/insert.pl /usr/local/nagios/libexec
+cp lib/insert.pl /usr/lib/nagios/plugins/
 
 cp share/nagiosgraph.css /usr/local/nagios/share
 cp share/nagiosgraph.js /usr/local/nagios/share
@@ -54,7 +54,9 @@ chmod 664 /usr/local/nagios/nagiosgraph/var/nagiosgraph-cgi.log
 cp -f share/graph.gif /usr/local/nagios/share/images/action.gif
 
 # Cleanup backups of CSS files
-rm /var/www/html/share/nagios_themes/nems-1.3/nagiosgraph.css.*
+if [[ -e /var/www/html/share/nagios_themes/nems-1.3/nagiosgraph.css.* ]]; then
+  rm /var/www/html/share/nagios_themes/nems-1.3/nagiosgraph.css.*
+fi
 
 /bin/systemctl restart nagios
 

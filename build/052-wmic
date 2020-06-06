@@ -3,6 +3,14 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # Thanks to Ryan Siegel for the contribution on NEMS 1.2.1
 # Updated for NEMS 1.5 since openvas stopped distributing the package
 
+if [[ -f /usr/lib/nagios/plugins/check_wmi_plus.pl ]]; then
+  # This compile takes a LONG time, so if check_wmi_plus.pl already exists, abort.
+  echo
+  echo "To reinstall check_wmi_plus, please run first: sudo rm /usr/lib/nagios/plugins/check_wmi_plus.pl"
+  echo
+  exit
+fi
+
 apt install -y autoconf cpanminus libclass-std-storable-perl cmake gnutls-dev heimdal-dev libpopt-dev libglib2.0-dev gcc-mingw-w64 gcc pkg-config perl-base
 
 cpanm DateTime::TimeZone
@@ -51,7 +59,7 @@ fi
 # NEMS 1.5 moves this to our repo. Download new versions at http://edcint.co.nz/checkwmiplus
 ## wget -O wmi_plus.tar.gz http://edcint.co.nz/checkwmiplus/sites/default/files/check_wmi_plus.v1.64.tar.gz
 cd /tmp/nems-wmic/extras/check_wmi_plus
-cp -f check_wmi_plus.pl /usr/local/nagios/libexec
+cp -f check_wmi_plus.pl /usr/lib/nagios/plugins/
 cp -rf etc/check_wmi_plus /etc/
 
 # Create the ini dir (which is designated in the conf below)
