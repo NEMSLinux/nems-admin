@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Configure logrotate
+    if ! grep -q "PATCH-000013" /var/log/nems/patches.log; then
+      /root/nems/nems-admin/build/004-logrotate
+      /root/nems/nems-admin/build/999-cleanup
+      echo "PATCH-000013" >> /var/log/nems/patches.log
+    else
+      echo "This patch is already applied."
+    fi

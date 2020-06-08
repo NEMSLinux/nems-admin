@@ -1,0 +1,17 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+apt-get install -y logrotate
+
+echo "
+/var/log/nems/*.log /var/log/nems/*/*.log {
+    weekly
+    missingok
+    rotate 8
+    compress
+    notifempty
+}
+" > /etc/logrotate.d/nems.conf
+
+systemctl start logrotate
+systemctl enable logrotate
