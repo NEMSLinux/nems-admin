@@ -1,0 +1,46 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+echo "Installing Multi Router Traffic Grapher (MRTG)..."
+
+# Dependencies
+apt-get install -y zlib1g-dev
+apt-get install -y libpng-dev
+apt-get install -y libgd-dev
+
+tmpdir=`mktemp -d -p /usr/src/`
+cd $tmpdir
+wget https://oss.oetiker.ch/mrtg/pub/mrtg-2.17.7.tar.gz
+gunzip -c mrtg-2.17.7.tar.gz | tar xvf -
+cd mrtg-2.17.7
+./configure --prefix=/usr/local/mrtg2
+make
+make install
+if [[ ! -d /var/www/mrtg ]]; then
+  mkdir -p /var/www/mrtg
+  chown -R www-data:www-data /var/www/mrtg
+fi
+
+if [[ ! -d /etc/mrtg ]]; then
+  mkdir -p /etc/mrtg
+fi
+
+# Patch against session errors as per https://support.nagios.com/kb/print-526.html
+  /bin/sed -i -- 's,Socket6->import(qw(pack_sockaddr_in6 inet_pton getaddrinfo));,Socket6->import(qw(inet_pton getaddrinfo inet_ntop));,g' /usr/local/mrtg2/lib/mrtg2/SNMP_Session.pm
+
+# Grab a basic config with no SNMP to be able to complete the installation
+cp /root/nems/nems-migrator/data/1.6/mrtg/mrtg.cfg /etc/mrtg/
+
+# Actual config will be done via NEMS SST, which adapts the following command automatically:
+# /usr/local/mrtg2/bin/cfgmaker --global 'WorkDir: /var/www/mrtg' --global 'Options[_]: bits,growright' --output /etc/mrtg/mrtg.cfg public@127.0.0.1
+
+# First-Run (create files)
+env LANG=C /usr/local/mrtg2/bin/mrtg /etc/mrtg/mrtg.cfg
+
+cp /root/nems/nems-migrator/data/1.6/mrtg/apache.conf /etc/apache2/conf-available/mrtg.conf
+
+if [[ ! -L /etc/apache2/conf-enabled/mrtg.conf ]]; then
+  a2enconf mrtg
+  systemctl reload apache2
+fi
+
+rm -rf $tmpdir
