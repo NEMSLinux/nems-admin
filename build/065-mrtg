@@ -1,4 +1,6 @@
 #!/bin/bash
+# See: https://bigunix.blogspot.com/2009/07/how-to-monitor-bandwidht-using-mrtg-and.html
+
 echo $0 > /var/www/html/userfiles/nems-build.cur
 echo "Installing Multi Router Traffic Grapher (MRTG)..."
 
@@ -15,32 +17,35 @@ cd mrtg-2.17.7
 ./configure --prefix=/usr/local/mrtg2
 make
 make install
+# Patch against session errors as per https://support.nagios.com/kb/print-526.html
+  /bin/sed -i -- 's,Socket6->import(qw(pack_sockaddr_in6 inet_pton getaddrinfo));,Socket6->import(qw(inet_pton getaddrinfo inet_ntop));,g' /usr/local/mrtg2/lib/mrtg2/SNMP_Session.pm
+
+# Setup output folder
 if [[ ! -d /var/www/mrtg ]]; then
   mkdir -p /var/www/mrtg
   chown -R www-data:www-data /var/www/mrtg
 fi
 
+# Create config folder
 if [[ ! -d /etc/mrtg ]]; then
   mkdir -p /etc/mrtg
 fi
 
-# Patch against session errors as per https://support.nagios.com/kb/print-526.html
-  /bin/sed -i -- 's,Socket6->import(qw(pack_sockaddr_in6 inet_pton getaddrinfo));,Socket6->import(qw(inet_pton getaddrinfo inet_ntop));,g' /usr/local/mrtg2/lib/mrtg2/SNMP_Session.pm
-
 # Grab a basic config with no SNMP to be able to complete the installation
-cp /root/nems/nems-migrator/data/1.6/mrtg/mrtg.cfg /etc/mrtg/
-
 # Actual config will be done via NEMS SST, which adapts the following command automatically:
 # /usr/local/mrtg2/bin/cfgmaker --global 'WorkDir: /var/www/mrtg' --global 'Options[_]: bits,growright' --output /etc/mrtg/mrtg.cfg public@127.0.0.1
+cp /root/nems/nems-migrator/data/1.6/mrtg/mrtg.cfg /etc/mrtg/
 
 # First-Run (create files)
 env LANG=C /usr/local/mrtg2/bin/mrtg /etc/mrtg/mrtg.cfg
 
 cp /root/nems/nems-migrator/data/1.6/mrtg/apache.conf /etc/apache2/conf-available/mrtg.conf
 
+# Enable the config if not already enabled in apache2
 if [[ ! -L /etc/apache2/conf-enabled/mrtg.conf ]]; then
   a2enconf mrtg
   systemctl reload apache2
 fi
 
+# Clean up your mess
 rm -rf $tmpdir
