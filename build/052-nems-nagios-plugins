@@ -3,24 +3,54 @@ if [[ -e /var/log/nems/ ]]; then
   echo $0 > /var/www/html/userfiles/nems-build.cur
 fi
 
+# Detect whether this is DEB- or RPM-based system
+if [[ -f /etc/debian_version ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'debian|buntu|mint' /etc/*release) ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'fedora|redhat' /etc/*release) ]]; then
+  pm=rpm
+fi
+if [[ $pm == 'deb' ]]; then
+  echo "Detected DEB package manager..."
+  APT_LISTCHANGES_FRONTEND=cat
+  pm_cleanup="apt-get -y autoremove"
+  pm_update="apt-get update"
+  pm_purge="apt-get remove -y --purge"
+  pm_install="apt-get install -y"
+elif [[ $pm == 'rpm' ]]; then
+  echo "Detected RPM package manager..."
+  pm_cleanup=""
+  pm_update=""
+  pm_purge="yum erase -y"
+  pm_install="yum install -y"
+else
+  echo "Failed to determine your distro's package manager. Please notify us of this issue."
+  exit
+fi
+
   # Dependencies
+
     # CISCO
-    apt-get -y install libnet-snmp-perl snmp
+    $pm_install libnet-snmp-perl snmp
+
     # WMIC
-    apt-get -y install libdatetime-timezone-perl
-    apt-get -y install libdatetime-perl
+    $pm_install libdatetime-timezone-perl
+    $pm_install libdatetime-perl
 
     # check_ipmi_sensor
-    apt-get -y install libipc-run-perl
-    apt-get -y install freeipmi
+    $pm_install libipc-run-perl
+    $pm_install freeipmi
 
     # check_esxi_hardware
-    apt-get install -y python-pywbem
+    $pm_install python-pywbem
 
     # Commands required for custom_check_mem
-    apt-get install -y gawk
-    apt-get install -y bc
-    apt-get install -y dc
+    $pm_install gawk
+    $pm_install bc
+    $pm_install dc
 
   # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
   if [[ ! -f /usr/local/bin/php ]]; then
@@ -40,7 +70,7 @@ fi
   else # Not NEMS
     tmpdir=`mktemp -d -p /usr/src/`
     cd $tmpdir
-    apt-get -y install git
+    $pm_install git
     git clone https://github.com/cat5tv/nems-migrator
     # Grab the Migrator plugins
     cp -f $tmpdir/nems-migrator/data/1.6/nagios/plugins/* /usr/lib/nagios/plugins/

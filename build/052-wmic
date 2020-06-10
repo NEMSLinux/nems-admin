@@ -11,7 +11,48 @@ if [[ -f /usr/lib/nagios/plugins/check_wmi_plus.pl ]]; then
   exit
 fi
 
-apt install -y autoconf cpanminus libclass-std-storable-perl cmake gnutls-dev heimdal-dev libpopt-dev libglib2.0-dev gcc-mingw-w64 gcc pkg-config perl-base
+# Detect whether this is DEB- or RPM-based system
+if [[ -f /etc/debian_version ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'debian|buntu|mint' /etc/*release) ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'fedora|redhat' /etc/*release) ]]; then
+  pm=rpm
+fi
+if [[ $pm == 'deb' ]]; then
+  echo "Detected DEB package manager..."
+  APT_LISTCHANGES_FRONTEND=cat
+  pm_cleanup="apt-get -y autoremove"
+  pm_update="apt-get update"
+  pm_purge="apt-get remove -y --purge"
+  pm_install="apt-get install -y"
+elif [[ $pm == 'rpm' ]]; then
+  echo "Detected RPM package manager..."
+  pm_cleanup=""
+  pm_update=""
+  pm_purge="yum erase -y"
+  pm_install="yum install -y"
+else
+  echo "Failed to determine your distro's package manager. Please notify us of this issue."
+  exit
+fi
+
+tmpdir=`mktemp -d -p /usr/src/`
+
+$pm_install autoconf
+$pm_install cpanminus
+$pm_install libclass-std-storable-perl
+$pm_install cmake
+$pm_install gnutls-dev
+$pm_install heimdal-dev
+$pm_install libpopt-dev
+$pm_install libglib2.0-dev
+$pm_install gcc-mingw-w64
+$pm_install gcc
+$pm_install pkg-config
+$pm_install perl-base
 
 cpanm DateTime::TimeZone
 cpanm DateTime::Locale
@@ -22,20 +63,14 @@ cpanm Data::Dumper
 cpanm Config::IniFiles
 #cpanm Storable
 
-cd /tmp/
+cd $tmpdir
 
 # Install WMI
-if [[ -d /tmp/nems-wmic ]]; then
-  rm -rf /tmp/nems-wmic
-fi
 git clone https://github.com/Cat5TV/nems-wmic
 
-if [[ -d /tmp/nems-wmic/build ]]; then
-  rm -rf /tmp/nems-wmic/build
-fi
 # as set in GNUmakefile
-mkdir /tmp/nems-wmic/build
-cd /tmp/nems-wmic/build
+mkdir $tmpdir/nems-wmic/build
+cd $tmpdir/nems-wmic/build
 
 # Build
 cmake ..
@@ -58,7 +93,7 @@ fi
 # Install WMI Plus
 # NEMS 1.5 moves this to our repo. Download new versions at http://edcint.co.nz/checkwmiplus
 ## wget -O wmi_plus.tar.gz http://edcint.co.nz/checkwmiplus/sites/default/files/check_wmi_plus.v1.64.tar.gz
-cd /tmp/nems-wmic/extras/check_wmi_plus
+cd $tmpdir/nems-wmic/extras/check_wmi_plus
 cp -f check_wmi_plus.pl /usr/lib/nagios/plugins/
 cp -rf etc/check_wmi_plus /etc/
 
@@ -69,4 +104,4 @@ mkdir /etc/check_wmi_plus/check_wmi_plus.d
 cp -f /root/nems/nems-migrator/data/1.6/nagios/misc/check_wmi_plus.conf /etc/check_wmi_plus/
 
 # Clean up
-rm -rf /tmp/nems-wmic/
+rm -rf $tmpdir

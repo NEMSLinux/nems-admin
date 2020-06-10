@@ -3,6 +3,34 @@ if [[ -e /var/log/nems/ ]]; then
   echo $0 > /var/www/html/userfiles/nems-build.cur
 fi
 
+# Detect whether this is DEB- or RPM-based system
+if [[ -f /etc/debian_version ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'debian|buntu|mint' /etc/*release) ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'fedora|redhat' /etc/*release) ]]; then
+  pm=rpm
+fi
+if [[ $pm == 'deb' ]]; then
+  echo "Detected DEB package manager..."
+  APT_LISTCHANGES_FRONTEND=cat
+  pm_cleanup="apt-get -y autoremove"
+  pm_update="apt-get update"
+  pm_purge="apt-get remove -y --purge"
+  pm_install="apt-get install -y"
+elif [[ $pm == 'rpm' ]]; then
+  echo "Detected RPM package manager..."
+  pm_cleanup=""
+  pm_update=""
+  pm_purge="yum erase -y"
+  pm_install="yum install -y"
+else
+  echo "Failed to determine your distro's package manager. Please notify us of this issue."
+  exit
+fi
+
   # Install monitoring-plugins (the continuation of the now dead nagios-plugins)
   apt-get -y install --reinstall monitoring-plugins-common
   apt-get -y install --reinstall monitoring-plugins-basic

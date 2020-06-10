@@ -5,38 +5,69 @@ fi
 
 # This script cleans up / removes all installed Nagios plugins to prepare for installation/re-installation
 
+# Detect whether this is DEB- or RPM-based system
+if [[ -f /etc/debian_version ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'debian|buntu|mint' /etc/*release) ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'fedora|redhat' /etc/*release) ]]; then
+  pm=rpm
+fi
+if [[ $pm == 'deb' ]]; then
+  echo "Detected DEB package manager..."
+  APT_LISTCHANGES_FRONTEND=cat
+  pm_cleanup="apt-get -y autoremove"
+  pm_update="apt-get update"
+  pm_purge="apt-get remove -y --purge"
+  pm_install="apt-get install -y"
+elif [[ $pm == 'rpm' ]]; then
+  echo "Detected RPM package manager..."
+  pm_cleanup=""
+  pm_update=""
+  pm_purge="yum erase -y"
+  pm_install="yum install -y"
+else
+  echo "Failed to determine your distro's package manager. Please notify us of this issue."
+  exit
+fi
+
+  # You're going to need git, so ensure we have it
+  $pm_install git
+
   # Ensure apt installed versions don't exist
-  apt-get -y remove --purge monitoring-plugins*
-  apt-get -y remove --purge nagios-nrpe-plugin
-  apt-get -y autoremove
+  $pm_purge monitoring-plugins*
+  $pm_purge nagios-nrpe-plugin
+  $pm_cleanup autoremove
 
   # Install dependencies
   # Doing one per apt instance to avoid it failing if one package is missing
-  apt-get update
-  apt-get install -y libnet-snmp-perl
-  apt-get install -y snmp
-  apt-get install -y snmpd
-  apt-get install -y snmp-mibs-downloader
-  apt-get install -y dnsutils
-  apt-get install -y fping
-  apt-get install -y iputils-ping
-  apt-get install -y libfreeradius-client-dev
-  apt-get install -y libldap2-dev
-  apt-get install -y default-libmysqlclient-dev
-  apt-get install -y libdbi-dev
-  apt-get install -y libdbi-perl
-  apt-get install -y smbclient
-  apt-get install -y qstat
-  apt-get install -y openssl
-  apt-get install -y openssl-devel
-  apt-get install -y gettext
-  apt-get install -y openssl
-  apt-get install -y bc
-  apt-get install -y dc
+  $pm_update
+  $pm_install libnet-snmp-perl
+  $pm_install snmp
+  $pm_install snmpd
+  $pm_install snmp-mibs-downloader
+  $pm_install dnsutils
+  $pm_install fping
+  $pm_install iputils-ping
+  $pm_install libfreeradius-client-dev
+  $pm_install libldap2-dev
+  $pm_install default-libmysqlclient-dev
+  $pm_install libdbi-dev
+  $pm_install libdbi-perl
+  $pm_install smbclient
+  $pm_install qstat
+  $pm_install openssl
+  $pm_install openssl-devel
+  $pm_install gettext
+  $pm_install openssl
+  $pm_install bc
+  $pm_install dc
 
 # Install PostgreSQL development libraries so
 # check_psql (monitoring-plugins) can compile
-  apt-get install -y libpq-dev
+  $pm_install libpq-dev
 
   # Cleanup residue and then prep folders
 

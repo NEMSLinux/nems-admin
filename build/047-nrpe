@@ -4,6 +4,34 @@
 nrpeVer="3.2.1"
 #nrpeVer="4.0.0"
 
+# Detect whether this is DEB- or RPM-based system
+if [[ -f /etc/debian_version ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'debian|buntu|mint' /etc/*release) ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'fedora|redhat' /etc/*release) ]]; then
+  pm=rpm
+fi
+if [[ $pm == 'deb' ]]; then
+  echo "Detected DEB package manager..."
+  APT_LISTCHANGES_FRONTEND=cat
+  pm_cleanup="apt-get -y autoremove"
+  pm_update="apt-get update"
+  pm_purge="apt-get remove -y --purge"
+  pm_install="apt-get install -y"
+elif [[ $pm == 'rpm' ]]; then
+  echo "Detected RPM package manager..."
+  pm_cleanup=""
+  pm_update=""
+  pm_purge="yum erase -y"
+  pm_install="yum install -y"
+else
+  echo "Failed to determine your distro's package manager. Please notify us of this issue."
+  exit
+fi
+
 tmpdir=`mktemp -d -p /usr/src/`
 cd $tmpdir
 
@@ -16,27 +44,26 @@ if [[ -e /var/log/nems/ ]]; then
   isnems=1
   # Run the prep script before continuing to remove the previous installation
   /root/nems/nems-admin/build/046-plugins-prep
+  echo $0 > /var/www/html/userfiles/nems-build.cur
 else
   isnems=0
   # Run the prep script before continuing since this is not NEMS Linux
   wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/046-plugins-prep | bash
 fi
 
-APT_LISTCHANGES_FRONTEND=cat
-echo $0 > /var/www/html/userfiles/nems-build.cur
 /bin/systemctl stop nrpe
 # these plugins shouldn't even exist anymore since they were pulled from packages.add and 045-nagios
-apt-get remove -y --purge nagios-nrpe-plugin
-apt-get remove -y --purge nagios-nrpe-server
-apt-get -y autoremove
-apt-get update
+$pm_purge nagios-nrpe-plugin
+$pm_purge nagios-nrpe-server
+$pm_cleanup
+$pm_update
 
-apt-get install -y libssl-dev
-apt-get install -y dpatch
-apt-get install -y debhelper
-apt-get install -y libwrap0-dev
-apt-get install -y autotools-dev
-apt-get install -y build-essential
+$pm_install libssl-dev
+$pm_install dpatch
+$pm_install debhelper
+$pm_install libwrap0-dev
+$pm_install autotools-dev
+$pm_install build-essential
 
 file="https://github.com/NagiosEnterprises/nrpe/archive/nrpe-$nrpeVer.tar.gz"
 wget -O $tmpdir/nrpe.tar.gz $file
