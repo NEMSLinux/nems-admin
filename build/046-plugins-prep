@@ -39,7 +39,7 @@ fi
   # Ensure apt installed versions don't exist
   $pm_purge monitoring-plugins*
   $pm_purge nagios-nrpe-plugin
-  $pm_cleanup autoremove
+  $pm_cleanup
 
   # Install dependencies
   # Doing one per apt instance to avoid it failing if one package is missing
