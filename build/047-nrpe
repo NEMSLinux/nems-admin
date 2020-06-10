@@ -33,6 +33,8 @@ elif [[ $pm == 'rpm' ]]; then
   pm_update=""
   pm_purge="yum erase -y"
   pm_install="yum install -y"
+  # First, activate Fedora's Extra Packages for Enterprise Linux (EPEL)
+  yum install -y epel-release
 else
   echo "Failed to determine your distro's package manager. Please notify us of this issue."
   exit
