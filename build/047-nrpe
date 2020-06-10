@@ -23,6 +23,12 @@ if [[ $pm == 'deb' ]]; then
   pm_install="apt-get install -y"
 elif [[ $pm == 'rpm' ]]; then
   echo "Detected RPM package manager..."
+  echo
+  echo "PLEASE NOTE: RPM support is minimal at the moment, and"
+  echo "             many packages are missing which could result"
+  echo "             in errors or broken features. Please review"
+  echo "             the NEMS Linux docs to learn more."
+  echo
   pm_cleanup=""
   pm_update=""
   pm_purge="yum erase -y"
