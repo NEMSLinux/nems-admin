@@ -4,7 +4,27 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why we have to do this after 150-nems
 
 if (( $platform < '10' )); then
-  echo "Argon One... "
-  curl https://download.argon40.com/argon1.sh | bash
+
+  echo "Installing Argon ONE... "
+
+  pkglist=(raspi-gpio python-rpi.gpio python3-rpi.gpio python-smbus python3-smbus i2c-tools)
+  for curpkg in ${pkglist[@]}; do
+    apt-get install -y $curpkg
+  done
+
+  cp /root/nems/nems-migrator/data/1.6/argonone/argononed.py /usr/bin/argononed.py
+  cp /root/nems/nems-migrator/data/1.6/argonone/argononed-poweroff.py /lib/systemd/system-shutdown/argononed-poweroff.py
+  cp /root/nems/nems-migrator/data/1.6/argonone/argonone-fan.conf /usr/local/share/nems/argonone-fan.conf
+  cp /root/nems/nems-migrator/data/1.6/argonone/argononed.service /lib/systemd/system/argononed.service
+
+  raspi-config nonint do_i2c 0
+  raspi-config nonint do_serial 0
+
+  systemctl daemon-reload
+  systemctl enable argononed.service
+
+  systemctl start argononed.service
+
   echo "Done."
+
 fi
