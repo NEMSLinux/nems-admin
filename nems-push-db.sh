@@ -3,6 +3,8 @@
 # Built for creating new sample hosts and services, and pushing to all other NEMS servers
 # Requires NEMS 1.4+
 
+nemsbranch=$(/usr/local/bin/nems-info nemsbranch)
+
 echo ""
 echo "You must have UI access in order to proceed."
 echo ""
@@ -72,16 +74,19 @@ systemctl stop nagios
 
 systemctl stop mysql
 
-if [[ ! -d /root/nems/nems-migrator/data/1.6/mysql ]]; then
-  mkdir -p /root/nems/nems-migrator/data/1.6/mysql
+if [[ ! -d /root/nems/nems-migrator/data/${nemsbranch}/mysql ]]; then
+  mkdir -p /root/nems/nems-migrator/data/${nemsbranch}/mysql
 fi
-cd /root/nems/nems-migrator/data/1.6/mysql
+cd /root/nems/nems-migrator/data/${nemsbranch}/mysql
 
 if [[ -d NEMS-Sample ]]; then
   rm -rf NEMS-Sample
 fi
 cp -R /var/lib/mysql .
 mv mysql NEMS-Sample
+if [[ -e NEMS-Sample/queries.log ]]; then
+  rm NEMS-Sample/queries.log
+fi
 
 # Create the clean database (used for NEMS Migrator Restore)
 
@@ -150,14 +155,16 @@ mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=530
 
 systemctl stop mysql
 
-cd /root/nems/nems-migrator/data/1.6/mysql
+cd /root/nems/nems-migrator/data/${nemsbranch}/mysql
 
 if [[ -d NEMS-Clean ]]; then
   rm -rf NEMS-Clean
 fi
 cp -R /var/lib/mysql .
 mv mysql NEMS-Clean
-
+if [[ -e NEMS-Clean/queries.log ]]; then
+  rm NEMS-Clean/queries.log
+fi
 
 # Restore original MySQL database and resume operation as normal
 rm -rf /var/lib/mysql
