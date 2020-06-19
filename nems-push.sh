@@ -7,11 +7,13 @@ echo ""
 read -s -p "Github Password: " password
 
 ram=$(grep MemTotal /proc/meminfo | awk '{print $2 * 1024 /2}')
-ramMB=$(grep MemTotal /proc/meminfo | awk '{print $2 /1024/2}')
+ram=$(( ${ram}*80/100 ))
+ramMB=$(( ${ram}/1024 ))
 echo ""
 echo ""
 echo "Setting postBuffer to $ram bytes ($ramMB MB)."
 echo ""
+
 git config --global http.postBuffer $ram
 
 cd /root/nems/nems-admin
