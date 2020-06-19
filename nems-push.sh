@@ -8,13 +8,14 @@ read -s -p "Github Password: " password
 
 ram=$(grep MemTotal /proc/meminfo | awk '{print $2 * 1024/2}')
 ram=$(( ${ram}*90/100 ))
+ram=8000000
 ramMB=$(( ${ram}/1024/1024 ))
 echo ""
 echo ""
 echo "Setting postBuffer to $ram bytes ($ramMB MB)."
 echo ""
 
-git config --global http.postbuffer $ram
+git config --global http.postBuffer $ram
 
 cd /root/nems/nems-admin
 echo ""
@@ -23,7 +24,7 @@ git pull
 git add *
 git commit -am "$comment"
 #git push origin master
-git config https.postbuffer $ram
+git config https.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-admin.git"
 
 cd /usr/local/share/nems/nems-scripts/
@@ -33,7 +34,7 @@ git pull
 git add *
 git commit -am "$comment"
 #git push origin master
-git config https.postbuffer $ram
+git config https.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-scripts.git"
 
 cd /var/www/html/
