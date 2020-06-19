@@ -13,7 +13,7 @@ echo ""
 echo "Setting postBuffer to $ram bytes ($ramMB MB)."
 echo ""
 
-ram=4000000000
+ram=1000000000
 
 cd /root/nems/nems-admin
 echo ""
