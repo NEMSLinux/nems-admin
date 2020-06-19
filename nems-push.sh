@@ -6,8 +6,8 @@ echo Pushing NEMS update: $comment
 echo ""
 read -s -p "Github Password: " password
 
-ram=$(grep MemTotal /proc/meminfo | awk '{print $2 * 1024}')
-ram=$(( ${ram}*40/100 ))
+ram=$(grep MemTotal /proc/meminfo | awk '{print $2 * 1024/2}')
+ram=$(( ${ram}*90/100 ))
 ramMB=$(( ${ram}/1024/1024 ))
 echo ""
 echo ""
