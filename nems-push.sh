@@ -7,8 +7,7 @@ echo ""
 read -s -p "Github Password: " password
 
 ram=$(grep MemTotal /proc/meminfo | awk '{print $2 * 1024}')
-ram=$(( ${ram}*80/100 ))
-ram=
+ram=$(( ${ram}*40/100 ))
 ramMB=$(( ${ram}/1024/1024 ))
 echo ""
 echo ""
