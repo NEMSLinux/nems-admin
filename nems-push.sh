@@ -8,7 +8,7 @@ read -s -p "Github Password: " password
 
 ram=$(grep MemTotal /proc/meminfo | awk '{print $2 * 1024 /2}')
 ram=$(( ${ram}*80/100 ))
-ramMB=$(( ${ram}/1024 ))
+ramMB=$(( ${ram}/1024/1024 ))
 echo ""
 echo ""
 echo "Setting postBuffer to $ram bytes ($ramMB MB)."
