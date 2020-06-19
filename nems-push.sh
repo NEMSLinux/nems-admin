@@ -23,8 +23,7 @@ git pull
 git add *
 git commit -am "$comment"
 #git push origin master
-echo "git config https.postBuffer $ram"
-exit
+git config https.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-admin.git"
 
 cd /usr/local/share/nems/nems-scripts/
