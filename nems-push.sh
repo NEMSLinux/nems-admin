@@ -14,7 +14,7 @@ echo ""
 echo "Setting postBuffer to $ram bytes ($ramMB MB)."
 echo ""
 
-git config --global https.postBuffer $ram
+git config --global http.postbuffer $ram
 
 cd /root/nems/nems-admin
 echo ""
