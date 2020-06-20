@@ -5,18 +5,58 @@ platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why w
 
 if (( $platform < '10' )); then
   echo "Installing rpimonitor... "
-  apt update
-  apt -y install dirmngr
-  apt -y install libraspberrypi-bin
-  echo "deb http://giteduberger.fr rpimonitor/" > /etc/apt/sources.list.d/rpimonitor.list
-  echo ""
-  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
-  apt update
-  apt -y install rpimonitor
-  /etc/init.d/rpimonitor update
+  tmpdir=`mktemp -d -p /usr/src/`
+  cd $tmpdir
+
+  apt-get update
+  pkglist=(dirmngr libraspberrypi-bin librrds-perl libhttp-daemon-perl libjson-perl libipc-sharelite-perl libfile-which-perl)
+  for curpkg in ${pkglist[@]}; do
+    apt-get install -y $curpkg
+  done
+
+  # Remove old version
   /bin/systemctl stop rpimonitor
-  cp /root/nems/nems-migrator/data/1.4/rpimonitor/daemon.conf /etc/rpimonitor/
-  cp -f /root/nems/nems-migrator/data/1.4/rpimonitor/template/* /etc/rpimonitor/template/
+  /bin/systemctl disable rpimonitor
+
+  apt-get remove --purge -y rpimonitor
+  if [[ -e /etc/rpimonitor ]]; then
+    rm -rf /etc/rpimonitor
+  fi
+  if [[ -e /var/lib/rpimonitor ]]; then
+    rm -rf /var/lib/rpimonitor
+  fi
+  if [[ -e /usr/share/rpimonitor ]]; then
+    rm -rf /usr/share/rpimonitor
+  fi
+
+  # Install the new
+#  echo "deb http://giteduberger.fr rpimonitor/" > /etc/apt/sources.list.d/rpimonitor.list
+#  echo ""
+#  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F
+#  apt update
+#  apt -y install rpimonitor
+  if [[ -e /etc/apt/sources.list.d/rpimonitor.list ]]; then
+    rm /etc/apt/sources.list.d/rpimonitor.list
+  fi
+
+# *****
+# Repo  became problematic in 2020 (up and down) This seems to be a dead project). Install through debpack on GitHub instead
+# The version installed from Repo in all recent versions of NEMS was rpimonitor_2.12-r0_all.deb, which is latest from 4+ years ago
+  debpack=https://github.com/XavierBerger/RPi-Monitor-deb/raw/master/packages/rpimonitor_2.12-r0_all.deb
+  wget $debpack -O rpimonitor.deb
+  dpkg -i rpimonitor.deb
+
+  /bin/systemctl stop rpimonitor
+  cp /root/nems/nems-migrator/data/1.6/rpimonitor/daemon.conf /etc/rpimonitor/
+  cp -f /root/nems/nems-migrator/data/1.6/rpimonitor/template/* /etc/rpimonitor/template/
+  /etc/init.d/rpimonitor update
   /bin/systemctl start rpimonitor
+  /bin/systemctl enable rpimonitor
+
+  apt-get update
+  /usr/share/rpimonitor/scripts/updatePackagesStatus.pl
+
+  rm -rf $tmpdir
   echo "Done."
+
 fi
