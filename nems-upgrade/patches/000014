@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Stash unsaved change in 1.5.2 build 1 which halts nems-migrator updates
+    if ! grep -q "PATCH-000014" /var/log/nems/patches.log; then
+      cd /root/nems/nems-migrator
+      git add -A .; git stash
+      echo "PATCH-000014" >> /var/log/nems/patches.log
+    else
+      echo "This patch is already applied."
+    fi
