@@ -1,7 +1,4 @@
 #!/bin/bash
-# Install needed packages for nems-info temper
-yes | apt install python3-serial
-echo 'KERNEL=="hidraw1", MODE="0666"' > /etc/udev/rules.d/temper.rules
 if [[ -e /dev/ttyUSB0 ]]; then
   chmod a+rw /dev/ttyUSB0
 fi
