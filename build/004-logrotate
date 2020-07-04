@@ -5,10 +5,11 @@ apt-get install -y logrotate
 
 echo "
 /var/log/nems/*.log /var/log/nems/*/*.log {
-    weekly
+    size 1M
     missingok
-    rotate 8
+    rotate 12
     compress
+    delaycompress
     notifempty
 }
 " > /etc/logrotate.d/nems.conf
