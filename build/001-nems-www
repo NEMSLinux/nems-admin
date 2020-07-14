@@ -26,3 +26,26 @@ else
   fi
   mv nems-www html
 fi
+
+# NEMS-SST will need access to a few things
+if ! grep -q "# nems-www" /etc/sudoers; then
+echo '
+# nems-www' | sudo EDITOR='tee -a' visudo
+fi
+
+if ! grep -q "www-data ALL=NOPASSWD: /usr/bin/htpasswd" /etc/sudoers; then
+  echo 'www-data ALL=NOPASSWD: /usr/bin/htpasswd' | sudo EDITOR='tee -a' visudo
+fi
+
+if [[ -e /sbin/reboot ]]; then
+  if ! grep -q "www-data ALL=NOPASSWD: /sbin/reboot" /etc/sudoers; then
+    echo 'www-data ALL=NOPASSWD: /sbin/reboot' | sudo EDITOR='tee -a' visudo
+  fi
+fi
+
+if [[ -e /sbin/shutdown ]]; then
+  if ! grep -q "www-data ALL=NOPASSWD: /sbin/shutdown" /etc/sudoers; then
+    echo 'www-data ALL=NOPASSWD: /sbin/shutdown' | sudo EDITOR='tee -a' visudo
+  fi
+fi
+
