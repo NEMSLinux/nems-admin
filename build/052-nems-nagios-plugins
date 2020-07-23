@@ -33,6 +33,11 @@ fi
 
   # Dependencies
 
+    # Perl
+    $pm_install perl
+    $pm_install perl_base
+    perl -MCPAN -e 'install Math::Round'
+
     # CISCO
     $pm_install libnet-snmp-perl snmp
 
