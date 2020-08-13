@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Switch the default to python2
+update-alternatives --install /usr/bin/python python $(which python3) 1
+update-alternatives --install /usr/bin/python python $(which python2) 2
+yes '' | update-alternatives --config python
+
+exit
+
+# Switch the default to python3
+update-alternatives --install /usr/bin/python python $(which python2) 1
+update-alternatives --install /usr/bin/python python $(which python3) 2
+yes '' | update-alternatives --config python
