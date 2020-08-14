@@ -11,6 +11,9 @@ echo "
     compress
     delaycompress
     notifempty
+    prerotate
+      bash -c "[[ ! $1 =~ migrator-backup-runtime.log ]] && [[ ! $1 =~ load-average.log ]] && [[ ! $1 =~ patches.log ]] && [[ ! $1 =~ benchmark.log ]] && [[ ! $1 =~ speedtest.log ]] && [[ ! $1 =~ cloudauth.log ]] && [[ ! $1 =~ memtest.log ]] && [[ ! $1 =~ migrator-backup-runtime.log ]] && [[ ! $1 =~ nems-quickfix.log ]]"
+    endscript
 }
 " > /etc/logrotate.d/nems.conf
 
