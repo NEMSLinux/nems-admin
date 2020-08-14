@@ -3,7 +3,9 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 apt-get install -y logrotate
 
-echo "
+echo '##
+# NEMS Linux log rotation. Omit logs which are overwritten or static.
+##
 /var/log/nems/*.log /var/log/nems/*/*.log {
     size 1M
     missingok
@@ -15,7 +17,7 @@ echo "
       bash -c "[[ ! $1 =~ migrator-backup-runtime.log ]] && [[ ! $1 =~ load-average.log ]] && [[ ! $1 =~ patches.log ]] && [[ ! $1 =~ benchmark.log ]] && [[ ! $1 =~ speedtest.log ]] && [[ ! $1 =~ cloudauth.log ]] && [[ ! $1 =~ memtest.log ]] && [[ ! $1 =~ migrator-backup-runtime.log ]] && [[ ! $1 =~ nems-quickfix.log ]]"
     endscript
 }
-" > /etc/logrotate.d/nems.conf
+' > /etc/logrotate.d/nems.conf
 
 systemctl start logrotate
 systemctl enable logrotate
