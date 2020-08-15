@@ -11,7 +11,8 @@ else
 
   if [[ $1 != "halt" ]]; then echo "Pass the halt option to halt after execution or the reboot option to reboot."; echo ""; fi;
 
-  ver=$(cat /root/nems/nems-admin/build-version)
+  ver=$(/usr/local/bin/nems-info nemsver)
+
   echo "Cleaning up NEMS Linux $ver"
   echo ""
   read -r -p "What build number is this? " buildnum
