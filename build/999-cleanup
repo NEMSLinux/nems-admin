@@ -15,3 +15,8 @@
 if [[ -e /var/www/html/userfiles/nems-build.cur ]]; then
   rm /var/www/html/userfiles/nems-build.cur
 fi
+
+# Purge the server's info from /boot
+if [[ -e /boot/NEMS_SERVER.txt ]]; then
+  rm /boot/NEMS_SERVER.txt
+fi
