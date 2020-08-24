@@ -1,0 +1,17 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+
+platform=$(/usr/local/bin/nems-info platform)
+
+if (( $platform < '10' )); then
+
+  printf "Installing support for DHTxx sensors... "
+
+  apt-get -y install python3-pip
+  pip3 install adafruit-circuitpython-dht
+  apt-get -y install libgpiod2
+
+  adduser nagios gpio
+
+fi
