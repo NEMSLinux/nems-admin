@@ -13,5 +13,6 @@ if (( $platform < '10' )); then
   apt-get -y install libgpiod2
 
   adduser nagios gpio
+  adduser nemsadmin gpio
 
 fi
