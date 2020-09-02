@@ -36,6 +36,7 @@ fi
     # Perl
     $pm_install perl
     $pm_install perl_base
+    $pm_install perl-base
     perl -MCPAN -e 'install Math::Round'
 
     # CISCO
