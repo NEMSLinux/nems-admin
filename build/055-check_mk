@@ -18,17 +18,18 @@ fi
 # Install and configure check-mk-livestatus
 
 # Need to do an update because a lot of time has passed by now
-apt update
-apt install $repo -y php-net-socket
-apt install $repo -y sqlite3
-apt install $repo -y graphviz
-apt install $repo -y rrdtool
-apt install $repo -y librrd-dev
-apt install $repo -y libboost-all-dev
-apt install $repo -y libncurses5-dev
-apt install $repo -y libreadline-dev
-apt install $repo -y libxml2-dev
-apt install $repo -y libssl-dev
+apt-get update
+apt-get install $repo -y php-net-socket
+apt-get install $repo -y sqlite3
+apt-get install $repo -y graphviz
+apt-get install $repo -y rrdtool
+apt-get install $repo -y librrd-dev
+apt-get install $repo -y libboost-all-dev
+apt-get install $repo -y libncurses5-dev
+apt-get install $repo -y libreadline-dev
+apt-get install $repo -y libxml2-dev
+apt-get install $repo -y libssl-dev
+apt-get install $repo -y clang
 
 # This is the full Check_MK OSE bundle
 
@@ -39,13 +40,24 @@ apt install $repo -y libssl-dev
 # cd check_mk-1.4.0p31
 
 # NEMS 1.5 - 1.4.0p37
- wget -O /tmp/mk.tar.gz --no-check-certificate https://mathias-kettner.de/support/1.4.0p37/check_mk-1.4.0p37.tar.gz
+# wget -O /tmp/mk.tar.gz --no-check-certificate https://mathias-kettner.de/support/1.4.0p37/check_mk-1.4.0p37.tar.gz
+# cd /tmp
+# tar xzf mk.tar.gz
+# cd check_mk-1.4.0p37
+
+# NEMS 1.6 - 1.6.0p17
+ ver='1.6.0p17'
+ wget -O /tmp/mk.tar.gz --no-check-certificate https://checkmk.com/support/${ver}/check-mk-raw-${ver}.cre.tar.gz
  cd /tmp
+ if [[ -e check-mk-raw-${ver}.cre ]]; then
+  rm -rf check-mk-raw-${ver}.cre
+ fi
  tar xzf mk.tar.gz
- cd check_mk-1.4.0p37
+ cd check-mk-raw-${ver}.cre
 
 # Install livestatus
 # Need to determine the lib directory for boost to compile correctly
+# Try to do it automatically by the fact that the directory exists
 if [[ -d /usr/lib/arm-linux-gnueabihf ]]; then
   # Raspberry Pi / ARM
   libdir=/usr/lib/arm-linux-gnueabihf
@@ -60,10 +72,14 @@ elif [[ -d /usr/lib/aarch64-linux-gnu ]]; then
   libdir=/usr/lib/aarch64-linux-gnu
 fi
 
-mkdir livestatus
-cd livestatus
-tar xzf ../livestatus.tar.gz
+# Force the correct value for some platforms where multiple exist
+if [[ $platform == 22 ]]; then
+  libdir=/usr/lib/x86_64-linux-gnu
+fi
+
 ./configure --with-nagios4 --with-boost-libdir=$libdir
+
+cd livestatus
 make
 make install
 cd ..
@@ -86,4 +102,8 @@ echo " done."
 chmod 666 /usr/local/nagios/var/rw/live.sock
 
 # /usr/local/nagios/var/rw
+
+if [[ -e /tmp/check-mk-raw-${ver}.cre ]]; then
+ rm -rf /tmp/check-mk-raw-${ver}.cre
+fi
 
