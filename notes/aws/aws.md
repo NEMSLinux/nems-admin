@@ -1,4 +1,4 @@
-Deploy community Debian Stretch and upgrade to Buster.
+Deploy Debian Buster AMI from the AWS Marketplace, with Free Tier available. Place on Micro instance where Free Tier is available.
 
 Prep as normal.
 
