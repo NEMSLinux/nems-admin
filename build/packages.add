@@ -112,3 +112,6 @@ perl-base
 
 # https://forum.category5.tv/thread-358.html
 glances
+
+# Required by rpimonitor
+aptitude
