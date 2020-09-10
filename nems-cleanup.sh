@@ -62,6 +62,9 @@ else
     exit
   fi
 
+  # Disable phpmyadmin by default
+  a2disconf phpmyadmin
+
   sync
 
   echo "Did you cp the database? This script will restore from Migrator. CTRL-C to abort."
