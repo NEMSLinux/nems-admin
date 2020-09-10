@@ -1,0 +1,49 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# Get the platform before removing php (as it requires PHP)
+platform=$(/usr/local/bin/nems-info platform)
+
+apt-get -t buster-backports install -y php-twig
+apt-get install -y phpmyadmin
+
+# In case a user does enable it, at least protect the folder with the NEMS User password
+
+cat << EOF > /etc/apache2/conf-available/phpmyadmin.conf
+Alias /phpmyadmin /usr/share/phpmyadmin
+
+<Directory /usr/share/phpmyadmin>
+    Options SymLinksIfOwnerMatch
+    DirectoryIndex index.php
+
+    # limit libapache2-mod-php to files and directories necessary by pma
+    <IfModule mod_php7.c>
+        php_admin_value upload_tmp_dir /var/lib/phpmyadmin/tmp
+        php_admin_value open_basedir /usr/share/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/:/usr/share/php/php-gettext/:/usr/share/php/php-php-gettext/:/usr/share/javascript/:/usr/share/php/tcpdf/:/usr/share/doc/phpmyadmin/:/usr/share/php/phpseclib/:/usr/share/php/PhpMyAdmin/:/usr/share/php/Symfony/:/usr/share/php/Twig/:/usr/share/php/Twig-Extensions/:/usr/share/php/ReCaptcha/:/usr/share/php/Psr/Container/:/usr/share/php/Psr/Cache/:/usr/share/php/Psr/Log/:/usr/share/php/Psr/SimpleCache/
+    </IfModule>
+
+</Directory>
+
+# Disallow web access to directories that don't need it
+<Directory /usr/share/phpmyadmin/templates>
+    Require all denied
+</Directory>
+<Directory /usr/share/phpmyadmin/libraries>
+    Require all denied
+</Directory>
+
+<Location /phpmyadmin>
+   AuthName "NEMS Administrator Access"
+   AuthType Basic
+   AuthUserFile /var/www/htpasswd
+   Require valid-user
+</Location>
+EOF
+
+
+# Disabled by default
+a2disconf phpmyadmin
+
+echo "Done."
+
+exit 0
