@@ -83,6 +83,11 @@ else
   # Delete system email
   rm /var/spool/mail/*
 
+  # Remove nems-tools configuration file
+  if [[ -e /etc/nems/nems-tools.conf ]]; then
+    rm /etc/nems/nems-tools.conf
+  fi
+
 #  /usr/local/bin/nems-push # Ensure all changes are saved to github before continuing
 
   # Remove system-specific NEMS configuration
