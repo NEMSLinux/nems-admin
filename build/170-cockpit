@@ -1,7 +1,8 @@
 #!/bin/bash
-echo $0 > /var/www/html/userfiles/nems-build.cur
-
-platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+if [[ -e /usr/local/share/nems/nems-scripts/ ]]; then
+  echo $0 > /var/www/html/userfiles/nems-build.cur
+  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+fi
 
 # POSSIBLY move to self-compile
 # https://tech.maweki.de/installing-cockpit-on-raspbian.html
@@ -13,10 +14,10 @@ platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
   # Install cockpit on all but Docker
   if (( $platform != 21 )); then
     apt update
-    apt -y install cockpit
+    apt-get install -y cockpit
   fi
 
   # Install cockpit-networkmanager on all but Docker and AWS
   if (( $platform != 21 )) && (( $platform != 22 )); then
-    apt -y install cockpit-networkmanager
+    apt-get install -y cockpit-networkmanager
   fi
