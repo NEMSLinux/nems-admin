@@ -27,7 +27,7 @@ if (( $platform != 21 )); then
     cd nems-migrator
     git checkout master -- data/1.5/cockpit/branding
     cp -f $tmpdir/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
-    rm -f $tmpdir
+    rm -rf $tmpdir
   fi
 fi
 
