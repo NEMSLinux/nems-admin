@@ -2,6 +2,8 @@
 if [[ -e /usr/local/share/nems/nems-scripts/ ]]; then
   echo $0 > /var/www/html/userfiles/nems-build.cur
   platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+else
+  platform=0 # Assume this is a Pi
 fi
 
 # POSSIBLY move to self-compile

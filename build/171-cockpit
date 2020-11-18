@@ -5,6 +5,8 @@
 if [[ -e /usr/local/share/nems/nems-scripts/ ]]; then
   echo $0 > /var/www/html/userfiles/nems-build.cur
   platform=$(/usr/local/bin/nems-info platform)
+else
+  platform=0 # Assume this is a Pi
 fi
 
 # Do not bother with cockpit branding on Docker (as cockpit is not installed)
