@@ -6,7 +6,10 @@ platform=$(/usr/local/bin/nems-info platform)
 if (( $platform == 20 )); then
 
   # VMWare Open Source implementation
-    apt -y install open-vm-tools
+    apt-get install -y open-vm-tools
+
+  # Proxmox VE / QEMU-based Virtualization
+    apt-get install -y qemu-guest-agent
 
   # Log that patch (resize) has been applied to this system.
   # Doesn't apply to VM so just do it here.
