@@ -27,6 +27,15 @@ date
 echo ""
 sleep 5
 
+# Tell apt to retry up to 10 times before giving up. This should
+# help for all the times the Raspberry Pi repos are down during
+# a build...
+echo "APT::Acquire::Retries \"3\";" > /etc/apt/apt.conf.d/80-retries && chmod 644 /etc/apt/apt.conf.d/80-retries
+
+# Give apt-get a fancy progress bar like apt
+echo "Dpkg::Progress-Fancy \"1\";
+Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
+" > /etc/apt/apt.conf.d/99-progressbar && chmod 644 /etc/apt/apt.conf.d/99-progressbar
 
 # NEED TO ADD REPOS MANUALLY FOR NOW
 # Pi:
