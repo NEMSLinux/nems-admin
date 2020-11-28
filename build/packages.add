@@ -10,7 +10,7 @@ hdparm
 htop
 iotop
 keyboard-configuration
-libcryptsetup4
+libcryptsetup-dev
 libgcrypt20
 libsqlite3-0
 lm-sensors

@@ -126,12 +126,22 @@ sleep 5
 for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
 do
   apt -y --no-install-recommends install $pkg
+  if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    # It still isn't showing as installed after attempting, so try again
+    sleep 15
+    apt -y --no-install-recommends install $pkg
+  fi
 done
 
 # Add packages from repositories
 for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
 do
   apt -y --no-install-recommends install $pkg
+  if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    # It still isn't showing as installed after attempting, so try again
+    sleep 15
+    apt -y --no-install-recommends install $pkg
+  fi
 done
 
 # Install dependencies, if any
