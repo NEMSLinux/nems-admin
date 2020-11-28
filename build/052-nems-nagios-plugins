@@ -59,7 +59,10 @@ fi
     $pm_install dc
 
     # check_apc
-    perl -MCPAN -e 'install Switch'
+    yes | perl -MCPAN -e 'install Switch'
+
+    # check_mikrotik_switch
+    yes | perl -MCPAN -e 'install Set::IntSpan'
 
   # Setup an interpreter for notify-by-pushover (and possibly others... prevents problems)
   if [[ ! -f /usr/local/bin/php ]]; then
