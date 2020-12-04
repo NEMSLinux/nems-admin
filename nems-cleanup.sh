@@ -366,7 +366,7 @@ echo "
 
 Run the following command to clear history and halt:
 
-> /root.bash_history && history -c && history -w && > /home/nemsadmin/.bash_history && su - nemsadmin -c "history -c" && su - nemsadmin -c "history -w && halt
+> /root.bash_history && history -c && history -w && > /home/nemsadmin/.bash_history && su - nemsadmin -c \"history -c\" && su - nemsadmin -c \"history -w\" && halt
 
 "
   exit; fi;
