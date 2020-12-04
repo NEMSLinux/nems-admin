@@ -56,8 +56,9 @@ else
   if (( $usercount == 1)); then
     echo "Looks like user accounts are ready to go."
   else
+    username=`/usr/local/bin/nems-info username`
     echo "You have not removed your test users. Aborting."
-    echo "Run: userdel -fr username && reboot"
+    echo "Run: userdel -fr $username && reboot"
     echo "Then login as nemsadmin after reboot completes."
     exit
   fi
