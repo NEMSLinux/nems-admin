@@ -361,7 +361,15 @@ nameserver 2001:4860:4860::8844
 #    done
 #  fi
 
-  if [[ $1 == "halt" ]]; then echo "Halting..."; halt; exit; fi;
+  if [[ $1 == "halt" ]]; then
+echo "
+
+Run the following command to clear history and halt:
+
+> /root.bash_history && history -c && history -w && > /home/nemsadmin/.bash_history && su - nemsadmin -c "history -c" && su - nemsadmin -c "history -w && halt
+
+"
+  exit; fi;
 
   if [[ $1 == "reboot" ]]; then echo "Rebooting..."; reboot; exit; fi;
 
