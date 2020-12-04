@@ -77,7 +77,7 @@ if [[ $platform == 22 ]]; then
   libdir=/usr/lib/x86_64-linux-gnu
 fi
 # PINE64 boards
-if [[ -d /usr/lib/aarch64-linux-gnu ]] && [[ $platform < 50 ]] && [[ $platform >= 40 ]]; then
+if [[ -d /usr/lib/aarch64-linux-gnu ]] && (( $platform >= 40 )) && (( $platform <= 50 )); then
   libdir=/usr/lib/aarch64-linux-gnu
 fi
 
