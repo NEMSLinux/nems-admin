@@ -178,5 +178,5 @@ echo "Press CTRL-C now to push manually, otherwise standby"
 sleep 5
 
 git add *
-git commit -m "Push new default config"
+git commit -m "Push new ${nemsbranch} default config"
 git push origin master
