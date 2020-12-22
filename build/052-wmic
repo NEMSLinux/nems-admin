@@ -76,11 +76,6 @@ cd $tmpdir/nems-wmic/build
 cmake ..
 make
 
-# Remove previous install
-if [[ -e /etc/check_wmi_plus/ ]]; then
-  rm -rf /etc/check_wmi_plus/
-fi
-
 # Install
 make install
 
@@ -95,15 +90,19 @@ if [[ ! -e /usr/local/bin/nems-info ]]; then
   exit
 fi
 
-# Install WMI Plus
-# NEMS 1.5 moves this to our repo. Download new versions at http://edcint.co.nz/checkwmiplus
-## wget -O wmi_plus.tar.gz http://edcint.co.nz/checkwmiplus/sites/default/files/check_wmi_plus.v1.64.tar.gz
+# Remove previous install of check_wmi_plus
+if [[ -e /etc/check_wmi_plus/ ]]; then
+  rm -rf /etc/check_wmi_plus/
+fi
+# Install check_wmi_plus
 cd $tmpdir/nems-wmic/extras/check_wmi_plus
 cp -f check_wmi_plus.pl /usr/lib/nagios/plugins/
 cp -rf etc/check_wmi_plus /etc/
 
 # Create the ini dir (which is designated in the conf below)
-mkdir /etc/check_wmi_plus/check_wmi_plus.d
+if [[ ! -e /etc/check_wmi_plus/check_wmi_plus.d ]]; then
+  mkdir /etc/check_wmi_plus/check_wmi_plus.d
+fi
 
 # Install the NEMS conf file for check_wmi_plus
 cp -f /root/nems/nems-migrator/data/1.6/nagios/misc/check_wmi_plus.conf /etc/check_wmi_plus/
