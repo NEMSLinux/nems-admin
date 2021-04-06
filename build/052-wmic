@@ -41,6 +41,7 @@ fi
 
 tmpdir=`mktemp -d -p /usr/src/`
 
+$pm_update
 $pm_install autoconf
 $pm_install cpanminus
 $pm_install libclass-std-storable-perl
@@ -53,6 +54,7 @@ $pm_install gcc-mingw-w64
 $pm_install gcc
 $pm_install pkg-config
 $pm_install perl-base
+$pm_install libunistring-dev
 
 cpanm DateTime::TimeZone
 cpanm DateTime::Locale
@@ -66,11 +68,15 @@ cpanm Config::IniFiles
 cd $tmpdir
 
 # Install WMI
-git clone https://github.com/Cat5TV/nems-wmic
 
-# as set in GNUmakefile
-mkdir $tmpdir/nems-wmic/build
-cd $tmpdir/nems-wmic/build
+# Get the NEMS configs
+git clone https://github.com/cat5tv/nems-wmic
+
+# Get the installer
+git clone https://github.com/greenbone/openvas-smb
+
+mkdir $tmpdir/openvas-smb/build
+cd $tmpdir/openvas-smb/build
 
 # Build
 cmake ..
@@ -90,6 +96,7 @@ if [[ ! -e /usr/local/bin/nems-info ]]; then
   exit
 fi
 
+printf "Installing check_wmi_plus... "
 # Remove previous install of check_wmi_plus
 if [[ -e /etc/check_wmi_plus/ ]]; then
   rm -rf /etc/check_wmi_plus/
@@ -106,6 +113,8 @@ fi
 
 # Install the NEMS conf file for check_wmi_plus
 cp -f /root/nems/nems-migrator/data/1.6/nagios/misc/check_wmi_plus.conf /etc/check_wmi_plus/
+
+echo "Done."
 
 # Clean up
 rm -rf $tmpdir
