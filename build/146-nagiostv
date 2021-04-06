@@ -18,8 +18,9 @@ if [[ -e /var/www/nagiostv ]]; then
 fi
 
 # Obtain NagiosTV
-wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.6.5/nagiostv-0.6.5.tar.gz
-tar xvfz nagiostv-0.6.5.tar.gz
+nagiostv_ver="0.7.3"
+wget https://github.com/chriscareycode/nagiostv-react/releases/download/v${nagiostv_ver}/nagiostv-${nagiostv_ver}.tar.gz
+tar xvfz nagiostv-${nagiostv_ver}.tar.gz
 mv nagiostv /var/www/
 
 # If successful, enable NagiosTV
