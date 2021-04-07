@@ -55,6 +55,7 @@ $pm_install gcc
 $pm_install pkg-config
 $pm_install perl-base
 $pm_install libunistring-dev
+$pm_install libbsd-dev
 
 cpanm DateTime::TimeZone
 cpanm DateTime::Locale
@@ -69,15 +70,21 @@ cd $tmpdir
 
 # Install WMI
 
-# Get the NEMS configs
+# Get the NEMS configs and WMIC Source
 git clone https://github.com/cat5tv/nems-wmic
 
-# Get the installer
-git clone https://github.com/greenbone/openvas-smb
+#cd $tmpdir/nems-wmic/zenoss-wmi-1.4.0/Samba/source
 
-mkdir $tmpdir/openvas-smb/build
-cd $tmpdir/openvas-smb/build
+# Compile it
+export ZENHOME=/usr
+#./automake.sh
+#./configure --enable-automatic-dependencies --enable-dso --without-readline --enable-debug
+cd $tmpdir/nems-wmic/zenoss-wmi-1.4.0/
+make "CPP=gcc -E -ffreestanding"
 
+echo $tmpdir
+
+exit
 # Build
 cmake ..
 make
