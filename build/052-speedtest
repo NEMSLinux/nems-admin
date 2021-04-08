@@ -71,7 +71,12 @@ fi
   $pm_install wget
   $pm_install xdg-utils
   $pm_install npm
+  $pm_install chromium-browser
   npm i npm@latest -g
-  npm install --global fast-cli --unsafe-perm=true
+  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true PUPPETEER_PRODUCT=chromium-browser npm install -g puppeteer
+  npm install -g fast-cli
+
+  touch /var/log/nems/speedtest-fast.log
+  chmod 666 /var/log/nems/speedtest-fast.log
 
 echo Done.
