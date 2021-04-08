@@ -84,6 +84,9 @@ fi
 
   npm i npm@latest -g
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm install -g puppeteer
+  if [ `npm list -g | grep -c fast-cli` -eq 1 ]; then
+    npm uninstall -g fast-cli
+  fi
   npm install -g https://github.com/cat5tv/nems-speedtest
 
   touch /var/log/nems/speedtest-fast.log
