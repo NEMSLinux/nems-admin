@@ -71,9 +71,19 @@ fi
   $pm_install wget
   $pm_install xdg-utils
   $pm_install npm
+
+  # Chromium is used in headless mode to load the fast.com speedtest
   $pm_install chromium-browser
+  # Some platforms have the package named differently
+  if [[ ! -e /usr/bin/chromium-browser ]]; then
+    $pm_install chromium
+    if [[ -e /usr/bin/chromium ]]; then
+      ln -s /usr/bin/chromium /usr/bin/chromium-browser
+    fi
+  fi
+
   npm i npm@latest -g
-  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true PUPPETEER_PRODUCT=chromium-browser npm install -g puppeteer
+  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm install -g puppeteer
   npm install -g fast-cli
 
   touch /var/log/nems/speedtest-fast.log
