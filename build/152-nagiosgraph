@@ -41,7 +41,7 @@ mkdir /usr/local/nagios/nagiosgraph/var/rrd
 
 echo '<script type="text/javascript" src="/nagios/nagiosgraph.js"></script>' > /usr/local/nagios/share/ssi/common-header.ssi
 
-cp /root/nems/nems-migrator/data/1.5/nagios/etc/nagios.cfg /usr/local/nagios/etc/
+cp /root/nems/nems-migrator/data/1.6/nagios/etc/nagios.cfg /usr/local/nagios/etc/
 
 chown -R nagios:nagios /usr/local/nagios/
 chmod 755 /usr/local/nagios/nagiosgraph/var/rrd

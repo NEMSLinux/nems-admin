@@ -36,7 +36,7 @@ fi
   make install-webconf
 
   /bin/systemctl stop nagios
-  cp -f /root/nems/nems-migrator/data/1.5/nagios/etc/nagios.cfg /usr/local/nagios/etc/
+  cp -f /root/nems/nems-migrator/data/1.6/nagios/etc/nagios.cfg /usr/local/nagios/etc/
 
 # Restore nems-www theme
 if [[ -d /usr/local/nagios/share ]]; then
