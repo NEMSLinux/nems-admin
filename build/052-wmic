@@ -56,6 +56,7 @@ $pm_install pkg-config
 $pm_install perl-base
 $pm_install libunistring-dev
 $pm_install libbsd-dev
+$pm_install libheimdal-kadm5-perl
 
 cpanm DateTime::TimeZone
 cpanm DateTime::Locale
@@ -85,12 +86,6 @@ make "CPP=gcc -E -ffreestanding"
 echo $tmpdir
 
 exit
-# Build
-cmake ..
-make
-
-# Install
-make install
 
 # Reload configs from /etc/ld.so.conf.d which includes the libc.conf
 # which tells environment to find libraries in /usr/local/lib/

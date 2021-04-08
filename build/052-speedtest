@@ -1,0 +1,77 @@
+#!/bin/bash
+if [[ -e /var/log/nems/ ]]; then
+  echo $0 > /var/www/html/userfiles/nems-build.cur
+fi
+echo Installing Speedtest replacement
+
+# Detect whether this is DEB- or RPM-based system
+if [[ -f /etc/debian_version ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'debian|buntu|mint' /etc/*release) ]]; then
+  pm=deb
+fi
+if [[ $(grep -Ei 'fedora|redhat' /etc/*release) ]]; then
+  pm=rpm
+fi
+if [[ $pm == 'deb' ]]; then
+  echo "Detected DEB package manager..."
+  APT_LISTCHANGES_FRONTEND=cat
+  pm_cleanup="apt-get -y autoremove"
+  pm_update="apt-get update"
+  pm_purge="apt-get remove -y --purge"
+  pm_install="apt-get install -y"
+elif [[ $pm == 'rpm' ]]; then
+  echo "Detected RPM package manager..."
+  pm_cleanup=""
+  pm_update=""
+  pm_purge="yum erase -y"
+  pm_install="yum install -y"
+else
+  echo "Failed to determine your distro's package manager. Please notify us of this issue."
+  exit
+fi
+
+  # Install fast.com Speedtest from Netflix
+  $pm_install ca-certificates
+  $pm_install fonts-liberation
+  $pm_install libappindicator3-1
+  $pm_install libasound2
+  $pm_install libatk-bridge2.0-0
+  $pm_install libatk1.0-0
+  $pm_install libc6
+  $pm_install libcairo2
+  $pm_install libcups2
+  $pm_install libdbus-1-3
+  $pm_install libexpat1
+  $pm_install libfontconfig1
+  $pm_install libgbm1
+  $pm_install libgcc1
+  $pm_install libglib2.0-0
+  $pm_install libgtk-3-0
+  $pm_install libnspr4
+  $pm_install libnss3
+  $pm_install libpango-1.0-0
+  $pm_install libpangocairo-1.0-0
+  $pm_install libstdc++6
+  $pm_install libx11-6
+  $pm_install libx11-xcb1
+  $pm_install libxcb1
+  $pm_install libxcomposite1
+  $pm_install libxcursor1
+  $pm_install libxdamage1
+  $pm_install libxext6
+  $pm_install libxfixes3
+  $pm_install libxi6
+  $pm_install libxrandr2
+  $pm_install libxrender1
+  $pm_install libxss1
+  $pm_install libxtst6
+  $pm_install lsb-release
+  $pm_install wget
+  $pm_install xdg-utils
+  $pm_install npm
+  npm i npm@latest -g
+  npm install --global fast-cli --unsafe-perm=true
+
+echo Done.

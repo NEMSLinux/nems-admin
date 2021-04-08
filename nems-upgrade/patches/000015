@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Move speedtest from Ookla to fast.com
+    if ! grep -q "PATCH-000015" /var/log/nems/patches.log; then
+      /root/nems/nems-admin/build/052-speedtest
+      /root/nems/nems-admin/build/999-cleanup
+      cp -f /root/nems/nems-migrator/data/1.6/nagios/plugins/check_speedtest-cli.sh /usr/lib/nagios/plugins/
+      echo "PATCH-000015" >> /var/log/nems/patches.log
+    else
+      echo "This patch is already applied."
+    fi
