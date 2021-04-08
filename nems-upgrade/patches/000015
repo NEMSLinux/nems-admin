@@ -5,6 +5,9 @@
       /root/nems/nems-admin/build/052-speedtest
       /root/nems/nems-admin/build/999-cleanup
       cp -f /root/nems/nems-migrator/data/1.6/nagios/plugins/check_speedtest-cli.sh /usr/lib/nagios/plugins/
+      # I increased the service timeout to 2 minutes
+      cp /root/nems/nems-migrator/data/1.6/nagios/etc/nagios.cfg /usr/local/nagios/etc/
+      systemctl restart nagios
       echo "PATCH-000015" >> /var/log/nems/patches.log
     else
       echo "This patch is already applied."
