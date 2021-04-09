@@ -87,6 +87,9 @@ fi
   if [ `npm list -g | grep -c fast-cli` -eq 1 ]; then
     npm uninstall -g fast-cli
   fi
+  if [[ -e /usr/local/bin/fast ]]; then
+    mv /usr/local/bin/fast /usr/local/bin/fast~old
+  fi
   npm install -g https://github.com/cat5tv/nems-speedtest
 
   touch /var/log/nems/speedtest-fast.log
