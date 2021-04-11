@@ -2,12 +2,22 @@
 
 # Move speedtest from Ookla to fast.com
     if ! grep -q "PATCH-000015" /var/log/nems/patches.log; then
-      /root/nems/nems-admin/build/052-speedtest
-      /root/nems/nems-admin/build/999-cleanup
-      cp -f /root/nems/nems-migrator/data/1.6/nagios/plugins/check_speedtest-cli.sh /usr/lib/nagios/plugins/
+      # Need the new nagios.cfg file from Migrator
       # I increased the service timeout to 2 minutes
+      cd /root/nems/nems-migrator && git pull
+      systemctl stop nagios
       cp /root/nems/nems-migrator/data/1.6/nagios/etc/nagios.cfg /usr/local/nagios/etc/
-      systemctl restart nagios
+      sync
+      sleep 2
+      systemctl start nagios
+
+      # Install the new speedtest software (Circa NEMS Linux 1.6, April 2021)
+      /root/nems/nems-admin/build/052-speedtest
+      cp -f /root/nems/nems-migrator/data/1.6/nagios/plugins/check_speedtest-cli.sh /usr/lib/nagios/plugins/
+
+      # Cleanup
+      /root/nems/nems-admin/build/999-cleanup
+
       echo "PATCH-000015" >> /var/log/nems/patches.log
     else
       echo "This patch is already applied."
