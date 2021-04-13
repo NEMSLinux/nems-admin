@@ -92,7 +92,7 @@ fi
   fi
 
   # Download the repository
-  srcdir="/usr/src"
+  srcdir="/usr/local/src"
   cd $srcdir
   git clone https://github.com/cat5tv/nems-speedtest
   cd nems-speedtest
