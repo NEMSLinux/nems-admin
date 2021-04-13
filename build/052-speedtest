@@ -90,7 +90,16 @@ fi
   if [[ -L /usr/local/bin/fast ]] || [[ -e /usr/local/bin/fast ]]; then
     mv /usr/local/bin/fast /usr/local/bin/fast~old
   fi
-  npm install -g https://github.com/cat5tv/nems-speedtest
+
+  # Download the repository
+  tmpdir=`mktemp -d -p /usr/src/`
+  cd $tmpdir
+  git clone https://github.com/cat5tv/nems-speedtest
+  cd nems-speedtest
+  # Install from download
+  npm install -g
+  # Cleanup
+  rm -rf $tmpdir
 
   touch /var/log/nems/speedtest-fast.log
   chmod 666 /var/log/nems/speedtest-fast.log
