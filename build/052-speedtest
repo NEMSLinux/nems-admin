@@ -92,14 +92,15 @@ fi
   fi
 
   # Download the repository
-  tmpdir=`mktemp -d -p /usr/src/`
-  cd $tmpdir
+  srcdir="/usr/src"
+  cd $srcdir
   git clone https://github.com/cat5tv/nems-speedtest
   cd nems-speedtest
   # Install from download
   npm install -g
-  # Cleanup
-  rm -rf $tmpdir
+
+  # Install promised-io so nems-speedtest can find needed modules
+  npm install request-promise --cli
 
   touch /var/log/nems/speedtest-fast.log
   chmod 666 /var/log/nems/speedtest-fast.log
