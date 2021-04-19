@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Great info here: https://raspi.debian.net/
+# https://wiki.debian.org/RaspberryPiImages
+
+# Setup Raspberry Pi Model: 1 (also includes 0), 2, 3 or 4
+export RPI_MODEL=4
+
+# Set version of Debian
+export DEBIAN_RELEASE=bullseye
+
+# Download Debian
+wget https://raspi.debian.net/daily/raspi_${RPI_MODEL}_${DEBIAN_RELEASE}.img.xz -O /tmp/raspi_${RPI_MODEL}_${DEBIAN_RELEASE}.img.xz
+
+# Compare Checksum
+wget https://raspi.debian.net/daily/raspi_${RPI_MODEL}_${DEBIAN_RELEASE}.xz.sha256 -O /tmp/raspi_${RPI_MODEL}_${DEBIAN_RELEASE}.xz.sha256
+sha256sum -c /tmp/raspi_${RPI_MODEL}_${DEBIAN_RELEASE}.xz.sha256
+
+# Provide command to flash
+export SD_CARD=/dev/mmcblk0
+echo
+echo "If ${SD_CARD} is the correct SD Card, the following command will flash the new image:"
+echo "xzcat /tmp/raspi_${RPI_MODEL}_${DEBIAN_RELEASE}.img.xz | dd of=${SD_CARD} bs=64k oflag=dsync status=progress"
+echo
