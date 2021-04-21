@@ -58,8 +58,9 @@ nems-cert
 
 # Install 9590
 # A simple listener on Port 9590 for documentation examples
-cp /root/nems/nems-migrator/data/1.4/init.d/9590 /etc/init.d/
-/usr/sbin/update-rc.d 9590 defaults
-/usr/sbin/update-rc.d 9590 enable
-/etc/init.d/9590 start
-
+#cp /root/nems/nems-migrator/data/1.4/init.d/9590 /etc/init.d/
+#/usr/sbin/update-rc.d 9590 defaults
+#/usr/sbin/update-rc.d 9590 enable
+#/etc/init.d/9590 start
+# moved to Repository in NEMS Linux 1.6
+apt-get -y install 9590
