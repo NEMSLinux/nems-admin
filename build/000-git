@@ -3,8 +3,8 @@
 # Ensure git is installed before proceeding with build
 
 if [[ ! -e /usr/bin/git ]]; then
-  apt update
-  apt -y install git
+  apt-get update
+  apt-get -y install git
 fi
 
 

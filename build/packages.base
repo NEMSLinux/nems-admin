@@ -52,3 +52,9 @@ grub2-common
 #firmware-linux-nonfree
 ssh
 less
+
+# NEMS Linux 1.6+
+9590
+nems-www
+wmic
+

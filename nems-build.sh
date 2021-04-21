@@ -23,6 +23,16 @@ if [[ ! -d /var/log/nems ]]; then
   mkdir /var/log/nems
 fi
 
+# Add NEMS Linux Repositories
+echo "# NEMS Linux 1.6 Repositories
+deb https://nemslinux.com/repos/apt/nems/ 1.6 main
+deb https://nemslinux.com/repos/apt/nems/ 1.6 migrator
+deb https://nemslinux.com/repos/apt/nems/ 1.6 plugins" > /etc/apt/sources.list.d/nemslinux.list
+
+# Add the public key [expires: 2023-04-20]
+wget -O - https://nemslinux.com/nemslinux.gpg.key | apt-key add -
+
+
 # If /sbin is not in PATH, add it (eg., halt, reboot)
 if [[ ! $PATH == *"/sbin"* ]]; then
   export PATH=$PATH:/sbin
@@ -108,15 +118,15 @@ df -hT /etc
 sleep 5
 
 # Remove cruft
-apt update
-apt -y --allow-remove-essential clean
-apt -y --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
-apt autoremove --purge -y
+apt-get update
+apt-get -y --allow-remove-essential clean
+apt-get -y --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
+apt-get autoremove --purge -y
 rm -R /usr/share/fonts/*
 rm -R /usr/share/icons/*
 
 # Fix any broken packages to allow installation to occur in next step
-apt -y --fix-broken install
+apt-get -y --fix-broken install
 
 echo "Usage after cruft removal:"
 df -hT /etc
@@ -125,31 +135,31 @@ sleep 5
 # Install base packages
 for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
 do
-  apt -y --no-install-recommends install $pkg
+  apt-get -y --no-install-recommends install $pkg
   if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
     # It still isn't showing as installed after attempting, so try again
     sleep 15
-    apt -y --no-install-recommends install $pkg
+    apt-get -y --no-install-recommends install $pkg
   fi
 done
 
 # Add packages from repositories
 for pkg in $(grep -vE "^\s*#" build/packages.add | tr "\n" " ")
 do
-  apt -y --no-install-recommends install $pkg
+  apt-get -y --no-install-recommends install $pkg
   if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
     # It still isn't showing as installed after attempting, so try again
     sleep 15
-    apt -y --no-install-recommends install $pkg
+    apt-get -y --no-install-recommends install $pkg
   fi
 done
 
 # Install dependencies, if any
-apt -y install -f
+apt-get -y install -f
 
-# Be up to date
-apt update
-apt -y upgrade
+# Be up to update
+apt-get update
+apt-get -y upgrade
 
 # Disable firstrun (ARMbian)
 if [[ -e /etc/init.d/firstrun ]]; then
@@ -180,7 +190,7 @@ echo ""
 # Final cleanup...
 
 cd /tmp
-apt -y autoremove
+apt-get -y autoremove
 
 echo "Usage after build:"
 df -hT /etc
