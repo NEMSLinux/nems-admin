@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Obtain and install the new NEMS Linux 1.6 version of wmic
+    if ! grep -q "PATCH-000016" /var/log/nems/patches.log; then
+      # Version 1.6.1 from NEMS debpack
+      apt-get update
+      apt-get -y install python-natsort python-impacket
+      wget -O /usr/local/bin/wmic https://raw.githubusercontent.com/NEMSLinux/debpack/0d32982d6787d8f43cf52db082bdd732d8e16780/all/wmic/usr/local/bin/wmic
+      chmod +x /usr/local/bin/wmic
+      echo "PATCH-000016" >> /var/log/nems/patches.log
+    else
+      echo "This patch is already applied."
+    fi

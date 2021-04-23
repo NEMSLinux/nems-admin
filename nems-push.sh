@@ -36,16 +36,6 @@ git commit -am "$comment"
 git config https.postBuffer $ram
 git push "https://Cat5TV:$password@github.com/Cat5TV/nems-scripts.git"
 
-cd /var/www/html/
-echo ""
-pwd
-git pull
-git add *
-git commit -am "$comment"
-#git push origin master
-git config https.postBuffer $ram
-git push "https://Cat5TV:$password@github.com/Cat5TV/nems-www.git"
-
 cd /var/www/nems-tv/
 echo ""
 pwd
