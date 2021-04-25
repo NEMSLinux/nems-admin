@@ -1,4 +1,4 @@
 #!/bin/bash
-9590
-nems-www
+apt-get install -y 9590
+apt-get install -y nems-www
 
