@@ -32,6 +32,7 @@ if [[ ! $PATH == *"/usr/sbin"* ]]; then
   export PATH=$PATH:/usr/sbin
 fi
 
+ver=$(cat /root/nems/nems-admin/build-version)
 
 # Detect hardware
 if [ ! -z $1 ]; then
@@ -53,8 +54,6 @@ echo ""
 echo "eg., $0 98000"
 echo ""
 sleep 10
-
-ver=$(cat /root/nems/nems-admin/build-version)
 
 # Create a script which can be used for troubleshooting
 # Provides a list of all the individual build components
