@@ -23,16 +23,6 @@ if [[ ! -d /var/log/nems ]]; then
   mkdir /var/log/nems
 fi
 
-# Add NEMS Linux Repositories
-echo "# NEMS Linux 1.6 Repositories
-deb https://nemslinux.com/repos/ 1.6 main
-deb https://nemslinux.com/repos/ 1.6 migrator
-deb https://nemslinux.com/repos/ 1.6 plugins" > /etc/apt/sources.list.d/nemslinux.list
-
-# Add the public key [expires: 2023-04-20]
-wget -O - https://nemslinux.com/repos/nemslinux.gpg.key | apt-key add -
-
-
 # If /sbin is not in PATH, add it (eg., halt, reboot)
 if [[ ! $PATH == *"/sbin"* ]]; then
   export PATH=$PATH:/sbin
@@ -48,14 +38,13 @@ if [ ! -z $1 ]; then
   echo $1 > /etc/.nems_hw_model_identifier
 fi
 
-wget -q -O /tmp/hw_model.sh https://raw.githubusercontent.com/Cat5TV/nems-scripts/master/hw_model.sh
-chmod +x /tmp/hw_model.sh
-/tmp/hw_model.sh
+/usr/local/bin/hw_detect
 if [[ ! -e /var/log/nems/hw_model ]]; then
   echo "Cannot run hw_model detection. Fail."
   exit
 fi
 hw_model=$(cat /var/log/nems/hw_model | sed -n 2p)
+
 printf "\e[97;1mDETECTED HARDWARE:\e[92;1m $hw_model\e[0m"
 echo ""
 echo ""
@@ -64,7 +53,6 @@ echo ""
 echo "eg., $0 98000"
 echo ""
 sleep 10
-
 
 ver=$(cat /root/nems/nems-admin/build-version)
 

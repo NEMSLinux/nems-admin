@@ -13,6 +13,23 @@ else
 
 PATH=$PATH:/sbin
 
+# Add NEMS Linux Repositories
+echo "# NEMS Linux 1.6 Repositories
+deb https://nemslinux.com/repos/ 1.6 main
+deb https://nemslinux.com/repos/ 1.6 migrator
+deb https://nemslinux.com/repos/ 1.6 plugins" > /etc/apt/sources.list.d/nemslinux.list
+
+# Add the public key [expires: 2023-04-20]
+wget -O - https://nemslinux.com/repos/nemslinux.gpg.key | apt-key add -
+
+# Base OS won't necessarily have these key components yet
+apt-get update
+apt-get install -y wget python3
+
+# Install any NEMS components that are required immediately
+apt-get install -y hw_model
+
+
 printf "RTC reports date/time as: "
 date
 
