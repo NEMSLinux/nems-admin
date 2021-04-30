@@ -30,6 +30,7 @@ apt-get install $repo -y libreadline-dev
 apt-get install $repo -y libxml2-dev
 apt-get install $repo -y libssl-dev
 apt-get install $repo -y clang
+apt-get install $repo -y chrpath
 
 # This is the full Check_MK OSE bundle
 
