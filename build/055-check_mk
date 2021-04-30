@@ -33,27 +33,15 @@ apt-get install $repo -y clang
 
 # This is the full Check_MK OSE bundle
 
-# NEMS 1.4.1 - 1.4.0p31
-# wget -O /tmp/mk.tar.gz --no-check-certificate https://mathias-kettner.de/support/1.4.0p31/check_mk-1.4.0p31.tar.gz
-# cd /tmp
-# tar xzf mk.tar.gz
-# cd check_mk-1.4.0p31
-
-# NEMS 1.5 - 1.4.0p37
-# wget -O /tmp/mk.tar.gz --no-check-certificate https://mathias-kettner.de/support/1.4.0p37/check_mk-1.4.0p37.tar.gz
-# cd /tmp
-# tar xzf mk.tar.gz
-# cd check_mk-1.4.0p37
-
-# NEMS 1.6 - 1.6.0p17
- ver='1.6.0p17'
- wget -O /tmp/mk.tar.gz --no-check-certificate https://checkmk.com/support/${ver}/check-mk-raw-${ver}.cre.tar.gz
+ ver='2.0.0p3'
+# wget -O /tmp/mk.tar.gz --no-check-certificate https://checkmk.com/support/${ver}/check-mk-raw-${ver}.cre.tar.gz
+ wget -O /tmp/mk.tar.gz https://github.com/tribe29/checkmk/archive/refs/tags/v${ver}.tar.gz
  cd /tmp
- if [[ -e check-mk-raw-${ver}.cre ]]; then
-  rm -rf check-mk-raw-${ver}.cre
+ if [[ -e checkmk-${ver} ]]; then
+  rm -rf checkmk-${ver}
  fi
  tar xzf mk.tar.gz
- cd check-mk-raw-${ver}.cre
+ cd checkmk-${ver}/omd
 
 # Install livestatus
 # Need to determine the lib directory for boost to compile correctly
@@ -107,7 +95,7 @@ chmod 666 /usr/local/nagios/var/rw/live.sock
 
 # /usr/local/nagios/var/rw
 
-if [[ -e /tmp/check-mk-raw-${ver}.cre ]]; then
- rm -rf /tmp/check-mk-raw-${ver}.cre
+if [[ -e /tmp/checkmk-${ver} ]]; then
+ rm -rf /tmp/checkmk-${ver}
 fi
 
