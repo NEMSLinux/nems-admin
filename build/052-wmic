@@ -1,106 +1,13 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
-# Thanks to Ryan Siegel for the contribution on NEMS 1.2.1
-# Updated for NEMS 1.5 since openvas stopped distributing the package
 
-if [[ -f /usr/lib/nagios/plugins/check_wmi_plus.pl ]]; then
-  # This compile takes a LONG time, so if check_wmi_plus.pl already exists, abort.
-  echo
-  echo "To reinstall check_wmi_plus, please run first: sudo rm /usr/lib/nagios/plugins/check_wmi_plus.pl"
-  echo
-  exit
-fi
+# Thanks to Ryan Siegel for the original contribution in NEMS Linux 1.2.1.
 
-# Detect whether this is DEB- or RPM-based system
-if [[ -f /etc/debian_version ]]; then
-  pm=deb
-fi
-if [[ $(grep -Ei 'debian|buntu|mint' /etc/*release) ]]; then
-  pm=deb
-fi
-if [[ $(grep -Ei 'fedora|redhat' /etc/*release) ]]; then
-  pm=rpm
-fi
-if [[ $pm == 'deb' ]]; then
-  echo "Detected DEB package manager..."
-  APT_LISTCHANGES_FRONTEND=cat
-  pm_cleanup="apt-get -y autoremove"
-  pm_update="apt-get update"
-  pm_purge="apt-get remove -y --purge"
-  pm_install="apt-get install -y"
-elif [[ $pm == 'rpm' ]]; then
-  echo "Detected RPM package manager..."
-  pm_cleanup=""
-  pm_update=""
-  pm_purge="yum erase -y"
-  pm_install="yum install -y"
-else
-  echo "Failed to determine your distro's package manager. Please notify us of this issue."
-  exit
-fi
+# Updated for NEMS Linux 1.5 since openvas stopped distributing the package.
 
-tmpdir=`mktemp -d -p /usr/src/`
-
-$pm_update
-$pm_install autoconf
-$pm_install cpanminus
-$pm_install libclass-std-storable-perl
-$pm_install cmake
-$pm_install gnutls-dev
-$pm_install heimdal-dev
-$pm_install libpopt-dev
-$pm_install libglib2.0-dev
-$pm_install gcc-mingw-w64
-$pm_install gcc
-$pm_install pkg-config
-$pm_install perl-base
-$pm_install libunistring-dev
-$pm_install libbsd-dev
-$pm_install libgnutls28-dev
-
-#$pm_install libheimdal-kadm5-perl
-#$pm_install time
-
-#$pm_install bison
-#$pm_install byacc
-#alias yacc="bison"
-
-cpanm DateTime::TimeZone
-cpanm DateTime::Locale
-cpanm Getopt::Long
-cpanm Number::Format
-cpanm Scalar::Util
-cpanm Data::Dumper
-cpanm Config::IniFiles
-#cpanm Storable
-
-cd $tmpdir
-
-# Install WMI
-
-# Get the WMIC Source from Greenbone
-wget https://github.com/greenbone/openvas-smb/archive/refs/tags/v21.4.0.tar.gz
-tar -xvf v21.4.0.tar.gz
-cd openvas-smb-21.4.0
-
-# Compile it
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
-make install
-
-echo $tmpdir
-
-# Reload configs from /etc/ld.so.conf.d which includes the libc.conf
-# which tells environment to find libraries in /usr/local/lib/
-# else /usr/local/lib/libopenvas_wmiclient.so.1 will not be found by wmic
-/sbin/ldconfig
-
-# Stop here if not running NEMS Linux
-# (for those who want to use this installer on other distros)
-if [[ ! -e /usr/local/bin/nems-info ]]; then
-  exit
-fi
+# Updated for NEMS Linux 1.6: Entirely deprecated the old (unsupported) wmic
+# application and moved to a Python-based alternative (drop-in replacement)
+# in the NEMS Linux repository.
 
 printf "Installing check_wmi_plus... "
 # Remove previous install of check_wmi_plus
@@ -122,6 +29,3 @@ fi
 chown -R nagios:nagios /etc/check_wmi_plus/
 
 echo "Done."
-
-# Clean up
-rm -rf $tmpdir

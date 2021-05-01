@@ -31,10 +31,14 @@ apt-get install $repo -y libxml2-dev
 apt-get install $repo -y libssl-dev
 apt-get install $repo -y clang
 apt-get install $repo -y chrpath
+apt-get install $repo -y libkrb5-dev
+apt-get install $repo -y librust-pangocairo-dev
+apt-get install $repo -y libperl-dev
 
 # This is the full Check_MK OSE bundle
 
- ver='2.0.0p3'
+ver='1.6.0p23' # Legacy support for Python 2.7
+# ver='2.0.0p3' # For NEMS 1.7 (Python 3.8)
 # wget -O /tmp/mk.tar.gz --no-check-certificate https://checkmk.com/support/${ver}/check-mk-raw-${ver}.cre.tar.gz
  wget -O /tmp/mk.tar.gz https://github.com/tribe29/checkmk/archive/refs/tags/v${ver}.tar.gz
  cd /tmp
