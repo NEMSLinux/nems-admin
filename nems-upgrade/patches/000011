@@ -2,7 +2,10 @@
 
 # Reinstall WMIC (was missing in NEMS 1.5.2 due to NRPE Upgrade)
     if ! grep -q "PATCH-000011" /var/log/nems/patches.log; then
-      /root/nems/nems-admin/build/052-wmic
+
+      # need to install the new wmic via patch 15 rather than the old deprecated installer
+      /root/nems/nems-admin/nems-upgrade/patches/000015
+
       /root/nems/nems-admin/build/152-nagiosgraph
       /root/nems/nems-admin/build/999-cleanup
       echo "PATCH-000011" >> /var/log/nems/patches.log

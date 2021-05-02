@@ -2,6 +2,8 @@
 
 # For early builds of NEMS Linux 1.5
 
+# This patch was modified when the Samba version of WMIC was removed. Patch 15 will also be required for this patch to function.
+
   # Reinstall monitoring-plugins to resolve stdout error and other issue with early builds of NEMS 1.5
   # This is a major update and will take a while to run
     if ! grep -q "PATCH-000001" /var/log/nems/patches.log; then
@@ -9,7 +11,7 @@
       echo '*** THIS IS A BIG PATCH ***'
       echo 'Expect to wait a long time...'
       sleep 5
-      /root/nems/nems-admin/build/046-plugins-prep && /root/nems/nems-admin/build/051-monitoring-plugins && /root/nems/nems-admin/build/052-nems-nagios-plugins && /root/nems/nems-admin/build/052-wmic && echo "PATCH-000001" >> /var/log/nems/patches.log && /root/nems/nems-admin/build/999-cleanup
+      /root/nems/nems-admin/build/046-plugins-prep && /root/nems/nems-admin/build/051-monitoring-plugins && /root/nems/nems-admin/build/052-nems-nagios-plugins && echo "PATCH-000001" >> /var/log/nems/patches.log && /root/nems/nems-admin/build/999-cleanup
     else
       echo "This patch is already applied."
     fi

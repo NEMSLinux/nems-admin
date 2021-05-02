@@ -34,6 +34,7 @@ apt-get install $repo -y chrpath
 apt-get install $repo -y libkrb5-dev
 apt-get install $repo -y librust-pangocairo-dev
 apt-get install $repo -y libperl-dev
+apt-get install $repo -y apache2-dev
 
 # This is the full Check_MK OSE bundle
 
