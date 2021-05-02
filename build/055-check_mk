@@ -35,6 +35,8 @@ apt-get install $repo -y libkrb5-dev
 apt-get install $repo -y librust-pangocairo-dev
 apt-get install $repo -y libperl-dev
 apt-get install $repo -y apache2-dev
+apt-get install $repo -y pipenv
+apt-get install $repo -y virtualenv
 
 # This is the full Check_MK OSE bundle
 
