@@ -37,19 +37,43 @@ apt-get install $repo -y libperl-dev
 apt-get install $repo -y apache2-dev
 apt-get install $repo -y pipenv
 apt-get install $repo -y virtualenv
+apt-get install $repo -y freetds-dev # pymssql
+apt-get install $repo -y python-setuptools
+apt-get install $repo -y libsasl2-dev
+apt-get install $repo -y libxslt1-dev
+
+# Just a bit of compatibility for NEMS Linux 1.6 which still uses
+# the old (deprecated) Python 2.7 to maintain compatibility with Adagios
+# Will be removed in NEMS Linux 1.7
+if ! grep -q "#define DBVERSION_80 DBVERSION_71" /usr/include/sybdb.h; then
+ echo "#define DBVERSION_80 DBVERSION_71" >> /usr/include/sybdb.h
+fi
+
+pip install wheel
+
 
 # This is the full Check_MK OSE bundle
 
-ver='1.6.0p23' # Legacy support for Python 2.7
+#ver='1.6.0p24' # Legacy support for Python 2.7
 # ver='2.0.0p3' # For NEMS 1.7 (Python 3.8)
 # wget -O /tmp/mk.tar.gz --no-check-certificate https://checkmk.com/support/${ver}/check-mk-raw-${ver}.cre.tar.gz
- wget -O /tmp/mk.tar.gz https://github.com/tribe29/checkmk/archive/refs/tags/v${ver}.tar.gz
- cd /tmp
- if [[ -e checkmk-${ver} ]]; then
-  rm -rf checkmk-${ver}
- fi
- tar xzf mk.tar.gz
- cd checkmk-${ver}/omd
+# wget -O /tmp/mk.tar.gz https://github.com/tribe29/checkmk/archive/refs/tags/v${ver}.tar.gz
+# cd /tmp
+# if [[ -e checkmk-${ver} ]]; then
+#  rm -rf checkmk-${ver}
+# fi
+# tar xzf mk.tar.gz
+# cd checkmk-${ver}/omd
+
+ver="1.5.0p24"
+wget -O /tmp/mk.tar.gz https://download.checkmk.com/checkmk/1.5.0p24/mk-livestatus-${ver}.tar.gz
+cd /tmp
+if [[ -e mk-livestatus-${ver} ]]; then
+  rm -rf mk-livestatus-${ver}
+fi
+tar xzf mk.tar.gz
+cd mk-livestatus-${ver}
+
 
 # Install livestatus
 # Need to determine the lib directory for boost to compile correctly
@@ -79,7 +103,7 @@ fi
 
 ./configure --with-nagios4 --with-boost-libdir=$libdir
 
-cd livestatus
+#cd livestatus
 make
 make install
 cd ..
