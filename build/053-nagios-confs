@@ -18,14 +18,24 @@ if [[ ! -d /var/cache/nagios/ ]]; then
   chown nagios:nagios /var/cache/nagios/
 fi
 
-# Restore NEMS versions of Nagios config
-cp -R /root/nems/nems-migrator/data/1.4/nagios/etc/* /usr/local/nagios/etc/
+/bin/systemctl stop nagios
+
+# Use the NEMS Linux default config
+cp -f /root/nems/nems-migrator/data/1.6/nagios/etc/nagios.cfg /usr/local/nagios/etc/
+
+# Restore nems-www theme
+if [[ -d /usr/local/nagios/share ]]; then
+  rm -rf /usr/local/nagios/share
+fi
+if [[ ! -e /usr/local/nagios/share ]]; then
+  ln -s /var/www/html/share/nagios /usr/local/nagios/share
+fi
 
 # Create NEMS configuration folder
   mkdir -p /etc/nems/conf
 # Copy sample data
-  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/global /etc/nems/conf/
-  cp -R /root/nems/nems-migrator/data/1.4/nagios/conf/Default_collector /etc/nems/conf/
+  cp -R /root/nems/nems-migrator/data/1.6/nagios/conf/global /etc/nems/conf/
+  cp -R /root/nems/nems-migrator/data/1.6/nagios/conf/Default_collector /etc/nems/conf/
   chmod 775 /etc/nems/conf/global
   chmod 775 /etc/nems/conf/Default_collector
 # Allow nConf to write to the conf
@@ -51,5 +61,7 @@ chown nagios:nagios /var/log/sendemail.log
 
 # Set permissions to allow Nagios to archive log files
 chmod ug+x /usr/local/nagios/var/archives
+
+/bin/systemctl start nagios
 
 exit 0

@@ -20,13 +20,12 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   dpkg-statoverride --update --add nagios nagios 751 /var/lib/nagios
 fi
 
-  cd /tmp
-
 # Download from:
 # https://www.nagios.org/downloads/nagios-core/thanks/?product_download=nagioscore-source
-  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.5.tar.gz
-  tar -zxvf nagios-4.4.5.tar.gz
-  cd /tmp/nagios-4.4.5/
+  cd /tmp
+  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.6.tar.gz
+  tar -zxvf nagios-4.4.6.tar.gz
+  cd /tmp/nagios-4.4.6/
   ./configure --with-nagios-group=nagios --with-command-group=nagcmd --with-httpd_conf=/etc/apache2/conf-available/
   make all
   make install
@@ -34,19 +33,6 @@ fi
   make install-config
   make install-commandmode
   make install-webconf
-
-  /bin/systemctl stop nagios
-  cp -f /root/nems/nems-migrator/data/1.6/nagios/etc/nagios.cfg /usr/local/nagios/etc/
-
-# Restore nems-www theme
-if [[ -d /usr/local/nagios/share ]]; then
-  rm -rf /usr/local/nagios/share
-fi
-if [[ ! -e /usr/local/nagios/share ]]; then
-  ln -s /var/www/html/share/nagios /usr/local/nagios/share
-fi
-
-  /bin/systemctl start nagios
 
 # Finished installing Nagios Core
 

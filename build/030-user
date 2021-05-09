@@ -9,14 +9,14 @@ platform=$(/usr/local/bin/nems-info platform)
 # Create nemsadmin user
   adduser --disabled-password --gecos "" nemsadmin
 
-# Allow user to become super-user
-  usermod -aG sudo nemsadmin
-
 # Set the user password
   echo -e "nemsadmin\nnemsadmin" | passwd nemsadmin >/tmp/init 2>&1
 
 # Add nemsadmin to sudoers and disable root login if that's successful
   usermod -aG sudo nemsadmin && passwd -l root
+
+# Allow nemsadmin user to control the network connections
+  usermod -aG netdev nemsadmin
 
 # Add files to nemsadmin home folder (which later get moved to NEMS user account at init)
   cd /home/nemsadmin
