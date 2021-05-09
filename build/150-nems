@@ -26,6 +26,10 @@ if [[ ! -d nagios-api ]]; then
   python3 -m pip install -U pip setuptools
   apt install -y libffi-dev
   pip3 install wheel
+  # Update the requirements to versions that still exist
+    sed -i 's/Flask==0.9/Flask==0.10/g' requirements.txt
+    sed -i 's/http-parser==0.8.1/http-parser==0.9.0/g' requirements.txt
+  # And install them
   pip3 install -r requirements.txt
 fi
 
