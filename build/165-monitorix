@@ -1,32 +1,10 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
-# Set the URL of the latest debpack from https://www.monitorix.org/downloads.html
-debpack=https://www.monitorix.org/monitorix_3.12.0-izzy1_all.deb
-
-# Download the debpack
-wget --no-check-certificate -O /tmp/monitorix.deb $debpack
-
-# Remove Izzy Repos
-rm -f /etc/apt/sources.list.d/monitorix.list
 apt-get update
 
-# Install dependencies
-apt-get install -y rrdtool
-apt-get install -y perl
-apt-get install -y libwww-perl
-apt-get install -y libmailtools-perl
-apt-get install -y libmime-lite-perl
-apt-get install -y librrds-perl
-apt-get install -y libdbi-perl
-apt-get install -y libxml-simple-perl
-apt-get install -y libhttp-server-simple-perl
-apt-get install -y libconfig-general-perl
-apt-get install -y libio-socket-ssl-perl
-apt-get install -y xfonts-terminus
-
 # Install Monitorix
-dpkg -i /tmp/monitorix.deb
+apt-get install -y monitorix
 
 # Use NEMS config files
 /bin/systemctl stop monitorix
