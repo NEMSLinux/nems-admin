@@ -120,12 +120,18 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
   wget https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/nems/changelog.txt
 
+  # Setup log folder so hw-detect can run. Permissions will be setup later.
+  if [[ ! -e /var/log/nems ]]; then
+    mkdir /var/log/nems
+  fi
+
   # Setup default paths
   echo 'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/games:/sbin"' > /etc/environment
 
   echo "System Prepped. Please restart, re-connect as nemsadmin, run screen, then run your build script (see ./notes)."
 
-#  if [[ -e /sbin/reboot ]]; then
-#    /sbin/reboot
-#  fi
+  if [[ -e /sbin/reboot ]]; then
+    /sbin/reboot
+  fi
+
 fi
