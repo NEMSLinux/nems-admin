@@ -27,7 +27,7 @@ apt-get update
 apt-get install -y wget python3
 
 # Install any NEMS components that are required immediately
-apt-get install -y hw_model
+apt-get install -y hw-detect
 
 
 printf "RTC reports date/time as: "
