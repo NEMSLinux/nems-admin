@@ -26,10 +26,6 @@ wget -O - https://nemslinux.com/repos/nemslinux.gpg.key | apt-key add -
 apt-get update
 apt-get install -y wget python3
 
-# Install any NEMS components that are required immediately
-apt-get install -y hw-detect
-
-
 printf "RTC reports date/time as: "
 date
 
@@ -124,6 +120,9 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   if [[ ! -e /var/log/nems ]]; then
     mkdir /var/log/nems
   fi
+
+  # Install any NEMS components that are required immediately
+  apt-get install -y hw-detect
 
   # Setup default paths
   echo 'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/games:/sbin"' > /etc/environment
