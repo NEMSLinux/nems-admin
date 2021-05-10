@@ -39,7 +39,8 @@ if [ ! -z $1 ]; then
   echo $1 > /etc/.nems_hw_model_identifier
 fi
 
-/usr/local/bin/hw_detect
+/usr/local/bin/hw-detect
+
 if [[ ! -e /var/log/nems/hw_model ]]; then
   echo "Cannot run hw_model detection. Fail."
   exit
