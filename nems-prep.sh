@@ -114,7 +114,7 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   # Add files to nemsadmin home folder (which later get moved to NEMS user account at init)
   cd /home/nemsadmin
   wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-  wget https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/nems/changelog.txt
+  wget -O changelog.txt https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/nems/changelog.txt
 
   # Setup log folder so hw-detect can run. Permissions will be setup later.
   if [[ ! -e /var/log/nems ]]; then
