@@ -21,7 +21,7 @@ fi
 /bin/systemctl stop nagios
 
 # Use the NEMS Linux default config
-cp -f /root/nems/nems-migrator/data/1.6/nagios/etc/nagios.cfg /usr/local/nagios/etc/
+cp -f /root/nems/nems-migrator/data/nagios/etc/nagios.cfg /usr/local/nagios/etc/
 
 # Restore nems-www theme
 if [[ -d /usr/local/nagios/share ]]; then
@@ -34,8 +34,8 @@ fi
 # Create NEMS configuration folder
   mkdir -p /etc/nems/conf
 # Copy sample data
-  cp -R /root/nems/nems-migrator/data/1.6/nagios/conf/global /etc/nems/conf/
-  cp -R /root/nems/nems-migrator/data/1.6/nagios/conf/Default_collector /etc/nems/conf/
+  cp -R /root/nems/nems-migrator/data/nagios/conf/global /etc/nems/conf/
+  cp -R /root/nems/nems-migrator/data/nagios/conf/Default_collector /etc/nems/conf/
   chmod 775 /etc/nems/conf/global
   chmod 775 /etc/nems/conf/Default_collector
 # Allow nConf to write to the conf
@@ -50,7 +50,7 @@ fi
 # Change some permissions changes
 /bin/systemctl stop apache2
   dpkg-statoverride --update --add nagios www-data 2710 /usr/local/nagios/var/rw
-  cp -f /root/nems/nems-migrator/data/1.4/apache2/conf-available/nagios.conf /etc/apache2/conf-available/
+  cp -f /root/nems/nems-migrator/data/apache2/conf-available/nagios.conf /etc/apache2/conf-available/
 /bin/systemctl start apache2
 
 # Setup log for sendemail

@@ -34,8 +34,8 @@ fi
 # Only clear the maps and replace if this is a fresh install. Don't remove existing configs.
 if [[ $freshinstall == 1 ]]; then
   rm /etc/nagvis/etc/maps/*
-  cp /root/nems/nems-migrator/data/1.4/nagvis/maps/* /etc/nagvis/etc/maps/
-  cp -f /root/nems/nems-migrator/data/1.4/nagvis/nagvis.ini.php /etc/nagvis/etc/
+  cp /root/nems/nems-migrator/data/nagvis/maps/* /etc/nagvis/etc/maps/
+  cp -f /root/nems/nems-migrator/data/nagvis/nagvis.ini.php /etc/nagvis/etc/
 fi
 
 # Set permissions

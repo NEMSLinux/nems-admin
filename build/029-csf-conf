@@ -1,10 +1,10 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
-# not yet functional in buster
+# not yet functional
 exit
   ## Add our default configuration
-  cp -f /root/nems/nems-migrator/data/1.5/csf/* /etc/csf/
+  cp -f /root/nems/nems-migrator/data/csf/* /etc/csf/
 
   ## Start the firewall
   csf -r

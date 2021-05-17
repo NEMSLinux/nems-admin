@@ -12,10 +12,10 @@ if (( $platform < '10' )); then
     apt-get install -y $curpkg
   done
 
-  cp /root/nems/nems-migrator/data/1.6/argonone/argononed.py /usr/bin/argononed.py
-  cp /root/nems/nems-migrator/data/1.6/argonone/argononed-poweroff.py /lib/systemd/system-shutdown/argononed-poweroff.py
-  cp /root/nems/nems-migrator/data/1.6/argonone/argonone-fan.conf /usr/local/share/nems/argonone-fan.conf
-  cp /root/nems/nems-migrator/data/1.6/argonone/argononed.service /lib/systemd/system/argononed.service
+  cp /root/nems/nems-migrator/data/platforms/argonone/argononed.py /usr/bin/argononed.py
+  cp /root/nems/nems-migrator/data/platforms/argonone/argononed-poweroff.py /lib/systemd/system-shutdown/argononed-poweroff.py
+  cp /root/nems/nems-migrator/data/platforms/argonone/argonone-fan.conf /usr/local/share/nems/argonone-fan.conf
+  cp /root/nems/nems-migrator/data/platforms/argonone/argononed.service /lib/systemd/system/argononed.service
 
   raspi-config nonint do_i2c 0
   raspi-config nonint do_serial 0

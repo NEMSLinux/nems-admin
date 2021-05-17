@@ -34,12 +34,12 @@ fi
 # Grab a basic config with no SNMP to be able to complete the installation
 # Actual config will be done via NEMS SST, which adapts the following command automatically:
 # /usr/local/mrtg2/bin/cfgmaker --global 'WorkDir: /var/www/mrtg' --global 'Options[_]: bits,growright' --output /etc/mrtg/mrtg.cfg public@127.0.0.1
-cp /root/nems/nems-migrator/data/1.6/mrtg/mrtg.cfg /etc/mrtg/
+cp /root/nems/nems-migrator/data/mrtg/mrtg.cfg /etc/mrtg/
 
 # First-Run (create files)
 env LANG=C /usr/local/mrtg2/bin/mrtg /etc/mrtg/mrtg.cfg
 
-cp /root/nems/nems-migrator/data/1.6/mrtg/apache.conf /etc/apache2/conf-available/mrtg.conf
+cp /root/nems/nems-migrator/data/mrtg/apache.conf /etc/apache2/conf-available/mrtg.conf
 
 # Enable the config if not already enabled in apache2
 if [[ ! -L /etc/apache2/conf-enabled/mrtg.conf ]]; then

@@ -24,8 +24,8 @@ apt-get install -y monitorix
 
 # Use NEMS config files
 /bin/systemctl stop monitorix
-cp -f /root/nems/nems-migrator/data/1.4/monitorix/monitorix.conf /etc/monitorix/
-cp -f /root/nems/nems-migrator/data/1.4/monitorix/raspberrypi.rrd /var/lib/monitorix/
+cp -f /root/nems/nems-migrator/data/monitorix/monitorix.conf /etc/monitorix/
+cp -f /root/nems/nems-migrator/data/monitorix/raspberrypi.rrd /var/lib/monitorix/
 
 # Make it so
 /bin/systemctl start monitorix

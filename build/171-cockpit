@@ -17,7 +17,7 @@ if (( $platform != 21 )); then
   fi
   mkdir -p /usr/share/cockpit/branding/debian
   if [[ -e /root/nems/nems-migrator/ ]]; then
-    cp -f /root/nems/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
+    cp -f /root/nems/nems-migrator/data/cockpit/branding/* /usr/share/cockpit/branding/debian/
   else
     # nems-migrator doesn't exist. Assuming this is a NEMS Tools Extender OS system
     # grab just the cockpit branding files from nems-migrator
@@ -25,8 +25,8 @@ if (( $platform != 21 )); then
     cd $tmpdir
     git clone --depth 1 --filter=blob:none --no-checkout https://github.com/cat5tv/nems-migrator
     cd nems-migrator
-    git checkout master -- data/1.5/cockpit/branding
-    cp -f $tmpdir/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
+    git checkout master -- data/cockpit/branding
+    cp -f $tmpdir/nems-migrator/data/cockpit/branding/* /usr/share/cockpit/branding/debian/
     rm -rf $tmpdir
   fi
 fi

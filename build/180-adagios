@@ -91,7 +91,7 @@ if [[ -d /usr/local/lib/python${pythondir}/dist-packages/adagios ]]; then
   rm -rf /usr/local/lib/python${pythondir}/dist-packages/adagios
 fi
 cp -R adagios/etc/adagios /etc/
-cp -f /root/nems/nems-migrator/data/1.5/adagios/adagios.conf /etc/adagios/
+cp -f /root/nems/nems-migrator/data/adagios/adagios.conf /etc/adagios/
 echo "Installing to /usr/local/lib/python${pythondir}/dist-packages/adagios"
 $pythoncommand /tmp/adagios-adagios-1.6.6-1/setup.py install
 echo "Continuing."
@@ -106,12 +106,12 @@ chown -R nagios:nagios /etc/adagios
 rm -fr /var/www/adagios/etc/
 mkdir -p /var/lib/adagios/userdata
 chown -R www-data:www-data /var/lib/adagios
-cp -f /root/nems/nems-migrator/data/1.5/adagios/settings.py /var/www/adagios/
+cp -f /root/nems/nems-migrator/data/adagios/settings.py /var/www/adagios/
 chown -R www-data:www-data /var/www/adagios/
 
 # Import templates
-cp -f /root/nems/nems-migrator/data/1.5/adagios/templates/403.html /var/www/adagios/templates/
-cp -f /root/nems/nems-migrator/data/1.5/adagios/templates/base.html /var/www/adagios/templates/
+cp -f /root/nems/nems-migrator/data/adagios/templates/403.html /var/www/adagios/templates/
+cp -f /root/nems/nems-migrator/data/adagios/templates/base.html /var/www/adagios/templates/
 
 # Create the working folder for the WSGI daemon
 if [[ ! -d /var/www/adagios-working ]]; then
@@ -143,7 +143,7 @@ a2enconf adagios
 cd /opt
 git clone -b "okconfig-python2/3" https://github.com/opinkerfi/okconfig.git
 echo 'export PYTHONPATH=$PYTHONPATH:/opt/okconfig' > /etc/profile.d/okconfig.sh
-cp -f /root/nems/nems-migrator/data/1.5/adagios/okconfig.conf /etc/okconfig.conf
+cp -f /root/nems/nems-migrator/data/adagios/okconfig.conf /etc/okconfig.conf
 source /etc/profile
 ln -s /opt/okconfig/usr/share/okconfig /usr/share/
 ln -s /opt/okconfig/usr/bin/okconfig /usr/local/bin/

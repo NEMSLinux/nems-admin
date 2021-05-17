@@ -4,7 +4,7 @@
 
 # Automatically replaces the config files in NEMS Migrator any time you update NEMS-Sample mysql db (so they match)
 
-dest=/root/nems/nems-migrator/data/1.6/nconf/confdump
+dest=/root/nems/nems-migrator/data/nconf/confdump
 
 if [[ ! -d $dest ]]; then
   mkdir -p $dest
@@ -26,8 +26,6 @@ fi
   /var/www/nconf/bin/get_items.pl -c misccommand -f > $dest/global/misccommands.cfg
   /var/www/nconf/bin/get_items.pl -c checkcommand -f > $dest/global/checkcommands.cfg
   /var/www/nconf/bin/get_items.pl -c contact -f > $dest/global/contacts.cfg
-  # Use the default contact from NEMS 1.4 instead
-#  cp -f /root/nems/nems-migrator/data/1.4/nagios/conf/global/contacts.cfg /root/nems/nems-migrator/data/1.6/nagios/conf/global/contacts.cfg
   /var/www/nconf/bin/get_items.pl -c contactgroup -f > $dest/global/contactgroups.cfg
   /var/www/nconf/bin/get_items.pl -c host-template -f > $dest/global/host_templates.cfg
   /var/www/nconf/bin/get_items.pl -c service-template -f > $dest/global/service_templates.cfg
@@ -46,4 +44,4 @@ fi
   cp /etc/nems/conf/Default_collector/advanced_services.cfg $dest/Default_collector/advanced_services_sample.cfg
   cp /etc/nems/conf/global/service_templates.cfg $dest/global/service_templates_sample.cfg
 
-echo Done. Files in $dest have been updated.
+echo Done. Files in $dest have been updated. Remember, these are part of debpack now. Must copy and PR.

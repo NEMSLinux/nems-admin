@@ -18,7 +18,7 @@ platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)  # This is why w
   # Setup firewall rules
   if [[ -d /usr/lib/firewalld/services ]]; then
     rm -rf /usr/lib/firewalld/services
-    cp -R /root/nems/nems-migrator/data/1.5/firewalld/services /usr/lib/firewalld/
+    cp -R /root/nems/nems-migrator/data/firewalld/services /usr/lib/firewalld/
     chown -R root:root /usr/lib/firewalld/services
   fi
 

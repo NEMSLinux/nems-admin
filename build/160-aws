@@ -43,6 +43,6 @@ if (( $platform == 22 )); then
   fi
 
   # Change default user to nemsadmin
-  cp -f /root/nems/nems-migrator/data/1.5/platforms/aws/cloud.cfg /etc/cloud/
+  cp -f /root/nems/nems-migrator/data/platforms/aws/cloud.cfg /etc/cloud/
 
 fi

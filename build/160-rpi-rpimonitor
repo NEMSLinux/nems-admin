@@ -47,8 +47,8 @@ if (( $platform < '10' )); then
   dpkg -i rpimonitor.deb
 
   /bin/systemctl stop rpimonitor
-  cp /root/nems/nems-migrator/data/1.6/rpimonitor/daemon.conf /etc/rpimonitor/
-  cp -f /root/nems/nems-migrator/data/1.6/rpimonitor/template/* /etc/rpimonitor/template/
+  cp /root/nems/nems-migrator/data/rpimonitor/daemon.conf /etc/rpimonitor/
+  cp -f /root/nems/nems-migrator/data/rpimonitor/template/* /etc/rpimonitor/template/
   /etc/init.d/rpimonitor update
   /bin/systemctl start rpimonitor
   /bin/systemctl enable rpimonitor

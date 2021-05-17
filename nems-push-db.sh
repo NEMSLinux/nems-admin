@@ -1,9 +1,7 @@
 #!/bin/bash
 # Lock in and push the current database state (including Nagios configs) to NEMS-Migrator
 # Built for creating new sample hosts and services, and pushing to all other NEMS servers
-# Requires NEMS 1.4+
-
-nemsbranch=$(/usr/local/bin/nems-info nemsbranch)
+# Requires NEMS 1.6+
 
 echo ""
 echo "You must have UI access in order to proceed."
@@ -74,10 +72,10 @@ systemctl stop nagios
 
 systemctl stop mysql
 
-if [[ ! -d /root/nems/nems-migrator/data/${nemsbranch}/mysql ]]; then
-  mkdir -p /root/nems/nems-migrator/data/${nemsbranch}/mysql
+if [[ ! -d /root/nems/nems-migrator/data/mysql ]]; then
+  mkdir -p /root/nems/nems-migrator/data/mysql
 fi
-cd /root/nems/nems-migrator/data/${nemsbranch}/mysql
+cd /root/nems/nems-migrator/data/mysql
 
 if [[ -d NEMS-Sample ]]; then
   rm -rf NEMS-Sample
@@ -155,7 +153,7 @@ mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=530
 
 systemctl stop mysql
 
-cd /root/nems/nems-migrator/data/${nemsbranch}/mysql
+cd /root/nems/nems-migrator/data/mysql
 
 if [[ -d NEMS-Clean ]]; then
   rm -rf NEMS-Clean
@@ -174,9 +172,4 @@ chown -R mysql:mysql /var/lib/mysql
 systemctl start mysql
 systemctl start nagios
 
-echo "Press CTRL-C now to push manually, otherwise standby"
-sleep 5
-
-git add *
-git commit -m "Push new ${nemsbranch} default config"
-git push origin master
+echo "Done. Remember to migrate /root/nems/nems-migrator/data/mysql to debpack!"

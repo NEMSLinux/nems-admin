@@ -202,7 +202,7 @@ nameserver 2001:4860:4860::8844
   echo $buildnum > /var/log/nems/build
 
   # Reset Nagios Core User
-  cp -f /root/nems/nems-migrator/data/1.5/nagios/etc/cgi.cfg /usr/local/nagios/etc/
+  cp -f /root/nems/nems-migrator/data/nagios/etc/cgi.cfg /usr/local/nagios/etc/
 
   # Clear Nagios' resource.cfg file
   echo "################################################################################" > /usr/local/nagios/etc/resource.cfg
@@ -220,7 +220,7 @@ nameserver 2001:4860:4860::8844
   mysql -u nconf -pnagiosadmin nconf -e "TRUNCATE History"
 
   # Remove NagVis user accounts and reset to default (empty) auth database
-  cp -f /root/nems/nems-migrator/data/1.4/nagvis/auth.db /etc/nagvis/etc/
+  cp -f /root/nems/nems-migrator/data/nagvis/auth.db /etc/nagvis/etc/
   chown www-data:www-data /etc/nagvis/etc/auth.db
 
   # Sync the current running version as the current available version

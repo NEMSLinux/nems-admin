@@ -88,7 +88,7 @@ make install-config
 
 /bin/systemctl stop nrpe
 
-wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/Cat5TV/nems-migrator/master/data/1.6/nagios/misc/nrpe.cfg
+wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/NEMSLinux/nems-migrator/master/data/nagios/misc/nrpe.cfg
 
 systemctl daemon-reload
 

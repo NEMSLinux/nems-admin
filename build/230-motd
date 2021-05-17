@@ -10,7 +10,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # Enable NEMS MOTD
 echo > /etc/motd
-cp /root/nems/nems-migrator/data/1.6/nems/motd.tcl /etc/
+cp /root/nems/nems-migrator/data/nems/motd.tcl /etc/
 chmod 755 /etc/motd.tcl
 if ! grep -q "/etc/motd.tcl" /etc/profile; then
   echo "/etc/motd.tcl" >> /etc/profile

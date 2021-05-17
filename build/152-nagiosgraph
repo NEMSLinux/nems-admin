@@ -34,7 +34,7 @@ cp lib/insert.pl /usr/lib/nagios/plugins/
 cp share/nagiosgraph.css /usr/local/nagios/share
 cp share/nagiosgraph.js /usr/local/nagios/share
 
-cp -f /root/nems/nems-migrator/data/1.6/nagios/misc/nagiosgraph.conf /usr/local/nagios/nagiosgraph/etc/
+cp -f /root/nems/nems-migrator/data/nagios/misc/nagiosgraph.conf /usr/local/nagios/nagiosgraph/etc/
 
 mkdir /usr/local/nagios/nagiosgraph/var
 mkdir /usr/local/nagios/nagiosgraph/var/rrd

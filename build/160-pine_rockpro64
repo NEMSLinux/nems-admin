@@ -18,15 +18,15 @@ if (( $platform >= 48 )) && (( $platform <= 49 )); then
   fi
 
   if [[ ! -e /etc/systemd/system/first-boot.service ]]; then
-    cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/first-boot.service /etc/systemd/system/
+    cp -f -p /root/nems/nems-migrator/data/platforms/pine64/rock64/first-boot.service /etc/systemd/system/
   fi
 
   if [[ ! -e /usr/local/sbin/rock64_first_boot.sh ]]; then
-    cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/rock64_first_boot.sh /usr/local/sbin/
+    cp -f -p /root/nems/nems-migrator/data/platforms/pine64/rock64/rock64_first_boot.sh /usr/local/sbin/
   fi
 
   if [[ ! -e /usr/local/sbin/resize_rootfs.sh ]]; then
-    cp -f -p /root/nems/nems-migrator/data/1.4/platforms/pine64/rock64/resize_rootfs.sh /usr/local/sbin/
+    cp -f -p /root/nems/nems-migrator/data/platforms/pine64/rock64/resize_rootfs.sh /usr/local/sbin/
   fi
 
 fi

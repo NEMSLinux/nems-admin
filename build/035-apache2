@@ -16,9 +16,11 @@ apt -y install ssl-cert libapache2-mod-security2
 /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
 
 /bin/systemctl stop apache2
-cp -f /root/nems/nems-migrator/data/1.5/apache2/sites-available/nems-dashboard.conf /etc/apache2/sites-available
+cp -f /root/nems/nems-migrator/data/apache2/sites-available/nems-dashboard.conf /etc/apache2/sites-available
 
-a2dissite 000-default
+if [[ -e /etc/apache2/sites-enabled/000-default.conf ]]; then
+  a2dissite 000-default
+fi
 a2ensite nems-dashboard
 
 a2enmod rewrite
