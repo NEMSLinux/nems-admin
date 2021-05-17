@@ -16,8 +16,5 @@ ln -sf /usr/local/share/nems/nems-scripts/init.sh /usr/local/bin/nems-init
 ln -sf /usr/local/share/nems/nems-scripts/mailtest.sh /usr/local/bin/nems-mailtest
 ln -sf /root/nems/nems-admin/nems-push.sh /usr/local/bin/nems-push
 ln -sf /usr/local/share/nems/nems-scripts/quickfix.sh /usr/local/bin/nems-quickfix
-ln -sf /root/nems/nems-migrator/restore.sh /usr/local/bin/nems-restore
 ln -sf /usr/local/share/nems/nems-scripts/update.sh /usr/local/bin/nems-update
 ln -sf /usr/local/share/nems/nems-scripts/upgrade.sh /usr/local/bin/nems-upgrade
-
-
