@@ -6,7 +6,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # Replace the database with Sample database
   /bin/systemctl stop mysql
   rm -rf /var/lib/mysql/
-  cp -R /root/nems/nems-migrator/data/$(/usr/local/bin/nems-info nemsbranch)/mysql/NEMS-Sample /var/lib
+  cp -R /root/nems/nems-migrator/data/mysql/NEMS-Sample /var/lib
   mv /var/lib/NEMS-Sample /var/lib/mysql
   chown -R mysql:mysql /var/lib/mysql
   /bin/systemctl start mysql
