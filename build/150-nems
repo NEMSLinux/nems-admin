@@ -16,7 +16,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 cd /root/nems # this was created with nems-prep.sh
 
 if [[ ! -d nems-migrator ]]; then
-  git clone https://github.com/Cat5TV/nems-migrator
+  apt-get install -y nems-migrator
 fi
 
 if [[ ! -d nagios-api ]]; then
@@ -37,7 +37,8 @@ fi
 crontab /root/nems/nems-migrator/data/nems/crontab
 
 # Create symlinks, apply patches/fixes, etc.
-/usr/local/share/nems/nems-scripts/fixes.sh
+# Hold off on fixes for 1.6 build... seems to overwrite crontab
+#/usr/local/share/nems/nems-scripts/fixes.sh
 
 # Point Nagios to the NEMS Nagios Theme in nems-www and import the config
 if [[ -d /usr/local/nagios/share ]]; then
