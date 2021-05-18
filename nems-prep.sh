@@ -121,6 +121,11 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
     mkdir /var/log/nems
   fi
 
+  # Setup Vendor capabilities
+  if [[ ! -e /boot/vendor ]]; then
+    mkdir /boot/vendor
+  fi
+
   # Install any NEMS components that are required immediately
   apt-get install -y hw-detect
 

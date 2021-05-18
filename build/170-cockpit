@@ -23,3 +23,9 @@ fi
   if (( $platform != 21 )) && (( $platform != 22 )); then
     apt-get install -y cockpit-networkmanager
   fi
+
+  # Create missing usdisks directory as per Cockpit Issue # 12412
+  # https://github.com/cockpit-project/cockpit/issues/12412
+  if [[ ! -e /usr/lib/arm-linux-gnueabihf/udisks2/modules ]]; then
+    mkdir -p /usr/lib/arm-linux-gnueabihf/udisks2/modules
+  fi

@@ -5,16 +5,5 @@ if [[ ! -d /usr/local/share/nems ]]; then
   mkdir /usr/local/share/nems
 fi
 
-cd /usr/local/share/nems
-git clone https://github.com/Cat5TV/nems-scripts
-
 # Add base symlinks for NEMS commands
-ln -sf /usr/local/share/nems/nems-scripts/benchmark.sh /usr/local/bin/nems-benchmark
-ln -sf /usr/local/share/nems/nems-scripts/gen-cert.sh /usr/local/bin/nems-cert
-ln -sf /usr/local/share/nems/nems-scripts/info.sh /usr/local/bin/nems-info
-ln -sf /usr/local/share/nems/nems-scripts/init.sh /usr/local/bin/nems-init
-ln -sf /usr/local/share/nems/nems-scripts/mailtest.sh /usr/local/bin/nems-mailtest
 ln -sf /root/nems/nems-admin/nems-push.sh /usr/local/bin/nems-push
-ln -sf /usr/local/share/nems/nems-scripts/quickfix.sh /usr/local/bin/nems-quickfix
-ln -sf /usr/local/share/nems/nems-scripts/update.sh /usr/local/bin/nems-update
-ln -sf /usr/local/share/nems/nems-scripts/upgrade.sh /usr/local/bin/nems-upgrade

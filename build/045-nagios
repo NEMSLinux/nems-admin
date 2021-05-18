@@ -67,4 +67,13 @@ if [[ ! -e /var/log/nagios/nagios.log ]]; then
 fi
 chmod 664 /var/log/nagios/nagios.log
 
+# Fix logs for Nagios (in particular, this fixes Adagios history)
+if [[ ! -d /var/log/nagios/archives ]]; then
+  mkdir /var/log/nagios/archives
+  chown nagios:nagios /var/log/nagios/archives
+  chmod ug+x /var/log/nagios/archives
+  chmod g+ws /var/log/nagios/archives
+fi
+
+
 exit 0
