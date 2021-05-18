@@ -4,12 +4,24 @@
 # Requires NEMS 1.6+
 
 # Check if NEMS has been initialized, don't benchmark if not
-  nemsinit=`/usr/local/bin/nems-info init`
-  if [[ $nemsinit == 0 ]]; then
-    echo "NEMS hasn't been initialized. Can't continue since you need access to NEMS NConf."
-    exit 1
-  fi
+nemsinit=`/usr/local/bin/nems-info init`
+if [[ $nemsinit == 0 ]]; then
+  echo "NEMS hasn't been initialized. Can't continue since you need access to NEMS NConf."
+  exit 1
+fi
 
+# Clear out the ib_logfile data
+function clearlogs {
+  systemctl start mysql
+  mysql -t -u root -pnagiosadmin nconf -e "SET GLOBAL innodb_fast_shutdown = 0"
+  mysql -t -u root -pnagiosadmin nconf -e "shutdown"
+  systemctl stop mysql
+  rm -f /var/lib/mysql/ib_logfile*
+  if [[ -e /var/lib/mysql/queries.log ]]; then
+    rm /var/lib/mysql/queries.log
+  fi
+  # Don't restart MySQL until after the backup is created, else the large logs will be re-created and included in the backup
+}
 echo ""
 echo "You must have UI access in order to proceed."
 echo ""
@@ -41,12 +53,6 @@ cp -R /var/lib/mysql .
 
 # Edit the Sample database (nemsadmin user)
 
-systemctl start mysql
-
-# Clear out the ib_logfile data
-mysql -t -u nconf -pnagiosadmin nconf -e "SET GLOBAL innodb_fast_shutdown = 0"
-systemctl stop mysql
-rm -f /var/lib/mysql/ib_logfile*
 systemctl start mysql
 
 # Replace my user info with defaults
@@ -83,21 +89,17 @@ systemctl start nagios
 systemctl stop nagios
 
 
-systemctl stop mysql
-
 if [[ ! -d /root/nems/nems-migrator/data/mysql ]]; then
   mkdir -p /root/nems/nems-migrator/data/mysql
 fi
-cd /root/nems/nems-migrator/data/mysql
 
-if [[ -d NEMS-Sample ]]; then
-  rm -rf NEMS-Sample
+# clearlogs leaves mysql turned off, ready for backup
+clearlogs
+
+if [[ -e /root/nems/nems-migrator/data/mysql/NEMS-Sample.tar.gz ]]; then
+  rm -f /root/nems/nems-migrator/data/mysql/NEMS-Sample.tar.gz
 fi
-cp -R /var/lib/mysql .
-mv mysql NEMS-Sample
-if [[ -e NEMS-Sample/queries.log ]]; then
-  rm NEMS-Sample/queries.log
-fi
+tar cvfz /root/nems/nems-migrator/data/mysql/NEMS-Sample.tar.gz /var/lib/mysql/
 
 # Create the clean database (used for NEMS Migrator Restore)
 
@@ -164,18 +166,13 @@ mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=529
 # Service templates
 mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5301 OR id_item=5302 OR id_item=5348 OR id_item=5349"
 
-systemctl stop mysql
+# clearlogs leaves mysql turned off, ready for backup
+clearlogs
 
-cd /root/nems/nems-migrator/data/mysql
-
-if [[ -d NEMS-Clean ]]; then
-  rm -rf NEMS-Clean
+if [[ -e /root/nems/nems-migrator/data/mysql/NEMS-Clean.tar.gz ]]; then
+  rm -f /root/nems/nems-migrator/data/mysql/NEMS-Clean.tar.gz
 fi
-cp -R /var/lib/mysql .
-mv mysql NEMS-Clean
-if [[ -e NEMS-Clean/queries.log ]]; then
-  rm NEMS-Clean/queries.log
-fi
+tar cvfz /root/nems/nems-migrator/data/mysql/NEMS-Clean.tar.gz /var/lib/mysql/
 
 # Restore original MySQL database and resume operation as normal
 rm -rf /var/lib/mysql
@@ -185,4 +182,5 @@ chown -R mysql:mysql /var/lib/mysql
 systemctl start mysql
 systemctl start nagios
 
+echo
 echo "Done. Remember to migrate /root/nems/nems-migrator/data/mysql to debpack!"
