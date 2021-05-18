@@ -99,7 +99,7 @@ clearlogs
 if [[ -e /root/nems/nems-migrator/data/mysql/NEMS-Sample.tar.gz ]]; then
   rm -f /root/nems/nems-migrator/data/mysql/NEMS-Sample.tar.gz
 fi
-tar cvfz /root/nems/nems-migrator/data/mysql/NEMS-Sample.tar.gz /var/lib/mysql/
+tar cvfz /root/nems/nems-migrator/data/mysql/NEMS-Sample.tar.gz -C /var/lib/ mysql
 
 # Create the clean database (used for NEMS Migrator Restore)
 
@@ -172,7 +172,7 @@ clearlogs
 if [[ -e /root/nems/nems-migrator/data/mysql/NEMS-Clean.tar.gz ]]; then
   rm -f /root/nems/nems-migrator/data/mysql/NEMS-Clean.tar.gz
 fi
-tar cvfz /root/nems/nems-migrator/data/mysql/NEMS-Clean.tar.gz /var/lib/mysql/
+tar cvfz /root/nems/nems-migrator/data/mysql/NEMS-Clean.tar.gz -C /var/lib/ mysql
 
 # Restore original MySQL database and resume operation as normal
 rm -rf /var/lib/mysql
