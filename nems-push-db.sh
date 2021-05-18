@@ -3,6 +3,13 @@
 # Built for creating new sample hosts and services, and pushing to all other NEMS servers
 # Requires NEMS 1.6+
 
+# Check if NEMS has been initialized, don't benchmark if not
+  nemsinit=`/usr/local/bin/nems-info init`
+  if [[ $nemsinit == 0 ]]; then
+    echo "NEMS hasn't been initialized. Can't continue since you need access to NEMS NConf."
+    exit 1
+  fi
+
 echo ""
 echo "You must have UI access in order to proceed."
 echo ""
@@ -34,6 +41,12 @@ cp -R /var/lib/mysql .
 
 # Edit the Sample database (nemsadmin user)
 
+systemctl start mysql
+
+# Clear out the ib_logfile data
+mysql -t -u nconf -pnagiosadmin nconf -e "SET GLOBAL innodb_fast_shutdown = 0"
+systemctl stop mysql
+rm -f /var/lib/mysql/ib_logfile*
 systemctl start mysql
 
 # Replace my user info with defaults
