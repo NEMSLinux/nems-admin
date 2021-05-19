@@ -12,7 +12,7 @@ fi
 # Perform some additional TTY setup without manipulating the splash (010-tty)
 
 # Reset the rc.local file to an empty shell script
-echo "#!/bin/sh -e
+echo '#!/bin/sh -e
 
 # NEMS00000 Do not blank TTY
 setterm -blank 0
@@ -34,8 +34,11 @@ fi
 /usr/local/share/nems/nems-scripts/zram.sh > /dev/null 2>&1
 
 exit 0
-" > /etc/rc.local
+' > /etc/rc.local
+
 chmod +x /etc/rc.local
 
 /bin/systemctl stop rc-local.service
 /bin/systemctl start rc-local.service
+
+fi
