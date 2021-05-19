@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Set the version (see git releases)
-nrpeVer="3.2.1"
-#nrpeVer="4.0.0"
+#nrpeVer="3.2.1"
+nrpeVer="4.0.3"
 
 # Detect whether this is DEB- or RPM-based system
 if [[ -f /etc/debian_version ]]; then

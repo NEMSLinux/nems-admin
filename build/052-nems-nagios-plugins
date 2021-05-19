@@ -72,29 +72,14 @@ fi
   fi
 
   if [[ -e /var/log/nems/ ]]; then # NEMS
-    # Grab the Migrator plugins
-    cp -f /root/nems/nems-migrator/data/nagios/plugins/* /usr/lib/nagios/plugins/
-
     # Log patch of upgrade to speedtest
     if ! grep -q "PATCH-000004" /var/log/nems/patches.log; then
       echo "PATCH-000004" >> /var/log/nems/patches.log
     fi
   else # Not NEMS
-    tmpdir=`mktemp -d -p /usr/src/`
-    cd $tmpdir
-    $pm_install git
-    git clone https://github.com/cat5tv/nems-migrator
-    # Grab the Migrator plugins
-    cp -f $tmpdir/nems-migrator/data/nagios/plugins/* /usr/lib/nagios/plugins/
-    rm -rf $tmpdir
+    echo "This script is intended for NEMS Linux."
+    exit 1
   fi
-
-  # Add backward compatibility for notify-by-telegram (in case user has NEMS 1.3-1.4 config)
-    if [[ -f /usr/local/bin/telegram_nems.lua ]]; then
-      rm -f /usr/local/bin/telegram_nems.lua
-    fi
-    ln -s /usr/lib/nagios/plugins/notify-by-telegram.lua /usr/local/bin/telegram_nems.lua
-
 
   # Add IPMI sudoers access for nagios user
   if ! grep -q "# IPMI" /etc/sudoers; then
@@ -102,33 +87,4 @@ fi
     echo "nagios ALL=(root) NOPASSWD: /usr/sbin/ipmi-sensors, /usr/sbin/ipmi-sel" >> /etc/sudoers
   fi
 
-
-# WMI Checks for Microsoft Windows hosts
-
-# Thanks to Ryan Siegel for the original contribution in NEMS Linux 1.2.1.
-# Updated for NEMS Linux 1.5 since openvas stopped distributing the package.
-
-# Updated for NEMS Linux 1.6: Entirely deprecated the old (unsupported) wmic
-# application and moved to a Python-based alternative (drop-in replacement)
-# in the NEMS Linux repository.
-
-printf "Installing check_wmi_plus... "
-# Remove previous install of check_wmi_plus
-if [[ -e /etc/check_wmi_plus/ ]]; then
-  rm -rf /etc/check_wmi_plus/
-fi
-# Install check_wmi_plus
-cp -f /root/nems/nems-migrator/data/nagios/plugins/check_wmi_plus.pl /usr/lib/nagios/plugins/
-
-# Copy the configs
-cp -rf /root/nems/nems-migrator/data/check_wmi_plus /etc/
-
-# Create the ini dir (which is designated in the conf below)
-if [[ ! -e /etc/check_wmi_plus/check_wmi_plus.d ]]; then
-  mkdir /etc/check_wmi_plus/check_wmi_plus.d
-fi
-
-# Set ownership
-chown -R nagios:nagios /etc/check_wmi_plus/
-
-# End WMI Checks for Microsoft Windows hosts
+  $pm_install nems-plugins
