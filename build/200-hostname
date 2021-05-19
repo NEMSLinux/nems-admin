@@ -6,7 +6,7 @@ if [[ $hn != "nems" ]]; then
   /bin/sed -i -- 's/'"$hn"'/nems/g' /etc/hosts
   /bin/sed -i -- 's/'"$hn"'/nems/g' /etc/hostname
 
-  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  platform=$(/usr/local/bin/nems-info platform)
   if (( $platform == 22 )); then
     /bin/sed -i -- 's/ {{hostname}}/ nems/g' /etc/cloud/templates/hosts.debian.tmpl
     /bin/sed -i -- 's/127.0.0.1 localhost/127.0.0.1 localhost nems/g' /etc/cloud/templates/hosts.debian.tmpl

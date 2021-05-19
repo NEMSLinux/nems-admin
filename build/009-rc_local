@@ -1,7 +1,7 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
-platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+platform=$(/usr/local/bin/nems-info platform)
 
 if (( $platform != 21 )); then
 
@@ -22,7 +22,7 @@ if [[ ! -e /etc/systemd/system/rc-local.service ]]; then
 [Install]
  WantedBy=multi-user.target" > /etc/systemd/system/rc-local.service
 fi
-                       
+
 chmod +x /etc/rc.local
 
 /bin/systemctl enable rc-local

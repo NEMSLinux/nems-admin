@@ -50,7 +50,7 @@ fi
 /bin/systemctl daemon-reload
 
 if [[ ! -d /usr/local/nagios/var/rw ]]; then
-  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  platform=$(/usr/local/bin/nems-info platform)
   if (( $platform != 21 )); then
     echo "Something went wrong. The rw folder doesn't exist even after script completion."
     exit 1

@@ -33,7 +33,7 @@ else
      fi
   fi
 
-  platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+  platform=$(/usr/local/bin/nems-info platform)
 
   # Check if nemsadmin exists, and create it if not
   if [ ! -d /home/nemsadmin ]; then
@@ -225,7 +225,7 @@ nameserver 2001:4860:4860::8844
 
   # Sync the current running version as the current available version
   # Will be overwritten on first boot
-  /usr/local/share/nems/nems-scripts/info.sh nemsver > /var/www/html/inc/ver-available.txt
+  /usr/local/bin/nems-info nemsver > /var/www/html/inc/ver-available.txt
 
   # Replace installed certs with defaults
   rm -rf /var/www/certs/

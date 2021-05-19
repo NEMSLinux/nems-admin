@@ -3,7 +3,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # Set Network Manager WiFi MAC address to not change on boot
 
-platform=$(/usr/local/share/nems/nems-scripts/info.sh platform)
+platform=$(/usr/local/bin/nems-info platform)
 if (( $platform != 21 )); then
 
 if [[ -e /etc/NetworkManager/NetworkManager.conf ]]; then # Do this on any board that uses Network Manager
