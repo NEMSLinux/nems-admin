@@ -11,30 +11,31 @@ fi
 
 # Perform some additional TTY setup without manipulating the splash (010-tty)
 
-if [[ ! -f /etc/rc.local ]]; then
-  echo "#!/bin/sh -e
-  " > /etc/rc.local
-  chmod +x /etc/rc.local
+# Reset the rc.local file to an empty shell script
+echo "#!/bin/sh -e
+
+# NEMS00000 Do not blank TTY
+setterm -blank 0
+
+# NEMS00001 Use TTY7
+chvt 7
+
+# Distro Note
+printf "NEMS Linux 1.6 - "
+uname -a
+
+# Print the IP address
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
 fi
 
-if grep -q '"exit 0"' /etc/rc.local; then
-  sed -i~ '/"exit 0"/d' /etc/rc.local
-fi
+# Load Swap into ZRAM NEMS0000
+/usr/local/share/nems/nems-scripts/zram.sh > /dev/null 2>&1
 
-if ! grep -q "NEMS00000" /etc/rc.local; then
+exit 0
+" > /etc/rc.local
+chmod +x /etc/rc.local
 
-  addition="# NEMS00000 Do not blank TTY\nsetterm -blank 0\n\n"
-
-  if grep -q "exit" /etc/rc.local; then
-    # This file contains an exit command, so make sure our new command comes before it
-    /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
-  else
-    # No exit command within the file, so just add it
-    echo "PLACEHERE" >> /etc/rc.local
-    /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
-  fi
-  /bin/systemctl stop rc-local.service
-  /bin/systemctl start rc-local.service
-fi
-
-fi
+/bin/systemctl stop rc-local.service
+/bin/systemctl start rc-local.service
