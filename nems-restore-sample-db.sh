@@ -4,12 +4,12 @@ db=Sample
 
 # ----------------------
 
-systemctl stop mysql
-rm -rf /var/lib/mysql
-cp -R /root/nems/nems-migrator/data/mysql/NEMS-$db /var/lib/
-chown -R mysql:mysql /var/lib/NEMS-$db
-mv /var/lib/NEMS-$db /var/lib/mysql
-systemctl start mysql
+/bin/systemctl stop mysql
+rm -rf /var/lib/mysql/
+cd /var/lib/
+tar xfz /root/nems/nems-migrator/data/mysql/NEMS-${db}.tar.gz
+chown -R mysql:mysql /var/lib/mysql
+/bin/systemctl start mysql
 
 systemctl stop nagios
 rm -rf /etc/nems/conf/Default_collector
@@ -20,4 +20,3 @@ cp -R /root/nems/nems-migrator/data/nagios/conf/* /etc/nems/conf/
 chown -R www-data:www-data /etc/nems/conf/Default_collector
 chown -R www-data:www-data /etc/nems/conf/global
 systemctl start nagios
-
