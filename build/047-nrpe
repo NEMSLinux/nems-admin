@@ -88,7 +88,11 @@ make install-config
 
 /bin/systemctl stop nrpe
 
-wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/NEMSLinux/debpack/main/all/nems-migrator/root/nems/nems-migrator/data/nagios/misc/nrpe.cfg
+if [[ $isnems == 1 ]]; then
+  cp -f /root/nems/nems-migrator/data/nagios/misc/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
+else
+  wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/NEMSLinux/debpack/main/all/nems-migrator/root/nems/nems-migrator/data/nagios/misc/nrpe.cfg
+fi
 
 systemctl daemon-reload
 
