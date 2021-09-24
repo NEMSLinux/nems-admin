@@ -9,18 +9,18 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # Since this is run as a patch, I want to be able to upgrade the software WITHOUT damaging the user's config:
 if [[ ! -e /usr/local/nagvis ]]; then
   freshinstall=1
-  echo "This is a fresh install of NagVis..."
+  echo "Installing NagVis..."
 else
   freshinstall=0
-  echo "This is an upgrade of NagVis..."
+  echo "Upgrading NagVis..."
 fi
 
 # Go git 'er
 tmpdir=`mktemp -d -p /usr/src/`
-wget -O $tmpdir/nagvis.tar.gz https://github.com/NagVis/nagvis/archive/nagvis-1.9.20.tar.gz
+wget -O $tmpdir/nv.tar.gz https://github.com/NagVis/nagvis/archive/refs/tags/nagvis-1.9.27.tar.gz
 cd $tmpdir
-tar zxvf nagvis.tar.gz
-cd nagvis-nagvis-1.9.20
+tar zxvf nv.tar.gz
+cd nagvis*
 chmod +x install.sh
 
 # Let's go! I've pre-set the settings, so just hit enter a bunch of times
