@@ -1,5 +1,9 @@
 #!/bin/bash
 
+  echo "This patch is deprecated."
+  echo "PATCH-000004" >> /var/log/nems/patches.log
+  exit
+
     if ! grep -q "PATCH-000004" /var/log/nems/patches.log; then
       cp -f /root/nems/nems-migrator/data/1.5/nagios/plugins/check_speedtest-cli.sh /usr/lib/nagios/plugins/
       echo "PATCH-000004" >> /var/log/nems/patches.log
