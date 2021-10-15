@@ -17,7 +17,14 @@ if (( $platform != 21 )); then
   fi
   mkdir -p /usr/share/cockpit/branding/debian
   if [[ -e /root/nems/nems-migrator/ ]]; then
-    cp -f /root/nems/nems-migrator/data/cockpit/branding/* /usr/share/cockpit/branding/debian/
+    if [[ -d /root/nems/nems-migrator/data/cockpit/branding/ ]]; then
+      # 1.6+
+      cp -f /root/nems/nems-migrator/data/cockpit/branding/* /usr/share/cockpit/branding/debian/
+    else
+      # 1.5
+      cp -f /root/nems/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
+    fi
+
   else
     # nems-migrator doesn't exist. Assuming this is a NEMS Tools Extender OS system
     # grab just the cockpit branding files from nems-migrator
