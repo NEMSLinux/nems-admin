@@ -1,7 +1,7 @@
 # nems-admin
-Admin scripts for NEMS
+Admin scripts for NEMS Linux.
 
-These are used by Robbie to assist with development of NEMS. None of these scripts are designed for end-users (and in fact can cause a lot of damage - so please understand what you're doing before running anything in here).
+These are used by the NEMS Linux developers to assist with development of NEMS. These scripts are not designed for end-users (and in fact can cause a lot of damage - so please understand what you're doing before running anything in here).
 
 If you build a custom build of NEMS Linux, please contact Robbie so he can help customize the system (otherwise it will show up as an unknown device and will not present accurate information).
 
