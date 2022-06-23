@@ -1,6 +1,11 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+# Reset old install
+if [[ -e /opt/adagios/ ]]; then
+  rm -rf /opt/adagios
+fi
+
 # Add var folder if didn't get created in 050
 if [[ ! -e /var/lib/nagios/ ]]; then
   mkdir /var/lib/nagios/
@@ -112,8 +117,8 @@ fi
 
 
 # Import templates
-cp -f /root/nems/nems-migrator/data/adagios/templates/403.html /opt/adagios/adagios/templates/
-cp -f /root/nems/nems-migrator/data/adagios/templates/base.html /opt/adagios/adagios/templates/
+#cp -f /root/nems/nems-migrator/data/adagios/templates/403.html /opt/adagios/adagios/templates/
+#cp -f /root/nems/nems-migrator/data/adagios/templates/base.html /opt/adagios/adagios/templates/
 
 ## Restart services
 systemctl restart nagios adagios apache2
