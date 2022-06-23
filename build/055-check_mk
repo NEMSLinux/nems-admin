@@ -65,8 +65,8 @@ pip install wheel
 # tar xzf mk.tar.gz
 # cd checkmk-${ver}/omd
 
-ver="1.5.0p24"
-wget -O /tmp/mk.tar.gz https://download.checkmk.com/checkmk/1.5.0p24/mk-livestatus-${ver}.tar.gz
+ver="1.5.0p13"
+wget -O /tmp/mk.tar.gz https://download.checkmk.com/checkmk/${ver}/mk-livestatus-${ver}.tar.gz
 cd /tmp
 if [[ -e mk-livestatus-${ver} ]]; then
   rm -rf mk-livestatus-${ver}
