@@ -3,7 +3,8 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 platform=$(/usr/local/bin/nems-info platform)
 
-if (( $platform < '10' )); then
+# PiVoyager is specifically for the Raspberry Pi, so only install on those boards
+if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( $platform <= 199 )); then
   printf "Installing support for PiVoyager hardware... "
 
   tmpdir=`mktemp -d -p /usr/src/`

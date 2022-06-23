@@ -3,12 +3,15 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 platform=$(/usr/local/bin/nems-info platform)
 
-if (( $platform >= 0 )) && (( $platform <= 9 )); then
+if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( $platform <= 199 )); then
 
   # Hide the Raspberry Pi logo from the boot screen
   if ! grep -q "logo.nologo" /boot/cmdline.txt; then
     sed -i '1!b;s/$/ logo.nologo/g' /boot/cmdline.txt
   fi
+
+  # Contains vcgencmd
+  apt-get -y install libraspberrypi-bin
 
 fi
 
