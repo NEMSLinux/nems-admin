@@ -19,7 +19,7 @@ pythondir=2.7
 # Install dependencies
 
 # When Python3 support is ready, uncomment:
-apt-get install -y libapache2-mod-wsgi
+apt-get install -y libapache2-mod-wsgi-py3
 apt-get install -y python-simplejson
 apt-get install -y libgmp-dev
 apt-get install -y python-dev
