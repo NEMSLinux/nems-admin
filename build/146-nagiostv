@@ -18,7 +18,7 @@ if [[ -e /var/www/nagiostv ]]; then
 fi
 
 # Obtain NagiosTV
-nagiostv_ver="0.7.3"
+nagiostv_ver="0.8.5"
 wget https://github.com/chriscareycode/nagiostv-react/releases/download/v${nagiostv_ver}/nagiostv-${nagiostv_ver}.tar.gz
 tar xvfz nagiostv-${nagiostv_ver}.tar.gz
 mv nagiostv /var/www/
