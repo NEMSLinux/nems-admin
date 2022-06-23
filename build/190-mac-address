@@ -54,7 +54,7 @@ quit
 done
 
   # Restart NetworkManger to re-establish all connections
-  /bin/systemctl restart network-manager
+  /bin/systemctl restart NetworkManager
 
 fi
 
