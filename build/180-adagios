@@ -7,30 +7,23 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   chown -R nagios:nagios /var/lib/nagios/
 fi
 
-pipcommand="python -m pip"
-#pipcommand=pip3
+#pipcommand="python -m pip"
+pipcommand=pip3
 
-pythoncommand=python
-#pythoncommand=python3
+#pythoncommand=python
+pythoncommand=python3
 
-# the number in /usr/local/lib/ptyhon${pythondir}
-pythondir=2.7
+# the number in /usr/local/lib/python${pythondir}
+pythondir=3.9
 
 # Install dependencies
 
-# When Python3 support is ready, uncomment:
 apt-get install -y libapache2-mod-wsgi-py3
-apt-get install -y python-simplejson
-apt-get install -y libgmp-dev
-apt-get install -y python-dev
-apt-get install -y python-paramiko
-
-# When Python3 support is ready, uncomment:
-#apt-get install -y libapache2-mod-wsgi-py3
-#apt-get install -y python3-simplejson
-#apt-get install -y libgmp3-dev
-#apt-get install -y python3-dev
-#apt-get install -y python3-paramiko
+apt-get install -y python3-simplejson
+apt-get install -y libgmp3-dev
+apt-get install -y python3-dev
+apt-get install -y python3-paramiko
+apt-get install -y python3-venv
 
 # Prepare sudo permissions
 if ! grep -q "# Adagios" /etc/sudoers; then
@@ -43,9 +36,9 @@ Defaults:%nagios !requiretty
 ' | sudo EDITOR='tee -a' visudo
 fi
 
-if ! grep -q "# Adagios 1.6" /etc/sudoers; then
+if ! grep -q "# Adagios" /etc/sudoers; then
 echo '
-# Adagios 1.6
+# Adagios
 Defaults:www-data    !requiretty
 www-data ALL = (root) NOPASSWD: /usr/sbin/service nagios *
 www-data ALL = (root) NOPASSWD: /usr/local/nagios/bin/nagios -v *
@@ -59,8 +52,8 @@ $pipcommand install --upgrade pip setuptools
 $pipcommand install --ignore-installed six
 
 # Install Django
-$pipcommand install django==1.8
-#$pipcommand install django
+#$pipcommand install django==1.8
+$pipcommand install django
 $pipcommand install django-clear-cache
 
 # Install Pynag
@@ -72,85 +65,83 @@ $pythoncommand setup.py build
 $pythoncommand setup.py install
 
 # Install Adagios
-cd /tmp/
-# Get the current release
-wget -O adagios.tar.gz https://github.com/opinkerfi/adagios/archive/adagios-1.6.6-1.tar.gz
-tar xzf adagios.tar.gz
-cd adagios-adagios-1.6.6-1
+git clone -b master --depth 1 https://github.com/opinkerfi/adagios.git /opt/adagios
 
-# Try PR 662 for Python 3.7 support
-#git clone -b adagios-2.0.1-1 https://github.com/opinkerfi/adagios
-#cd adagios
-#git fetch origin pull/662/head:pr_662
-#git checkout pr_662
+groupadd --system adagios
+adduser --system --group adagios
+usermod -aG nagios adagios
+chown --recursive adagios:adagios /opt/adagios/
 
+## Configure Adagios
 if [[ -d /etc/adagios ]]; then
   rm -rf /etc/adagios
 fi
-if [[ -d /usr/local/lib/python${pythondir}/dist-packages/adagios ]]; then
-  rm -rf /usr/local/lib/python${pythondir}/dist-packages/adagios
-fi
-cp -R adagios/etc/adagios /etc/
+mkdir -p /etc/adagios/conf.d /var/lib/adagios /etc/adagios
+# cp /opt/adagios/adagios/etc/adagios/adagios.conf /etc/adagios/adagios.conf
 cp -f /root/nems/nems-migrator/data/adagios/adagios.conf /etc/adagios/
-echo "Installing to /usr/local/lib/python${pythondir}/dist-packages/adagios"
-$pythoncommand /tmp/adagios-adagios-1.6.6-1/setup.py install
-echo "Continuing."
+sed -i 's|# ALLOWED_HOSTS|ALLOWED_HOSTS|g' /etc/adagios/adagios.conf
+cp /opt/adagios/adagios/etc/adagios/conf.d/force_script_name.conf /etc/adagios/conf.d/
+cp /opt/adagios/adagios/etc/adagios/conf.d/okconfig.conf /etc/adagios/conf.d/
+cp /opt/adagios/adagios/etc/sudoers.d/adagios /etc/sudoers.d/
+chown --recursive adagios:adagios /etc/adagios /var/lib/adagios
 
-# Remove old symlink
+# The following script will create a new Python virtual environment where Adagios is located.
+/opt/adagios/upgrade.sh
+
+# Activate Python virtualenv
+source /opt/adagios/venv/bin/activate
+pynag config --append cfg_dir=/etc/adagios
+
+## Install Adagios as systemd service
+cp /opt/adagios/contrib/gunicorn.py /opt/adagios/gunicorn.py
+cp /opt/adagios/contrib/*.service /etc/systemd/system/
+systemctl daemon-reload
+systemctl start adagios
+systemctl enable adagios
+
+## Install into apache2
+cp /opt/adagios/contrib/apache_gunicorn_adagios.conf /etc/apache2/conf-available/
+a2enconf apache_gunicorn_adagios
+
+#cp -f /root/nems/nems-migrator/data/adagios/adagios.conf /etc/adagios/
+
+# Remove old symlink if it exists
 if [[ -L /var/www/adagios ]]; then
   rm -f /var/www/adagios
 fi
 
-ln -s /usr/local/lib/python${pythondir}/dist-packages/adagios /var/www/adagios
-chown -R nagios:nagios /etc/adagios
-rm -fr /var/www/adagios/etc/
-mkdir -p /var/lib/adagios/userdata
-chown -R www-data:www-data /var/lib/adagios
-cp -f /root/nems/nems-migrator/data/adagios/settings.py /var/www/adagios/
-chown -R www-data:www-data /var/www/adagios/
 
 # Import templates
-cp -f /root/nems/nems-migrator/data/adagios/templates/403.html /var/www/adagios/templates/
-cp -f /root/nems/nems-migrator/data/adagios/templates/base.html /var/www/adagios/templates/
+cp -f /root/nems/nems-migrator/data/adagios/templates/403.html /opt/adagios/adagios/templates/
+cp -f /root/nems/nems-migrator/data/adagios/templates/base.html /opt/adagios/adagios/templates/
 
-# Create the working folder for the WSGI daemon
-if [[ ! -d /var/www/adagios-working ]]; then
-  mkdir /var/www/adagios-working
-  chown nagios:nagios /var/www/adagios-working
-fi
+## Restart services
+systemctl restart nagios adagios apache2
 
-cat << EOF > /etc/apache2/conf-available/adagios.conf
-WSGISocketPrefix /var/run/apache2/wsgi
-WSGIDaemonProcess adagios user=nagios home=/var/www/adagios-working group=nagios processes=1 threads=25 python-path=/var/www/adagios
-WSGIProcessGroup adagios
-WSGIScriptAlias /adagios /var/www/adagios/apache/adagios.wsgi
+# Echo so we don't exit when systemctl fails to restart apache2
+echo "Done."
 
-Alias /adagios/media /var/www/adagios/media
-
-<Location /adagios>
-   AuthName "Adagios Access"
-   AuthType Basic
-   AuthUserFile /var/www/htpasswd
-   Require valid-user
-</Location>
-EOF
-
-a2dismod python
-a2enmod wsgi
-a2enconf adagios
-
-# Install okconfig
-cd /opt
-git clone -b "okconfig-python2/3" https://github.com/opinkerfi/okconfig.git
-echo 'export PYTHONPATH=$PYTHONPATH:/opt/okconfig' > /etc/profile.d/okconfig.sh
+## Install OKconfig from Github
+source /opt/adagios/venv/bin/activate
+sudo git clone -b master --depth 1 https://github.com/opinkerfi/okconfig.git /opt/okconfig
+cd /opt/okconfig
+pip install -r requirements.txt
+python setup.py install
 cp -f /root/nems/nems-migrator/data/adagios/okconfig.conf /etc/okconfig.conf
-source /etc/profile
-ln -s /opt/okconfig/usr/share/okconfig /usr/share/
-ln -s /opt/okconfig/usr/bin/okconfig /usr/local/bin/
+#echo 'export PYTHONPATH=$PYTHONPATH:/opt/okconfig' > /etc/profile.d/okconfig.sh
 okconfig init
 okconfig verify
 
-/bin/systemctl restart apache2
+exit
 
-# Don't exit when systemctl fails to restart apache2
-echo "Done."
+
+
+a2dismod python
+a2dismod python3
+a2enmod wsgi
+a2enconf adagios
+a2enmod headers
+a2enmod proxy_http
+
+
+
