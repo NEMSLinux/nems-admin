@@ -62,12 +62,7 @@ $pipcommand install django
 $pipcommand install django-clear-cache
 
 # Install Pynag
-cd /tmp
-#git clone -b python3 git://github.com/pynag/pynag.git
-git clone git://github.com/pynag/pynag.git
-cd pynag
-$pythoncommand setup.py build
-$pythoncommand setup.py install
+$pipcommand install pynag
 
 # Install Adagios
 git clone -b master --depth 1 https://github.com/opinkerfi/adagios.git /opt/adagios
