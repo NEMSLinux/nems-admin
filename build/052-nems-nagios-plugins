@@ -51,7 +51,7 @@ fi
     $pm_install freeipmi
 
     # check_esxi_hardware
-    $pm_install python-pywbem
+    $pm_install sblim-wbemcli
 
     # Commands required for custom_check_mem
     $pm_install gawk

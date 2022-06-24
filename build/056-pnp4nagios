@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "Setting up pnp4nagios"
+
+wget -O /tmp/pnp4nagios.tar.gz https://github.com/lingej/pnp4nagios/archive/0.6.26.tar.gz
+cd /tmp
+tar xzf pnp4nagios.tar.gz
+cd pnp4nagios-0.6.26/
+./configure --with-httpd-conf=/etc/apache2/sites-enabled
+make all
+make fullinstall
+make install-webconf
+make install-config
+make install-init
+systemctl daemon-reload
+systemctl restart apache2
+
+# so error code on failure doesn't fail run-parts
+echo "Done."

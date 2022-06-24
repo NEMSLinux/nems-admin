@@ -59,7 +59,8 @@ ncdu
 rrdtool
 librrds-perl
 php-rrd
-pnp4nagios
+php-gd
+php-xml
 
 # For MOTD
 tcl
@@ -76,7 +77,7 @@ libnss-mdns
 
 # Apache2 dependencies
 apache2
-libapache2-modsecurity
+libapache2-mod-security2
 modsecurity-crs
 php-curl
 #libapache2-mod-python
