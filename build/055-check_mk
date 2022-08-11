@@ -35,12 +35,13 @@ apt-get install $repo -y libkrb5-dev
 apt-get install $repo -y librust-pangocairo-dev
 apt-get install $repo -y libperl-dev
 apt-get install $repo -y apache2-dev
-apt-get install $repo -y pipenv
 apt-get install $repo -y virtualenv
 apt-get install $repo -y freetds-dev # pymssql
 apt-get install $repo -y python-setuptools
 apt-get install $repo -y libsasl2-dev
 apt-get install $repo -y libxslt1-dev
+
+pip install pipenv
 
 # Just a bit of compatibility for NEMS Linux 1.6 which still uses
 # the old (deprecated) Python 2.7 to maintain compatibility with Adagios
