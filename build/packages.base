@@ -58,6 +58,7 @@ less
 nems-www
 wmic
 nems-migrator
+nems-migrator-data
 nems-scripts
 nems-tv
 nems-tools
