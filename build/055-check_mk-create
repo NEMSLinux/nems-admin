@@ -13,7 +13,7 @@ wget -qO - https://raw.githubusercontent.com/tvdsluijs/sh-python-installer/main/
 
 # Clone checkmk
 cd /tmp
-wget -O checkmk.tar.gz https://github.com/tribe29/checkmk/archive/refs/tags/v${ver}.tar.gz # Or whatever latest release is
+wget -O checkmk.tar.gz https://github.com/tribe29/checkmk/archive/refs/tags/v${ver}.tar.gz
 tar -xvzf checkmk.tar.gz
 cd checkmk-*
 
@@ -24,13 +24,22 @@ make dist
 # Let's setup a new tarball for distribution
 mkdir checkmk-livestatus
 cd checkmk-livestatus
-tar xzf ../omd/packages/mk-livestatus/omd/packages/mk-livestatus/mk-livestatus-${ver}.tar.gz
-t
+tar xzf ../omd/packages/mk-livestatus/mk-livestatus-${ver}.tar.gz
+rm -rf ../omd/packages/mk-livestatus
+cd mk-livestatus-*
+dest=$(pwd)
+cd ..
+rsync -avr ${dest}/* .
+rm -rf ${dest}
+
 mkdir omd
 cp -R ../omd/packages omd/
 cp -R ../buildscripts .
 
 cd ..
-tar -zcvf /var/www/checkmk-livestatus-${ver}.tar.gz checkmk-livestatus
+if [[ -e /var/www/html/checkmk-livestatus-${ver}.tar.gz ]]; then
+  rm -f /var/www/html/checkmk-livestatus-${ver}.tar.gz
+fi
+tar -zcvf /var/www/html/checkmk-livestatus-${ver}.tar.gz checkmk-livestatus
 
 echo File saved to checkmk-livestatus-${ver}.tar.gz
