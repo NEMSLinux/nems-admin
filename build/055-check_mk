@@ -1,80 +1,47 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
-# Once GCC 7 is available upstream, we can upgrade to 1.5, which requires C++17 to compile.
-
 # Get the platform before removing php (as it requires PHP)
 platform=$(/usr/local/bin/nems-info platform)
-
-# Use Raspbian repo for Pi, Sury's Debian Repo for others.
-if [[ $platform < 10 ]]; then
-  repo="-t buster"
-#  repo="-t bullseye"
-else
-  repo=""
-fi
-
 
 # Install and configure check-mk-livestatus
 
 # Need to do an update because a lot of time has passed by now
 apt-get update
-apt-get install $repo -y php-net-socket
-apt-get install $repo -y sqlite3
-apt-get install $repo -y graphviz
-apt-get install $repo -y rrdtool
-apt-get install $repo -y librrd-dev
-apt-get install $repo -y libboost-all-dev
-apt-get install $repo -y libncurses5-dev
-apt-get install $repo -y libreadline-dev
-apt-get install $repo -y libxml2-dev
-apt-get install $repo -y libssl-dev
-apt-get install $repo -y clang
-apt-get install $repo -y chrpath
-apt-get install $repo -y libkrb5-dev
-apt-get install $repo -y librust-pangocairo-dev
-apt-get install $repo -y libperl-dev
-apt-get install $repo -y apache2-dev
-apt-get install $repo -y virtualenv
-apt-get install $repo -y freetds-dev # pymssql
-apt-get install $repo -y python-setuptools
-apt-get install $repo -y libsasl2-dev
-apt-get install $repo -y libxslt1-dev
-
-pip install pipenv
-
-# Just a bit of compatibility for NEMS Linux 1.6 which still uses
-# the old (deprecated) Python 2.7 to maintain compatibility with Adagios
-# Will be removed in NEMS Linux 1.7
-if ! grep -q "#define DBVERSION_80 DBVERSION_71" /usr/include/sybdb.h; then
- echo "#define DBVERSION_80 DBVERSION_71" >> /usr/include/sybdb.h
-fi
+apt-get install -y php-net-socket
+apt-get install -y sqlite3
+apt-get install -y graphviz
+apt-get install -y rrdtool
+apt-get install -y librrd-dev
+apt-get install -y libboost-all-dev
+apt-get install -y libncurses5-dev
+apt-get install -y libreadline-dev
+apt-get install -y libxml2-dev
+apt-get install -y libssl-dev
+apt-get install -y clang
+apt-get install -y chrpath
+apt-get install -y libkrb5-dev
+apt-get install -y librust-pangocairo-dev
+apt-get install -y libperl-dev
+apt-get install -y apache2-dev
+apt-get install -y virtualenv
+apt-get install -y freetds-dev # pymssql
+apt-get install -y python-setuptools
+apt-get install -y libsasl2-dev
+apt-get install -y libxslt1-dev
 
 pip install wheel
+pip install pipenv
 
+tmpdir=`mktemp -d -p /tmp/`
 
-# This is the full Check_MK OSE bundle
-
-#ver='1.6.0p24' # Legacy support for Python 2.7
-# ver='2.0.0p3' # For NEMS 1.7 (Python 3.8)
-# wget -O /tmp/mk.tar.gz --no-check-certificate https://checkmk.com/support/${ver}/check-mk-raw-${ver}.cre.tar.gz
-# wget -O /tmp/mk.tar.gz https://github.com/tribe29/checkmk/archive/refs/tags/v${ver}.tar.gz
-# cd /tmp
-# if [[ -e checkmk-${ver} ]]; then
-#  rm -rf checkmk-${ver}
-# fi
-# tar xzf mk.tar.gz
-# cd checkmk-${ver}/omd
-
-ver="1.5.0p13"
-wget -O /tmp/mk.tar.gz https://download.checkmk.com/checkmk/${ver}/mk-livestatus-${ver}.tar.gz
-cd /tmp
-if [[ -e mk-livestatus-${ver} ]]; then
-  rm -rf mk-livestatus-${ver}
-fi
+# Packages are located on repos server
+# To create this tarball, see 055-check_mk-create
+ver="2.1.0p9"
+wget -O ${tmpdir}/mk.tar.gz https://packages.nemslinux.com/livestatus/checkmk-livestatus-{$ver}.tar.gz
+cd $tmpdir
 tar xzf mk.tar.gz
-cd mk-livestatus-${ver}
-
+cd checkmk-livestatus
 
 # Install livestatus
 # Need to determine the lib directory for boost to compile correctly
@@ -113,6 +80,8 @@ cd ..
 touch /var/log/nagios/livestatus.log
 chown nagios:nagios /var/log/nagios/livestatus.log
 
+sleep 5
+
 /bin/systemctl start nagios
 
 printf "Waiting for socket to open..."
@@ -128,7 +97,5 @@ chmod 666 /usr/local/nagios/var/rw/live.sock
 
 # /usr/local/nagios/var/rw
 
-if [[ -e /tmp/checkmk-${ver} ]]; then
- rm -rf /tmp/checkmk-${ver}
-fi
-
+# Clean up
+rm -rf $tmpdir

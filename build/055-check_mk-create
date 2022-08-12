@@ -1,0 +1,28 @@
+#!/bin/bash
+# This script is just a reminder for Robbie how to create the tar.gz file for livestatus
+# The file is hosted on repos server at packages.nemslinux.com
+# Since the developer stopped releasing livestatus separately of their OMD project, I'll create my own livestatus tarball for NEMS Linux
+# This is NOT to be run as part of the NEMS Linux build process. This is to create the tarball for distribution, which is called by 055-check_mk
+# Created August 12, 2022
+
+# Clone checkmk
+cd /tmp
+wget -O checkmk.tar.gz https://github.com/tribe29/checkmk/archive/refs/tags/v2.1.0p9.tar.gz # Or whatever latest release is
+tar -xvzf checkmk.tar.gz
+cd checkmk-*
+
+# Build livestatus tar.gz file
+make dist
+
+# While you may get an error, you should now see the needed tar.gz files in omd/packages/mk-livestatus
+# Let's setup a new tarball for distribution
+mkdir checkmk-livestatus
+cd checkmk-livestatus
+tar xzf ../omd/packages/mk-livestatus/omd/packages/mk-livestatus/mk-livestatus-2.1.0p9.tar.gz
+t
+mkdir omd
+cp -R ../omd/packages omd/
+cp -R ../buildscripts .
+
+cd ..
+tar -zcvf /tmp/checkmk-livestatus.tar.gz checkmk-livestatus
