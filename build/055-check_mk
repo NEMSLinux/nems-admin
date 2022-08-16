@@ -35,13 +35,11 @@ pip install pipenv
 
 tmpdir=`mktemp -d -p /tmp/`
 
-# Packages are located on repos server
-# To create this tarball, see 055-check_mk-create
-ver="2.1.0p9"
-wget -O ${tmpdir}/mk.tar.gz https://packages.nemslinux.com/livestatus/checkmk-livestatus-${ver}.tar.gz
+# Package is located on repos server
+ver="1.5.0p23"
+wget -O ${tmpdir}/mk.tar.gz https://packages.nemslinux.com/livestatus/mk-livestatus-${ver}.tar.gz
 cd $tmpdir
 tar xzf mk.tar.gz
-cd checkmk-livestatus
 
 # Install livestatus
 # Need to determine the lib directory for boost to compile correctly
