@@ -8,7 +8,7 @@ if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( 
 
   echo "Installing Argon ONE... "
 
-  pkglist=(raspi-gpio python-rpi.gpio python3-rpi.gpio python-smbus python3-smbus i2c-tools)
+  pkglist=(raspi-gpio python-rpi.gpio python3-rpi.gpio python3-smbus i2c-tools)
   for curpkg in ${pkglist[@]}; do
     apt-get install -y $curpkg
   done
