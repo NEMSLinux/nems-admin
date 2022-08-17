@@ -79,9 +79,10 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   mkdir nems
   cd nems
 
-  git -c http.sslVerify=false clone https://github.com/Cat5TV/nems-admin
-
+  git -c http.sslVerify=false clone https://github.com/NEMSLinux/nems-admin
+  
   cd /root/nems/nems-admin
+  git config pull.rebase false
 
   # Configure default locale
   apt install -y locales
