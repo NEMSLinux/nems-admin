@@ -61,6 +61,11 @@ if [[ ! -d /usr/local/nagios/var/rw ]]; then
   fi
 fi
 
+if [[ ! -d /var/log/nagios ]]; then
+  mkdir /var/log/nagios
+  chown nagios:nagios /var/log/nagios
+fi
+
 # Make it so nagios group users (such as www-data) can append to the log
 if [[ ! -e /var/log/nagios/nagios.log ]]; then
   touch /var/log/nagios/nagios.log
