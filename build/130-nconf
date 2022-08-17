@@ -8,6 +8,9 @@ apt update
 apt install -y libdbi-perl libdbd-mysql-perl
 /bin/systemctl restart apache2
 git clone --branch 1.6 https://github.com/Cat5TV/nconf && chown -R www-data:www-data nconf
+cd nconf
+git config pull.rebase false
+
 # Import nConf Configuration
   cp -f /root/nems/nems-migrator/data/nconf/deployment.ini /var/www/nconf/config/
   cp -f /root/nems/nems-migrator/data/nconf/authentication.php /var/www/nconf/config/
