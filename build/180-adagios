@@ -53,7 +53,7 @@ fi
 git clone -b master --depth 1 https://github.com/opinkerfi/adagios.git /opt/adagios
 
 groupadd --system adagios
-adduser --system --group adagios
+adduser --no-create-home --system --group adagios
 usermod -aG nagios adagios
 chown --recursive adagios:adagios /opt/adagios/
 
