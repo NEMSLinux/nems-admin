@@ -1,2 +1,6 @@
 #!/bin/bash
-
+if [[ ! -e /var/www/html/userfiles ]]; then
+  mkdir -p /var/www/html/userfiles
+fi
+echo $0 > /var/www/html/userfiles/nems-build.cur
+apt-get install -y nems-www

@@ -2,8 +2,7 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 if [[ ! -d /usr/local/share/nems ]]; then
-  mkdir /usr/local/share/nems
+  mkdir -p /usr/local/share/nems
 fi
 
-# Add base symlinks for NEMS commands
-ln -sf /root/nems/nems-admin/nems-push.sh /usr/local/bin/nems-push
+apt-get install -y nems-scripts

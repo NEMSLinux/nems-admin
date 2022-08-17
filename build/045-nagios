@@ -23,9 +23,9 @@ fi
 # Download from:
 # https://www.nagios.org/downloads/nagios-core/thanks/?product_download=nagioscore-source
   cd /tmp
-  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.6.tar.gz
-  tar -zxvf nagios-4.4.6.tar.gz
-  cd /tmp/nagios-4.4.6/
+  wget https://packages.nemslinux.com/nagios/nagios-4.4.7.tar.gz
+  tar -zxvf nagios-4.4.7.tar.gz
+  cd /tmp/nagios-4.4.7/
   ./configure --with-nagios-group=nagios --with-command-group=nagcmd --with-httpd_conf=/etc/apache2/conf-available/
   make all
   make install
