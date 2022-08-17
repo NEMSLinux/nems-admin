@@ -8,7 +8,7 @@ if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( 
   printf "Installing support for PiWatcher hardware... "
 
   # enable I2C
-  apt install -y python-smbus
+  apt install -y python3-smbus
   apt install -y i2c-tools
   if ! grep -q "i2c-dev" /etc/modules; then
     echo 'i2c-dev' >> /etc/modules
