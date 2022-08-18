@@ -116,3 +116,6 @@ glances
 
 # Required by rpimonitor
 aptitude
+
+# Backup system for remote backup calls
+rdiff-backup
