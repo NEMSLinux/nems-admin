@@ -21,14 +21,6 @@ openssl
 perl
 perl-base
 php-net-socket
-
-# Old python for Adagios compatibility...
-# Waiting for Python 3.7+ support as per https://github.com/opinkerfi/adagios/pull/662
-python
-python-openssl
-python-dev
-python-pip
-
 python3
 python3-openssl
 python3-dev
