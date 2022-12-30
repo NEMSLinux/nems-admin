@@ -134,7 +134,7 @@ Distrib. collectors
 # As they will be the only remaining items after running this script
 
 # Delete NEMS Host, plus the services Internet Speed Test, NEMS SBC Temperature and Root Partition
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5460 OR id_item=5447 OR id_item=5350 OR id_item=5340"
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5460 OR id_item=5447 OR id_item=5350 OR id_item=5340 OR id_item=5508 OR id_item=5472 OR id_item=5471"
 
 # Delete contact
 mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5443"
@@ -143,13 +143,13 @@ mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=544
 mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5305 OR id_item=5307 OR id_item=5306"
 
 # Delete all Hostgroups
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5449 OR id_item=5347 OR id_item=5445 OR id_item=5346 OR id_item=5422 OR id_item=5423 OR id_item=5345 OR id_item=5344"
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5449 OR id_item=5347 OR id_item=5445 OR id_item=5346 OR id_item=5422 OR id_item=5423 OR id_item=5345 OR id_item=5344 OR id_item=5489 OR id_item=5514 OR id_item=5516 OR id_item=5515 OR id_item=5517"
 
 # Delete all Advanced Services
 #mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5383 OR id_item=5383 OR id_item=5369 OR id_item=5367 OR id_item=5356 OR id_item=5370 OR id_item=5361 OR id_item=5368 OR id_item=5358 OR id_item=5365 OR id_item=5355 OR id_item=5362 OR id_item=5363 OR id_item=5360 OR id_item=5359 OR id_item=5357 OR id_item=5364 OR id_item=5366"
 
-# Delete the one sample service group
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5275"
+# Delete the sample service groups
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5275 OR id_item=5518"
 
 # Delete contact group
 mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5444"
@@ -164,7 +164,7 @@ mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=533
 mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5297 OR id_item=5298 OR id_item=5335 OR id_item=5338 OR id_item=5339 OR id_item=5336 OR id_item=5337"
 
 # Service templates
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5301 OR id_item=5302 OR id_item=5348 OR id_item=5349"
+mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5301 OR id_item=5302 OR id_item=5348 OR id_item=5349 OR id_item=5519"
 
 # clearlogs leaves mysql turned off, ready for backup
 clearlogs
