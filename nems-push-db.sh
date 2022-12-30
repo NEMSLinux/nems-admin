@@ -183,4 +183,8 @@ systemctl start mysql
 systemctl start nagios
 
 echo
-echo "Done. Remember to migrate /root/nems/nems-migrator/data/mysql to debpack!"
+echo "Done."
+echo ""
+echo "Remember to migrate the following folders to debpack on repos and build nems-migrator-data:"
+echo "/root/nems/nems-migrator/data/nconf/confdump"
+echo "/root/nems/nems-migrator/data/mysql"
