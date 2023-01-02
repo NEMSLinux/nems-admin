@@ -159,7 +159,7 @@ mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=544
 
 # Miscellaneous Commands
 # removing this breaks check-host-alive for the host preset.
-mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5331 OR id_item=5327 OR id_item=5442 OR id_item=5436 OR id_item=5328 OR id_item=5441 OR id_item=5437 OR id_item=5329 OR id_item=5330 OR id_item=5448 OR id_item=5296"
+#mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5331 OR id_item=5327 OR id_item=5442 OR id_item=5436 OR id_item=5328 OR id_item=5441 OR id_item=5437 OR id_item=5329 OR id_item=5330 OR id_item=5448 OR id_item=5296"
 
 # Host templates
 mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5297 OR id_item=5298 OR id_item=5335 OR id_item=5338 OR id_item=5339 OR id_item=5336 OR id_item=5337"
