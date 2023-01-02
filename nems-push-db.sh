@@ -80,7 +80,7 @@ echo If you see an error, press CTRL-C immediately!!
 systemctl stop nagios
 sleep 5
 
-# Convert the database to new default config files (for reconciliation)
+# Convert the database to new default config files (for reconciliation) via confdump
 /root/nems/nems-admin/helpers/nems-db-to-cfg.sh
 
 # Copy the active config for use as default at init
@@ -187,5 +187,5 @@ echo
 echo "Done."
 echo ""
 echo "Remember to migrate the following folders to debpack on repos and build nems-migrator-data:"
-echo "/root/nems/nems-migrator/data/nconf/confdump"
+echo "/root/nems/nems-migrator/data/nagios/conf"
 echo "/root/nems/nems-migrator/data/mysql"

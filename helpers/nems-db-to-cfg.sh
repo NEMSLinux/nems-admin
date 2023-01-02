@@ -4,7 +4,7 @@
 
 # Automatically replaces the config files in NEMS Migrator any time you update NEMS-Sample mysql db (so they match)
 
-dest=/root/nems/nems-migrator/data/nconf/confdump
+dest=/root/nems/nems-migrator/data/nagios/conf
 
 if [[ ! -d $dest ]]; then
   mkdir -p $dest
