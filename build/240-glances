@@ -1,0 +1,8 @@
+#!/bin/bash
+# Glances should have been installed from packages.add, however if it was missing from the repositories on this build, install it via pip
+if [[ ! -e /usr/bin/glances ]]; then
+  apt-get install -y python3-jinja2 python3-psutil python3-setuptools hddtemp python3-pip lm-sensors
+  pip3 install glances
+  ln -s /usr/local/bin/glances /usr/bin/glances
+fi
+
