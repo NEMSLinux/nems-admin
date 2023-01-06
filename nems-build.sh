@@ -194,4 +194,7 @@ if [[ -e /var/www/html/userfiles/nems-build.cur ]]; then
   rm /var/www/html/userfiles/nems-build.cur
 fi
 
+# Force reboot to avoid accidental cloberring of running kernel
+reboot
+
 fi # end of else running as root
