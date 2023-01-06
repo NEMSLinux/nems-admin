@@ -13,6 +13,9 @@ else
 
 PATH=$PATH:/sbin
 
+apt update
+apt install --yes git screen dialog gnupg nano apt-utils sudo
+
 # Add NEMS Linux Repositories
 echo "# NEMS Linux 1.6 Repositories
 deb https://repos.nemslinux.com/ 1.6 main
@@ -63,10 +66,6 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
 #        deb http://deb.debian.org/debian/ stretch-updates non-free main contrib
 #       deb-src http://deb.debian.org/debian/ stretch-updates non-free main contrib
 #  " > /etc/apt/sources.list
-
-  apt update
-
-  apt install --yes git screen dialog gnupg nano apt-utils sudo
   
   # Make absolutely certain sudo is installed (as we'll be removing root login)
   command -v sudo >/dev/null 2>&1 || { echo "sudo could not be installed.  Aborting." >&2; exit 1; }
