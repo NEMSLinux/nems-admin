@@ -344,6 +344,12 @@ nameserver 2001:4860:4860::8844
   # Clear all network interface configs
   /usr/local/share/nems/nems-scripts/reset-network-manager.sh
   
+  # Remove all docs except copyright
+  find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true
+  find /usr/share/doc -empty|xargs rmdir || true
+  rm -rf /usr/share/groff/* /usr/share/info/*
+  rm -rf /usr/share/lintian/* /usr/share/linda/* /var/cache/man/*
+
   # Remove dphys-swapfile swap file if applicable (will be re-created at first boot)
   if [[ -e /var/swap ]]; then
     systemctl status dphys-swapfile
