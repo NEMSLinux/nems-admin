@@ -343,6 +343,12 @@ nameserver 2001:4860:4860::8844
 
   # Clear all network interface configs
   /usr/local/share/nems/nems-scripts/reset-network-manager.sh
+  
+  # Remove dphys-swapfile swap file if applicable (will be re-created at first boot)
+  if [[ -e /var/swap ]]; then
+    systemctl status dphys-swapfile
+    rm /var/swap
+  fi
 
   # Cleanup lingering logs and so-on
   /root/nems/nems-admin/build/999-cleanup
@@ -361,6 +367,11 @@ nameserver 2001:4860:4860::8844
 #      sleep 5
 #    done
 #  fi
+
+echo ""
+echo "Disk Usage"
+echo "----------"
+df -h /root
 
   if [[ $1 == "halt" ]]; then
 echo "
