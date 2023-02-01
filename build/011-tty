@@ -38,7 +38,7 @@ exit 0
 
 chmod +x /etc/rc.local
 
-/bin/systemctl stop rc-local.service
-/bin/systemctl start rc-local.service
+# /bin/systemctl stop rc-local.service
+# /bin/systemctl start rc-local.service
 
 fi
