@@ -30,5 +30,5 @@ cp -f /root/nems/nems-migrator/data/monitorix/raspberrypi.rrd /var/lib/monitorix
 rm /var/lib/monitorix/www/imgs/*.png
 
 # Make it so
-/bin/systemctl start monitorix
+# /bin/systemctl start monitorix
 /bin/systemctl enable monitorix
