@@ -3,6 +3,10 @@ Use Krescue to erase (full) the eMMC (otherwise you won't be able to boot from m
 To boot into Krescue, hold power button and don't let go while plugging in the USB power cable. Let go of power only after Krescue has booted. Use a USB keyboard to navigate the menu.
 
 
+Create Debian base image with https://sd-card-images.johang.se/boards/khadas_vim3.html
+
+Boot into that image.
+
 Set the date of the dev board (required in order to use apt repositories):
 https://baldnerd.com/nerdgasms/linuxdate/
 
