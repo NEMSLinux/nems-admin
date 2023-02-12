@@ -10,9 +10,6 @@
 #
 # Tip me at https://donate.category5.tv or https://patreon.com/nems
 #
-# Tested and works on Bald Nerd's Base Images:
-#   - Tinker Board
-#
 #########################################################################
 
 set -e
@@ -43,6 +40,10 @@ fi
 
 resize() {
   start=$(fdisk -l /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
+  # On some boards the boot column will be #2 and the start value will be *, so use column 3 in that case
+  if [[ $start == "*" ]]; then
+    start=$(fdisk -l /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $3}')
+  fi
   echo $start
   set +e
   fdisk /dev/${rootdev} <<EOF
