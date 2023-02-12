@@ -1,0 +1,16 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+platform=$(/usr/local/bin/nems-info platform)
+
+if (( $platform == 120 )); then
+
+  # Enable the LED modules required for NEMS Warning Light
+  touch /etc/modules-load.d/nems-khadas-leds.conf
+  echo "ledtrig-default-on
+ledtrig-heartbeat
+" > /etc/modules-load.d/nems-khadas-leds.conf
+  chmod ua+r /etc/modules-load.d/nems-khadas-leds.conf
+
+fi
+
