@@ -39,8 +39,8 @@ if [[ $rootpart == $fulldev ]]; then
 fi
 
 resize() {
-  start=$(fdisk -l -o device,start,end /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
-  echo $start
+  start=$(fdisk -l -o device,start,end /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')  
+  echo "Starting Sector: ${start}"
   set +e
   fdisk /dev/${rootdev} <<EOF
 p
