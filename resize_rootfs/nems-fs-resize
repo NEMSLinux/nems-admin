@@ -39,11 +39,7 @@ if [[ $rootpart == $fulldev ]]; then
 fi
 
 resize() {
-  start=$(fdisk -l /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
-  # On some boards the boot column will be #2 and the start value will be *, so use column 3 in that case
-  if [[ $start == "*" ]]; then
-    start=$(fdisk -l /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $3}')
-  fi
+  start=$(fdisk -l -o device,start,end /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
   echo $start
   set +e
   fdisk /dev/${rootdev} <<EOF
