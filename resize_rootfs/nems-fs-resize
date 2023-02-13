@@ -66,11 +66,15 @@ EOF
 
   # Set the boot bit if it was set previously
   if (( $bootbit == 1 )); then
+    # Check if bootable bit is set right now, after partition creation. Don't change it if it is (else 'a' will disable boot bit)
+    boot=$(fdisk -l -o device,boot /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
+    if [[ $boot != "*" ]]; then
   fdisk /dev/${rootdev} <<EOF
 a
 $rootpart
 w
 EOF
+    fi
   fi
 
   set -e
