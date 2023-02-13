@@ -39,7 +39,17 @@ if [[ $rootpart == $fulldev ]]; then
 fi
 
 resize() {
-  start=$(fdisk -l -o device,start,end /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')  
+
+  # Check if bootable bit is set
+  boot=$(fdisk -l -o device,boot /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
+  if [[ $boot == "*" ]]; then
+    bootbit=1
+  else
+    bootbit=0
+  fi
+
+  # Re-create the partition using all available space
+  start=$(fdisk -l -o device,start,end /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
   echo "Starting Sector: ${start}"
   set +e
   fdisk /dev/${rootdev} <<EOF
@@ -53,6 +63,16 @@ $start
 
 w
 EOF
+
+  # Set the boot bit if it was set previously
+  if (( $bootbit == 1 )); then
+  fdisk /dev/${rootdev} <<EOF
+a
+$rootpart
+w
+EOF
+  fi
+
   set -e
   partx -u /dev/${rootdev}
   resize2fs /dev/${rootdev}p${rootpart}
