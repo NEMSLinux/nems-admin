@@ -269,6 +269,11 @@ nameserver 2001:4860:4860::8844
   if (( $platform >= 10 )) && (( $platform <= 19 )); then
      # ODROID
      addition="/root/nems/nems-admin/resize_rootfs/odroid-stage1\n"
+     # nems-fs-resize supports the ODROID N2
+     if (( $platform == 15 )); then
+       addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize"
+     fi
+     
      if grep -q "exit" /etc/rc.local; then
        # This file contains an exit command, so make sure our new command comes before it
        /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
