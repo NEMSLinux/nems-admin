@@ -126,6 +126,9 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
     mkdir /boot/vendor
   fi
 
+  # Simple workaround to move old keyring to new
+  cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d/
+  
   # Install any NEMS components that are required immediately
   apt-get install -y hw-detect
 
