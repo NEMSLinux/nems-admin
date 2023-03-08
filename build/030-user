@@ -32,6 +32,7 @@ platform=$(/usr/local/bin/nems-info platform)
   userdel -f -r pine # Pine A64+
   userdel -f -r pine64 # Sopine
   userdel -f -r admin # Amazon Web Services
+  userdel -f -r ubuntu # Indiedroid Nova (and possibly others)
 
 # Ensure password authentication is enabled (otherwise cannot login to some features on AWS, nor become root)
 # It is up to you to ensure 1) you are using strong passwords and 2) you only have YOUR IP address(es) allowed to connect in your firewall
