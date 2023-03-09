@@ -20,6 +20,10 @@ if (( $platform != 21 )); then
     if [[ -d /root/nems/nems-migrator/data/cockpit/branding/ ]]; then
       # 1.6+
       cp -f /root/nems/nems-migrator/data/cockpit/branding/* /usr/share/cockpit/branding/debian/
+      if [[ -e /usr/share/cockpit/branding/ubuntu/ ]]; then
+        rm -Rf /usr/share/cockpit/branding/ubuntu/
+        ln -s /usr/share/cockpit/branding/debian/ /usr/share/cockpit/branding/ubuntu
+      fi
     else
       # 1.5
       cp -f /root/nems/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
