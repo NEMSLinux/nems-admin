@@ -242,7 +242,8 @@ nameserver 2001:4860:4860::8844
   # 101 = Tinker Board S
   # 120 = Khadas VIM3 Basic
   # 121 = Khadas VIM3 Pro
-  if (( $platform == 32 )) || (( $platform == 69 )) || (( $platform == 100 )) || (( $platform == 101 )) || (( $platform == 120 )) || (( $platform == 121 )); then
+  # 200-202 = Indiedroid Nova
+  if (( $platform == 32 )) || (( $platform == 69 )) || (( $platform == 100 )) || (( $platform == 101 )) || (( $platform == 120 )) || (( $platform == 121 )) || (( $platform == 200 )) || (( $platform == 201 )) || (( $platform == 202 )); then
     # NEMS Universal Filesystem Restore
      addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize\n"
      if grep -q "exit" /etc/rc.local; then
@@ -273,7 +274,7 @@ nameserver 2001:4860:4860::8844
      if (( $platform == 15 )); then
        addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize"
      fi
-     
+
      if grep -q "exit" /etc/rc.local; then
        # This file contains an exit command, so make sure our new command comes before it
        /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
@@ -348,7 +349,7 @@ nameserver 2001:4860:4860::8844
 
   # Clear all network interface configs
   /usr/local/share/nems/nems-scripts/reset-network-manager.sh
-  
+
   # Remove all docs except copyright
   find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true
   find /usr/share/doc -empty|xargs rmdir || true
