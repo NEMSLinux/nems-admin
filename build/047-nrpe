@@ -1,9 +1,12 @@
 #!/bin/bash
 
+# NRPE is deprecated. NEMS includes the 4.1.0 (final) release,
+# but you should investigate the recommended tools in NEMS Linux.
+# ---------------------------------------------------------------
+
 # Set the version (see git releases)
-nrpeVer="3.2.1"
 # Need to auto-detect NEMS version. 4.0.3 for 1.6, 3.2.1 for 1.5.x
-#nrpeVer="4.0.3"
+nrpeVer="4.1.0"
 
 # Detect whether this is DEB- or RPM-based system
 if [[ -f /etc/debian_version ]]; then
