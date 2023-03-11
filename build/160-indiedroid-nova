@@ -13,7 +13,7 @@ LABEL nemslinux
   INITRD ../uInitrd
   FDTDIR ../rockchip/
   FDT ../rockchip/rk3588s-9tripod-linux.dtb
-  APPEND earlyprintk console=tty1 console=ttyS0,115200n8 console=both rw root=PARTUUID=10678848-5479-4be0-8e6d-7efb6fd099db rootwait rootfstype=ext4 fsck.repair=yes loglevel=1 net.ifnames=0 rootflags=data=writeback init=/sbin/init net.ifnames=0 biosdevname=0 video=1024x768-24@60m
+  APPEND earlyprintk console=tty1 console=ttyS0,115200n8 console=both rw root=PARTUUID=10678848-5479-4be0-8e6d-7efb6fd099db rootwait rootfstype=ext4 fsck.repair=yes loglevel=1 net.ifnames=0 rootflags=data=writeback init=/sbin/init biosdevname=0 video=1024x768-24@60m
 " > /boot/extlinux/extlinux.conf
 
 fi
