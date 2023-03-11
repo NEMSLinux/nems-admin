@@ -1,0 +1,19 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+platform=$(/usr/local/bin/nems-info platform)
+
+if (( $platform >= 200 )) && (( $platform <= 202 )); then
+
+echo "
+DEFAULT nemslinux
+  SAY Loading NEMS Linux 1.6 for Indiedroid Nova...
+LABEL nemslinux
+  KERNEL ../Image
+  INITRD ../uInitrd
+  FDTDIR ../rockchip/
+  FDT ../rockchip/rk3588s-9tripod-linux.dtb
+  APPEND earlyprintk console=tty1 console=ttyS0,115200n8 console=both rw root=PARTUUID=10678848-5479-4be0-8e6d-7efb6fd099db rootwait rootfstype=ext4 fsck.repair=yes loglevel=1 net.ifnames=0 rootflags=data=writeback init=/sbin/init net.ifnames=0 biosdevname=0
+" > /boot/extlinux/extlinux.conf
+
+fi
