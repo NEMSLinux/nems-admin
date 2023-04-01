@@ -33,4 +33,7 @@ else
       echo "PATCH-000003" >> /var/log/nems/patches.log
     fi
 
+  # Ensure ethernet uses a stable MAC address rather than changing it on reboot
+  sed -i "s/cloned-mac-address=.*/cloned-mac-address=stable/g" /etc/NetworkManager/system-connections/*
+
 fi
