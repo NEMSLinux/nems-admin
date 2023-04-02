@@ -4,3 +4,6 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # Set permissions of various items
 
   chown -R nagios:nagios /var/log/nems
+
+  # Ensure non-root users can ping
+  setcap cap_net_raw+p /usr/bin/ping
