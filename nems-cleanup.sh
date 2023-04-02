@@ -358,7 +358,9 @@ nameserver 2001:4860:4860::8844
 
   # Remove dphys-swapfile swap file if applicable (will be re-created at first boot)
   if [[ -e /var/swap ]]; then
-    systemctl status dphys-swapfile
+    echo "Removing swap file (will be re-created at first boot)."
+    dphys-swapfile swapoff
+    systemctl stop dphys-swapfile
     rm /var/swap
   fi
 
