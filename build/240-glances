@@ -2,7 +2,22 @@
 # Glances should have been installed from packages.add, however if it was missing from the repositories on this build, install it via pip
 if [[ ! -e /usr/bin/glances ]]; then
   apt-get install -y python3-jinja2 python3-psutil python3-setuptools hddtemp python3-pip lm-sensors
-  pip3 install glances
+  pip3 install 'glances[action,browser,cloud,cpuinfo,docker,export,folders,gpu,graph,ip,raid,snmp,web,wifi]'
   ln -s /usr/local/bin/glances /usr/bin/glances
+
+  echo "[Unit]
+Description = Glances in Web Server Mode
+After = network.target
+
+[Service]
+ExecStart = /usr/bin/glances  -w  -t  5
+
+[Install]
+WantedBy = multi-user.target" > /usr/lib/systemd/system/glancesweb.service
+
+  systemctl daemon-reload
+  systemctl start glancesweb.service
+  systemctl enable glancesweb.service
+
 fi
 
