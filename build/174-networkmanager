@@ -26,14 +26,17 @@ else
   # Use NetworkManager to manage interfaces, even if configured within /etc/network/interfaces
     if grep -q "managed=false" /etc/NetworkManager/NetworkManager.conf; then
       /bin/sed -i -- 's,managed=false,managed=true,g' /etc/NetworkManager/NetworkManager.conf
-      /etc/init.d/network-manager restart
     fi
 
-    if ! grep -q "PATCH-000003" /var/log/nems/patches.log; then
-      echo "PATCH-000003" >> /var/log/nems/patches.log
-    fi
+  /bin/systemctl restart NetworkManager
+
+  if ! grep -q "PATCH-000003" /var/log/nems/patches.log; then
+    echo "PATCH-000003" >> /var/log/nems/patches.log
+  fi
 
   # Ensure ethernet uses a stable MAC address rather than changing it on reboot
   sed -i "s/cloned-mac-address=.*/cloned-mac-address=stable/g" /etc/NetworkManager/system-connections/*
 
+  /bin/systemctl restart NetworkManager
+  
 fi
