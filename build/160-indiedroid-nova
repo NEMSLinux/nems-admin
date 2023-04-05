@@ -5,6 +5,14 @@ platform=$(/usr/local/bin/nems-info platform)
 
 if (( $platform >= 200 )) && (( $platform <= 202 )); then
 
+pat='^/dev/mmcblk1p2.* UUID="([^"]+)".* PARTUUID="([^"]+)"'
+while IFS= read -r line; do
+    if [[ $line =~ $pat ]]; then
+        vUUID="${BASH_REMATCH[1]}"
+        vPARTUUID="${BASH_REMATCH[2]}"
+    fi
+done < <(blkid)
+
 echo "
 DEFAULT nemslinux
   SAY Loading NEMS Linux 1.6 for Indiedroid Nova...
@@ -13,7 +21,7 @@ LABEL nemslinux
   INITRD ../uInitrd
   FDTDIR ../rockchip/
   FDT ../rockchip/rk3588s-9tripod-linux.dtb
-  APPEND earlyprintk console=tty1 console=ttyS0,115200n8 console=both rw root=PARTUUID=10678848-5479-4be0-8e6d-7efb6fd099db rootwait rootfstype=ext4 fsck.repair=yes loglevel=1 net.ifnames=0 rootflags=data=writeback init=/sbin/init biosdevname=0 video=1024x768-24@60m
+  APPEND earlyprintk console=tty1 console=ttyS0,115200n8 console=both rw root=PARTUUID=${vPARTUUID} rootwait rootfstype=ext4 fsck.repair=yes loglevel=1 net.ifnames=0 rootflags=data=writeback init=/sbin/init biosdevname=0 video=1024x768-24@60m
 " > /boot/extlinux/extlinux.conf
 
 fi
