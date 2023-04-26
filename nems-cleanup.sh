@@ -339,6 +339,11 @@ nameserver 2001:4860:4860::8844
       /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
     fi
   fi
+  
+  # Remove NEMS_SERVER.txt from /boot which has the HWID of my dev system
+  if [[ -e /boot/NEMS_SERVER.txt ]]; then
+    rm /boot/NEMS_SERVER.txt
+  fi
 
   # remove any package data left behind after removal
   apt-get purge $(dpkg -l | awk '/^rc/ { print $2 }')
