@@ -24,4 +24,9 @@ LABEL nemslinux
   APPEND earlyprintk console=tty1 console=ttyS0,115200n8 console=both rw root=PARTUUID=${vPARTUUID} rootwait rootfstype=ext4 fsck.repair=yes loglevel=1 net.ifnames=0 rootflags=data=writeback init=/sbin/init biosdevname=0 video=1024x768-24@60m
 " > /boot/extlinux/extlinux.conf
 
+# Remove progress since this script gets called by the filesystem resizer
+if [[ -e /var/www/html/userfiles/nems-build.cur ]]; then
+  rm /var/www/html/userfiles/nems-build.cur
+fi
+
 fi
