@@ -33,6 +33,9 @@ else
      fi
   fi
 
+  # Tell other tools not to place files that we're about to cleanup
+  touch /tmp/cleanup.lock
+  
   platform=$(/usr/local/bin/nems-info platform)
 
   # Check if nemsadmin exists, and create it if not
