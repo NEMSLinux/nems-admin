@@ -1,3 +1,14 @@
 Download Debian image from stvhay - https://static.st5ve.com/debian-image-builder/index.html
 
-Build as usual.
+Convert to MBR (image is GPT).
+On separate machine:
+sudo gdisk
+/dev/sdX
+r
+g
+0
+w
+y
+
+Build as usual. Mind partuuid of ROOTFS to ensure matches bootloader.
+
