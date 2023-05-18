@@ -5,6 +5,8 @@ platform=$(/usr/local/bin/nems-info platform)
 
 if (( $platform == 15 )); then
 
-  echo "No special config needed with the N2 yet."
+  nmcli con mod eth0 ipv4.addresses "" ipv4.gateway ""
+  nmcli con down eth0
+  nmcli con up eth0
 
 fi
