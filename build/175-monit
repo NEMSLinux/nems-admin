@@ -36,6 +36,7 @@ echo "[Unit]
  [Install]
  WantedBy=multi-user.target" > /lib/systemd/system/monit.service
 
+# Copy the base data, but note that the main nems.conf file comes from nems-plugins
 cp -Rf /root/nems/nems-migrator/data/monit /etc/
 chmod 600 /etc/monit/monitrc
 # Don't need this folder, but makes it backward compatible with 1.4 confs
