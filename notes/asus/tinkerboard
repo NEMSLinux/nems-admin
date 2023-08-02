@@ -1,0 +1,5 @@
+Grab the latest version of Debian from https://tinker-board.asus.com/download-list.html?product=tinker-board-s
+
+SSH in linaro:linaro and sudo su
+
+Build as usual.
