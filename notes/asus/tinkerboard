@@ -2,4 +2,4 @@ Grab the latest version of Debian from https://tinker-board.asus.com/download-li
 
 SSH in linaro:linaro and sudo su
 
-Build as usual.
+Build as usual, ./nems-build.sh 100
