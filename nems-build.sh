@@ -120,6 +120,10 @@ do
     # It still shows as installed after attempting, so try again
     echo "*** Failed to remove $pkg... trying again. ***"
     sleep 15
+    echo "** Fixing broken installs **"
+    apt-get -y --fix-broken install
+    echo "**"
+    echo "*** Retry: Removing $pkg ***"
     apt-get -y --allow-remove-essential --purge remove $pkg
     echo "***"
     echo ""
