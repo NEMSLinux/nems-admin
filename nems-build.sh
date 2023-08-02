@@ -6,6 +6,10 @@
 # This is *NOT* meant to be run by users - please do not run it unless you understand clearly what you're doing.
 #
 # Some of the ideas in this process come from DietPi - https://github.com/Fourdee/DietPi/blob/master/PREP_SYSTEM_FOR_DIETPI.sh
+#
+###########
+# INSTALLING THIS ON A NORMAL LINUX MACHINE WILL DESTROY THAT MACHINE #
+###########
 ####
 
 if [[ $EUID -ne 0 ]]; then
