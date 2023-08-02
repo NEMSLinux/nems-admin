@@ -107,9 +107,15 @@ sleep 5
 
 # Remove cruft
 apt-get update
+# Download glib-networking for reinstallation later if networking is lost
+apt-get -y install -d glib-networking
 apt-get -y --allow-remove-essential clean
 for pkg in $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
 do
+  if [ $(dpkg-query -W -f='${Status}' glib-networking 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
+    # glib-networking was removed by another package uninstall. Reinstall it (cached above since network will now be offline).
+    apt-get -y --no-install-recommends install glib-networking
+  fi
   if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
     echo "*** Removing $pkg ***"
     apt-get -y --allow-remove-essential --purge remove $pkg
