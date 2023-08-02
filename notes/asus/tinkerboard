@@ -2,4 +2,8 @@ Grab the latest version of Debian from https://tinker-board.asus.com/download-li
 
 SSH in linaro:linaro and sudo su
 
-Build as usual, ./nems-build.sh 100
+Prep as usual.
+
+Because ASUS doesn't release a "lite" version of Debian, the build itself must be done via terminal (not SSH); will lose SSH connection mid-install due to all the purged packages.
+
+Via connected keyboard/monitor, build as usual on TTY2: ./nems-build.sh 100
