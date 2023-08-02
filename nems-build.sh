@@ -111,20 +111,32 @@ apt-get -y --allow-remove-essential clean
 for pkg in $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
 do
   if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
+    echo "*** Removing $pkg ***"
     apt-get -y --allow-remove-essential --purge remove $pkg
+    echo "***"
+    echo ""
   fi
   if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
     # It still shows as installed after attempting, so try again
+    echo "*** Failed to remove $pkg... trying again. ***"
     sleep 15
     apt-get -y --allow-remove-essential --purge remove $pkg
+    echo "***"
+    echo ""
   fi
 done
+echo "*** Removals are done. Purging orphans..."
 apt-get autoremove --purge -y
 rm -R /usr/share/fonts/*
 rm -R /usr/share/icons/*
+echo "***"
+echo ""
 
 # Fix any broken packages to allow installation to occur in next step
+echo "*** Fixing broken installs ***"
 apt-get -y --fix-broken install
+echo "***"
+echo ""
 
 echo "Usage after cruft removal:"
 df -hT /etc
