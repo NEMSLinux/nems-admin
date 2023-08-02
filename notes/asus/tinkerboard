@@ -2,7 +2,7 @@
 //Grab the latest version of Debian from https://tinker-board.asus.com/download-list.html?product=tinker-board-s
 //SSH in linaro:linaro and sudo su
 
-Grab the latest Armbian: https://www.armbian.com/tinkerboard/
+Grab the latest Armbian Bullseye: https://armbian.hosthatch.com/archive/tinkerboard/archive/
 SSH: root:1234
 
 Prep as usual.
