@@ -112,7 +112,9 @@ sleep 5
 # Remove cruft
 apt-get update
 # Download glib-networking for reinstallation later if networking is lost
-apt-get -y install -d glib-networking
+  apt-get -y reinstall --download-only glib-networking-common
+  apt-get -y reinstall --download-only glib-networking-services
+  apt-get -y reinstall --download-only glib-networking
 apt-get -y --allow-remove-essential clean
 for pkg in $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
 do
