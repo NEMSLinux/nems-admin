@@ -5,6 +5,8 @@
 Grab the latest Armbian Bullseye: https://armbian.hosthatch.com/archive/tinkerboard/archive/
 SSH: root:1234
 
+Fix apt keys with the old command `apt-key adv --keyserver keyserver.ubuntu.com --recv-keys <PUBKEY>`
+
 Prep as usual.
 
 Because ASUS doesn't release a "lite" version of Debian, the build itself must be done via terminal (not SSH); will lose SSH connection mid-install due to all the purged packages.
