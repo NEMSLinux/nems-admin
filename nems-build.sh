@@ -108,7 +108,17 @@ sleep 5
 # Remove cruft
 apt-get update
 apt-get -y --allow-remove-essential clean
-apt-get -y --allow-remove-essential --purge remove $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
+for pkg in $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
+do
+  if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
+    apt-get -y --allow-remove-essential --purge remove $pkg
+  fi
+  if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
+    # It still shows as installed after attempting, so try again
+    sleep 15
+    apt-get -y --allow-remove-essential --purge remove $pkg
+  fi
+done
 apt-get autoremove --purge -y
 rm -R /usr/share/fonts/*
 rm -R /usr/share/icons/*
