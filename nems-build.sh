@@ -91,7 +91,11 @@ fi
 diskfree=$(($(stat -f --format="%a*%S" .)))
 if (( "$diskfree" < "6000000000" )); then
   echo You do not have enough free space to build. Did you resize the root fs?
-  exit
+  echo ""
+  df -h
+  echo ""
+  echo "Hit CTRL-C to abort..."
+  sleep 10
 fi
 
 echo Building NEMS $ver
@@ -111,17 +115,9 @@ sleep 5
 
 # Remove cruft
 apt-get update
-# Download glib-networking for reinstallation later if networking is lost
-  apt-get -y reinstall --download-only glib-networking-common
-  apt-get -y reinstall --download-only glib-networking-services
-  apt-get -y reinstall --download-only glib-networking
 apt-get -y --allow-remove-essential clean
 for pkg in $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
 do
-  if [ $(dpkg-query -W -f='${Status}' glib-networking 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-    # glib-networking was removed by another package uninstall. Reinstall it (cached above since network will now be offline).
-    apt-get -y --no-install-recommends install glib-networking
-  fi
   if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
     echo "*** Removing $pkg ***"
     apt-get -y --allow-remove-essential --purge remove $pkg
@@ -159,6 +155,9 @@ df -hT /etc
 sleep 5
 
 # Install base packages
+echo ""
+echo "***** BUILDING NEMS LINUX *****"
+echo ""
 for pkg in $(grep -vE "^\s*#" build/packages.base | tr "\n" " ")
 do
   apt-get -y --no-install-recommends install $pkg
