@@ -135,6 +135,11 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   # Setup default paths
   echo 'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/games:/sbin"' > /etc/environment
 
+  # If this build is based on armbian, make sure the RAM log is disabled
+  if [[ -e /etc/default/armbian-ramlog ]]; then
+    echo "ENABLED=false" > /etc/default/armbian-ramlog
+  fi
+  
   echo "System Prepped. Please restart, re-connect as nemsadmin, run screen, then run your build script (see ./notes)."
 
   if [[ -e /sbin/reboot ]]; then
