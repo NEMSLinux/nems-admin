@@ -90,13 +90,16 @@ fi
 
 # Check disk space is adequate to build
 diskfree=$(($(stat -f --format="%a*%S" .)))
-if (( "$diskfree" < "6000000000" )); then
+ram=$(free | awk '/^Mem:/{print $2}')
+reqram=$((ram * 2 * 1000)) # How much additional disk space will be used by dphys-swapfile
+reqdisk=$((reqram + 6000000000)) # 6 GB for NEMS, plus the amount of diskspace dphys-swapfile will require
+if (( "$diskfree" < "$reqdisk" )); then
   # First, attempt to resize:
   echo "Resizing the filesystem in preparation to build..."
   /root/nems/nems-admin/resize_rootfs/nems-fs-resize > /dev/null 2>&1
   # Check again:
   diskfree=$(($(stat -f --format="%a*%S" .)))
-  if (( "$diskfree" < "6000000000" )); then
+  if (( "$diskfree" < "$reqdisk" )); then
     echo "You still don't have enough free space to build. Aborting."
     echo ""
     df -h
