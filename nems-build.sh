@@ -139,8 +139,12 @@ do
 done
 echo "*** Removals are done. Purging orphans..."
 apt-get autoremove --purge -y
-rm -R /usr/share/fonts/*
-rm -R /usr/share/icons/*
+if [[ -e /usr/share/fonts/ ]]; then
+  rm -R /usr/share/fonts/*
+fi
+if [[ -e /usr/share/icons/ ]]; then
+  rm -R /usr/share/icons/*
+fi
 echo "***"
 echo ""
 
