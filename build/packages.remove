@@ -67,7 +67,7 @@ dnsmasq*
 dns-root-data
 colord-data
 libjasper*
-libjson*
+#libjson*
 libwbclient*
 libwayland*
 golang-*
