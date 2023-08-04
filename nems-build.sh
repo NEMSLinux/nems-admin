@@ -88,14 +88,20 @@ If you run this program, you will lose everything!
   exit
 fi
 
+# Check disk space is adequate to build
 diskfree=$(($(stat -f --format="%a*%S" .)))
 if (( "$diskfree" < "6000000000" )); then
-  echo You do not have enough free space to build. Did you resize the root fs?
-  echo ""
-  df -h
-  echo ""
-  echo "Hit CTRL-C to abort..."
-  sleep 10
+  # First, attempt to resize:
+  echo "Resizing the filesystem in preparation to build..."
+  /root/nems/nems-admin/resize_rootfs/nems-fs-resize > /dev/null 2>&1
+  # Check again:
+  diskfree=$(($(stat -f --format="%a*%S" .)))
+  if (( "$diskfree" < "6000000000" )); then
+    echo "You still don't have enough free space to build. Aborting."
+    echo ""
+    df -h
+    exit
+  fi
 fi
 
 echo Building NEMS $ver
