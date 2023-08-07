@@ -16,6 +16,9 @@ if (( $platform == 100 )) || (( $platform == 101 )); then
   echo conservative > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
   echo conservative > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
 
+  # Disable Bluetooth
+  systemctl disable tinker-bluetooth
+
   # Do this every time I boot
   addition="/root/nems/nems-admin/build/160-asus-tinker-board\n"
   if ! grep -q "160-asus-tinker-board" /etc/rc.local; then
