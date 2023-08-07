@@ -50,6 +50,7 @@ if [[ ! -e /var/log/nems/hw_model ]]; then
   exit
 fi
 hw_model=$(cat /var/log/nems/hw_model | sed -n 2p)
+hw_model_id=$(cat /etc/.nems_hw_model_identifier)
 
 printf "\e[97;1mDETECTED HARDWARE:\e[92;1m $hw_model\e[0m"
 echo ""
@@ -125,28 +126,31 @@ sleep 5
 # Remove cruft
 apt-get update
 apt-get -y --allow-remove-essential clean
-for pkg in $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
-do
-  if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
-    echo "*** Removing $pkg ***"
-    apt-get -y --allow-remove-essential --purge remove $pkg
-    echo "***"
-    echo ""
-  fi
-  if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
-    # It still shows as installed after attempting, so try again
-    echo "*** Failed to remove $pkg... trying again. ***"
-    sleep 15
-    echo "** Fixing broken installs **"
-    apt-get -y --fix-broken install
-    echo "**"
-    echo "*** Retry: Removing $pkg ***"
-    apt-get -y --allow-remove-essential --purge remove $pkg
-    echo "***"
-    echo ""
-  fi
-done
-echo "*** Removals are done. Purging orphans..."
+if [[ $hw_model_id != 100 ]]; then # Skip removals if ASUS Tinkerboard
+  for pkg in $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
+  do
+    if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
+      echo "*** Removing $pkg ***"
+      apt-get -y --allow-remove-essential --purge remove $pkg
+      echo "***"
+      echo ""
+    fi
+    if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
+      # It still shows as installed after attempting, so try again
+      echo "*** Failed to remove $pkg... trying again. ***"
+      sleep 15
+      echo "** Fixing broken installs **"
+      apt-get -y --fix-broken install
+      echo "**"
+      echo "*** Retry: Removing $pkg ***"
+      apt-get -y --allow-remove-essential --purge remove $pkg
+      echo "***"
+      echo ""
+    fi
+  done
+  echo "*** Removals are done. Purging orphans..."
+fi
+
 apt-get autoremove --purge -y
 if [[ -e /usr/share/fonts/ ]]; then
   rm -R /usr/share/fonts/*

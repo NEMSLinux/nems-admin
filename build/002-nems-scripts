@@ -5,9 +5,8 @@ if [[ ! -d /usr/local/share/nems ]]; then
   mkdir -p /usr/local/share/nems
 fi
 
-if [[ -e /var/lib/apt/lists/*lz4 ]]; then
-  rm /var/lib/apt/lists/*lz4
-fi
-apt-get -o Acquire::GzipIndexes=false update
+# Note that installation of nems-scripts depends on apt-show-versions
+# Therefore you must first ensure apt is not using encrypted lists
+# See 000-apt
 
 apt-get install -y nems-scripts

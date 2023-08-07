@@ -1,0 +1,11 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# Ensure apt is using unencrypted lists since we'll need to be able to use those lists with apt-show-versions later
+
+if [[ -e /var/lib/apt/lists/*lz4 ]]; then
+  rm /var/lib/apt/lists/*lz4
+fi
+apt-get -o Acquire::GzipIndexes=false update
+
+apt update
