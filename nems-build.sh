@@ -126,7 +126,7 @@ sleep 5
 # Remove cruft
 apt-get update
 apt-get -y --allow-remove-essential clean
-if [[ $hw_model_id != 100 ]]; then # Skip removals if ASUS Tinkerboard
+if [[ ! -e /etc/default/armbian-ramlog ]]; then # Skip removals for Armbian-based builds (E.g., ASUS Tinker Board, ODROID-N2) as it is already slim
   for pkg in $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
   do
     if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
