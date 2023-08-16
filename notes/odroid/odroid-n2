@@ -3,6 +3,8 @@ Ensure using a UHS-1 capable SD card: https://amzn.to/2vKMx67
 Install to SD Card: Bald Nerd Debian Buster Base Image for ODROID-N2
 1.6+ Try DietPi https://dietpi.com/docs/hardware/#odroid or Meveric's image https://forum.odroid.com/viewtopic.php?f=179&t=43719
 
+Armbian Bullseye: https://armbian.hosthatch.com/archive/odroidn2/archive/
+
 Ensure the boot mode selection switch is set to SD mode.
 
 Verify the filesystem has been successfully resized. Run first-boot and resize in /root/scripts if not.
