@@ -12,33 +12,35 @@ fi
 # Do not bother with cockpit branding on Docker (as cockpit is not installed)
 if (( $platform != 21 )); then
 
-  if [[ -d /usr/share/cockpit/branding/debian/ ]]; then
-    rm -rf /usr/share/cockpit/branding/debian
-  fi
-  mkdir -p /usr/share/cockpit/branding/debian
-  if [[ -e /root/nems/nems-migrator/ ]]; then
-    if [[ -d /root/nems/nems-migrator/data/cockpit/branding/ ]]; then
-      # 1.6+
-      cp -f /root/nems/nems-migrator/data/cockpit/branding/* /usr/share/cockpit/branding/debian/
-      if [[ -e /usr/share/cockpit/branding/ubuntu/ ]]; then
-        rm -Rf /usr/share/cockpit/branding/ubuntu/
-        ln -s /usr/share/cockpit/branding/debian/ /usr/share/cockpit/branding/ubuntu
-      fi
-    else
-      # 1.5
-      cp -f /root/nems/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
+  if [[ ! -e /usr/local/share/whitelabel ]]; then
+    if [[ -d /usr/share/cockpit/branding/debian/ ]]; then
+      rm -rf /usr/share/cockpit/branding/debian
     fi
-
-  else
-    # nems-migrator doesn't exist. Assuming this is a NEMS Tools Extender OS system
-    # grab just the cockpit branding files from nems-migrator
-    tmpdir=`mktemp -d -p /tmp/`
-    cd $tmpdir
-    git clone --depth 1 --filter=blob:none --no-checkout https://github.com/cat5tv/nems-migrator
-    cd nems-migrator
-    git checkout master -- data/cockpit/branding
-    cp -f $tmpdir/nems-migrator/data/cockpit/branding/* /usr/share/cockpit/branding/debian/
-    rm -rf $tmpdir
+    mkdir -p /usr/share/cockpit/branding/debian
+    if [[ -e /root/nems/nems-migrator/ ]]; then
+      if [[ -d /root/nems/nems-migrator/data/cockpit/branding/ ]]; then
+        # 1.6+
+        cp -f /root/nems/nems-migrator/data/cockpit/branding/* /usr/share/cockpit/branding/debian/
+        if [[ -e /usr/share/cockpit/branding/ubuntu/ ]]; then
+          rm -Rf /usr/share/cockpit/branding/ubuntu/
+          ln -s /usr/share/cockpit/branding/debian/ /usr/share/cockpit/branding/ubuntu
+        fi
+      else
+        # 1.5
+        cp -f /root/nems/nems-migrator/data/1.5/cockpit/branding/* /usr/share/cockpit/branding/debian/
+      fi
+  
+    else
+      # nems-migrator doesn't exist. Assuming this is a NEMS Tools Extender OS system
+      # grab just the cockpit branding files from nems-migrator
+      tmpdir=`mktemp -d -p /tmp/`
+      cd $tmpdir
+      git clone --depth 1 --filter=blob:none --no-checkout https://github.com/cat5tv/nems-migrator
+      cd nems-migrator
+      git checkout master -- data/cockpit/branding
+      cp -f $tmpdir/nems-migrator/data/cockpit/branding/* /usr/share/cockpit/branding/debian/
+      rm -rf $tmpdir
+    fi
   fi
 fi
 
