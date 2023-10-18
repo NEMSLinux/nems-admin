@@ -9,3 +9,5 @@ pip3 install adafruit-circuitpython-dht
 
 adduser nagios gpio
 adduser nemsadmin gpio
+
+echo ""
