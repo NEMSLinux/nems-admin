@@ -258,7 +258,7 @@ nameserver 2001:4860:4860::8844
        /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
      fi
   fi
-  if (( $platform >= 0 )) && (( $platform <= 9 )); then
+  if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( $platform <= 159 )); then
     # Raspberry Pi
      addition="/root/nems/nems-admin/resize_rootfs/raspi\n"
      if grep -q "exit" /etc/rc.local; then
