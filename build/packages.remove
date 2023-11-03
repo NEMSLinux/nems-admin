@@ -116,7 +116,6 @@ rfkill
 pv
 mtp-tools
 m4
-screen
 alsa-utils
 autotools-dev
 #bind9-host
