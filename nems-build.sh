@@ -132,6 +132,16 @@ if [[ ! -e /etc/default/armbian-ramlog ]]; then # Skip removals for Armbian-base
     if [ $(dpkg-query -W -f='${Status}' $pkg 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
       echo "*** Removing $pkg ***"
       apt-get -y --allow-remove-essential --purge remove $pkg
+      sleep 15 # give things time to happen after package removal
+      # Check if Internet went down after package removal
+      wget -q --spider https://nemslinux.com/
+      if [ $? -eq 0 ]; then
+        online=1
+      else
+        online=0
+        echo ">>>>>> NETWORK DIED AFTER REMOVING: $pkg"
+        exit
+      fi
       echo "***"
       echo ""
     fi
