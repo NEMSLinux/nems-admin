@@ -37,7 +37,7 @@ tasksel*
 wireless-*
 xdg-user-dirs
 triggerhappy
-python*
+#python*
 v4l-utils
 #traceroute
 xz-utils
