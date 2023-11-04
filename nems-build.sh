@@ -126,6 +126,8 @@ sleep 5
 # Remove cruft
 apt-get update
 apt-get -y --allow-remove-essential clean
+# Commenting this for now as further research is needed to determine which package(s) are breaking networking on modern Debian
+: <<COMMENT
 if [[ ! -e /etc/default/armbian-ramlog ]]; then # Skip removals for Armbian-based builds (E.g., ASUS Tinker Board, ODROID-N2) as it is already slim
   for pkg in $(grep -vE "^\s*#" build/packages.remove | tr "\n" " ")
   do
@@ -160,6 +162,7 @@ if [[ ! -e /etc/default/armbian-ramlog ]]; then # Skip removals for Armbian-base
   done
   echo "*** Removals are done. Purging orphans..."
 fi
+COMMENT
 
 apt-get autoremove --purge -y
 if [[ -e /usr/share/fonts/ ]]; then
