@@ -262,6 +262,7 @@ if [[ -e /var/www/html/userfiles/nems-build.cur ]]; then
 fi
 
 # Force reboot to avoid accidental cloberring of running kernel
-reboot
+#reboot
+echo "Please reboot now after reviewing the above output."
 
 fi # end of else running as root
