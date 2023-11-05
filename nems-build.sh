@@ -233,7 +233,10 @@ dpkg-reconfigure -f noninteractive tzdata
 
 echo "------------------------------"
 # Run the scripts in the build folder
-run-parts --exit-on-error -v build
+if [[ ! -d /var/log/nems/ ]]; then
+  mkdir /var/log/nems
+fi
+run-parts --exit-on-error -v build 2> /var/log/nems/build-parts.log | tee /var/log/nems/build-parts.log
 
 # If build is not completing, run parts manually to find out which script
 # is dying and stopping the installation
@@ -261,8 +264,11 @@ if [[ -e /var/www/html/userfiles/nems-build.cur ]]; then
   rm /var/www/html/userfiles/nems-build.cur
 fi
 
+echo "Check /var/log/nems/build-parts.log."
+echo ""
+
 # Force reboot to avoid accidental cloberring of running kernel
-#reboot
-echo "Please reboot now after reviewing the above output."
+echo "Rebooting..."
+reboot
 
 fi # end of else running as root
