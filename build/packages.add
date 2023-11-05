@@ -75,13 +75,6 @@ php-curl
 #libapache2-mod-python
 libapache2-mod-security2
 
-# NEMS
-
-# Allow nems-info checkport to function
-netcat
-
-# /NEMS
-
 # Device-specific stuff
   # CL100
   firmware-realtek
