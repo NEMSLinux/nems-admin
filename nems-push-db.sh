@@ -17,6 +17,9 @@ function clearlogs {
   mysql -t -u root -pnagiosadmin nconf -e "shutdown"
   systemctl stop mysql
   rm -f /var/lib/mysql/ib_logfile*
+  touch /var/lib/mysql/ib_logfile0
+  touch /var/lib/mysql/ib_logfile1
+  chown mysql:mysql /var/lib/mysql/ib_*
   if [[ -e /var/lib/mysql/queries.log ]]; then
     rm /var/lib/mysql/queries.log
   fi
