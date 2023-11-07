@@ -1,0 +1,10 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+echo "Clearing Externally Managed flag from Python..."
+
+rm /usr/lib/python*/EXTERNALLY-MANAGED
+
+echo "Done."
+
+exit 0
