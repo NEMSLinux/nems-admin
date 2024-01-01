@@ -26,12 +26,13 @@ apt-get install -y libperl-dev
 apt-get install -y apache2-dev
 apt-get install -y virtualenv
 apt-get install -y freetds-dev # pymssql
-apt-get install -y python-setuptools
+#apt-get install -y python-setuptools
 apt-get install -y libsasl2-dev
 apt-get install -y libxslt1-dev
 
 pip install wheel
 pip install pipenv
+pip install setuptools
 
 tmpdir=`mktemp -d -p /tmp/`
 
@@ -44,7 +45,10 @@ tar xzf mk.tar.gz
 # Install livestatus
 # Need to determine the lib directory for boost to compile correctly
 # Try to do it automatically by the fact that the directory exists
-if [[ -d /usr/lib/arm-linux-gnueabihf ]]; then
+if [[ -d /usr/lib/aarch64-linux-gnu ]]; then
+  # Raspberry Pi / aarch64
+  libdir=/usr/lib/aarch64-linux-gnu
+elif [[ -d /usr/lib/arm-linux-gnueabihf ]]; then
   # Raspberry Pi / ARM
   libdir=/usr/lib/arm-linux-gnueabihf
 elif [[ -d /usr/lib/i386-linux-gnu ]]; then
@@ -91,7 +95,9 @@ done
 echo " done."
 
 # Allow nagvis to read the socket
+/bin/systemctl stop nagios
 chmod 666 /usr/local/nagios/var/rw/live.sock
+/bin/systemctl start nagios
 
 # /usr/local/nagios/var/rw
 

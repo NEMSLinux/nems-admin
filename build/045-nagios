@@ -21,11 +21,15 @@ if [[ ! -e /var/lib/nagios/ ]]; then
 fi
 
 # Download from:
-# https://www.nagios.org/downloads/nagios-core/thanks/?product_download=nagioscore-source
+#   https://www.nagios.org/downloads/nagios-core/thanks/?product_download=nagioscore-source
+# and place on repos packages
+
+ver=4.5.0
+
   cd /tmp
-  wget https://packages.nemslinux.com/nagios/nagios-4.4.7.tar.gz
-  tar -zxvf nagios-4.4.7.tar.gz
-  cd /tmp/nagios-4.4.7/
+  wget https://packages.nemslinux.com/nagios/nagios-${ver}.tar.gz
+  tar -zxvf nagios-${ver}.tar.gz
+  cd /tmp/nagios-${ver}/
   ./configure --with-nagios-group=nagios --with-command-group=nagcmd --with-httpd_conf=/etc/apache2/conf-available/
   make all
   make install

@@ -18,7 +18,7 @@ pipcommand=pip3
 pythoncommand=python3
 
 # the number in /usr/local/lib/python${pythondir}
-pythondir=3.9
+pythondir=3.11
 
 # Install dependencies
 
