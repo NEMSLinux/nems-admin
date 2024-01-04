@@ -26,7 +26,6 @@ apt-get install -y libperl-dev
 apt-get install -y apache2-dev
 apt-get install -y virtualenv
 apt-get install -y freetds-dev # pymssql
-#apt-get install -y python-setuptools
 apt-get install -y libsasl2-dev
 apt-get install -y libxslt1-dev
 
@@ -37,45 +36,16 @@ pip install setuptools
 tmpdir=`mktemp -d -p /tmp/`
 
 # Package is located on repos server
-ver="1.5.0p23"
-wget -O ${tmpdir}/mk.tar.gz https://packages.nemslinux.com/livestatus/mk-livestatus-${ver}.tar.gz
+ver="2.1.0p37"
+wget -O ${tmpdir}/mk.tar.gz https://packages.nemslinux.com/livestatus/check-mk-raw-${ver}.cre.tar.gz
 cd $tmpdir
 tar xzf mk.tar.gz
-
-# Install livestatus
-# Need to determine the lib directory for boost to compile correctly
-# Try to do it automatically by the fact that the directory exists
-if [[ -d /usr/lib/aarch64-linux-gnu ]]; then
-  # Raspberry Pi / aarch64
-  libdir=/usr/lib/aarch64-linux-gnu
-elif [[ -d /usr/lib/arm-linux-gnueabihf ]]; then
-  # Raspberry Pi / ARM
-  libdir=/usr/lib/arm-linux-gnueabihf
-elif [[ -d /usr/lib/i386-linux-gnu ]]; then
-  # 32-Bit
-  libdir=/usr/lib/i386-linux-gnu
-elif [[ -d /usr/lib/x86_64-linux-gnu ]]; then
-  # 64-Bit
-  libdir=/usr/lib/x86_64-linux-gnu
-elif [[ -d /usr/lib/aarch64-linux-gnu ]]; then
-  # Pine A64+ aarch64
-  libdir=/usr/lib/aarch64-linux-gnu
-fi
-
-# Force the correct value for some platforms where multiple exist
-if [[ $platform == 22 ]]; then
-  libdir=/usr/lib/x86_64-linux-gnu
-fi
-# PINE64 boards
-if [[ -d /usr/lib/aarch64-linux-gnu ]] && (( $platform >= 40 )) && (( $platform <= 50 )); then
-  libdir=/usr/lib/aarch64-linux-gnu
-fi
-
-./configure --with-nagios4 --with-boost-libdir=$libdir
-
-#cd livestatus
+cd check-mk-raw-${ver}.cre
+./configure --with-nagios4
+cd livestatus
 make
 make install
+
 cd ..
 
 # Create log for livestatus
@@ -94,10 +64,7 @@ do
 done
 echo " done."
 
-# Allow nagvis to read the socket
-/bin/systemctl stop nagios
-chmod 666 /usr/local/nagios/var/rw/live.sock
-/bin/systemctl start nagios
+# nagvis can read the socket since www-data is a member of the nagios group
 
 # /usr/local/nagios/var/rw
 
