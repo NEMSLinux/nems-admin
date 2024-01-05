@@ -1,7 +1,7 @@
 #!/bin/bash
 # Clean up any cruft left behind
 
-toilet --metal CLEANUP
+# Don't output anything here unless you want it to show in nems-update
 
 # Remove any MOTD items included with the base distro
   if [ -n "$(ls -A /etc/update-motd.d/ 2>/dev/null)" ]
