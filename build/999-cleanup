@@ -1,6 +1,8 @@
 #!/bin/bash
 # Clean up any cruft left behind
 
+toilet --metal CLEANUP
+
 # Remove any MOTD items included with the base distro
   if [ -n "$(ls -A /etc/update-motd.d/ 2>/dev/null)" ]
   then

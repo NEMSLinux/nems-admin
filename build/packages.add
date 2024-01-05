@@ -104,3 +104,8 @@ aptitude
 
 # Backup system for remote backup calls
 rdiff-backup
+
+# Fancy text in the terminal
+toilet
+toilet-fonts
+figlet
