@@ -1,4 +1,7 @@
 #!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+platform=$(/usr/local/bin/nems-info platform)
 
 echo "Setting up pnp4nagios"
 
@@ -6,7 +9,15 @@ wget -O /tmp/pnp4nagios.tar.gz https://github.com/lingej/pnp4nagios/archive/0.6.
 cd /tmp
 tar xzf pnp4nagios.tar.gz
 cd pnp4nagios-0.6.26/
-./configure --with-httpd-conf=/etc/apache2/sites-enabled
+
+if (( $platform == 20 )); then
+  # x86/64
+  ./configure --with-httpd-conf=/etc/apache2/sites-enabled --build=x86_64-unknown-linux-gnu
+else
+  # arm64
+  ./configure --with-httpd-conf=/etc/apache2/sites-enabled --build=aarch64-unknown-linux-gnu
+fi
+
 make all
 make fullinstall
 make install-webconf
