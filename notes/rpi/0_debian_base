@@ -7,7 +7,7 @@
 export RPI_MODEL=4
 
 # Set version of Debian
-export DEBIAN_RELEASE=bullseye
+export DEBIAN_RELEASE=bookworm
 
 # Download Debian
 wget https://raspi.debian.net/daily/raspi_${RPI_MODEL}_${DEBIAN_RELEASE}.img.xz -O /tmp/raspi_${RPI_MODEL}_${DEBIAN_RELEASE}.img.xz
