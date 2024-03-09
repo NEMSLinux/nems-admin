@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# 2024-03-09 - Debian Bookworm still doesn't have official support for Raspberry Pi 5.
+# To expedite release, try https://github.com/byte4RR4Y/rpi5-image-builder/tree/main
+# Add to credits if used.
+
 # Great info here: https://raspi.debian.net/
 # https://wiki.debian.org/RaspberryPiImages
 
