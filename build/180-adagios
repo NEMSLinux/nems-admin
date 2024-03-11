@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Pause installing Adagios for now, till we get a stable build with the rest
+exit
+
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 if [[ ! -e /usr/lib/python3.9 ]]; then

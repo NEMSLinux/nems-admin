@@ -122,8 +122,13 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   fi
 
   # Setup Vendor capabilities
-  if [[ ! -e /boot/vendor ]]; then
-    mkdir /boot/vendor
+  if [[ ! -e /boot/firmware/vendor ]]; then
+    if [[ -e /boot/firmware ]]; then
+      mkdir /boot/firmware/vendor
+      ln -s /boot/firmware/vendor /boot/vendor
+    else
+      mkdir /boot/vendor
+    fi
   fi
 
   # Simple workaround to move old keyring to new
