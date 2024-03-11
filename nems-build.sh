@@ -38,6 +38,12 @@ fi
 
 ver=$(cat /root/nems/nems-admin/build-version)
 
+echo ""
+echo "#########"
+echo "Preparing to build NEMS Linux ${ver}..."
+echo "#########"
+echo ""
+
 # Detect hardware
 if [ ! -z $1 ]; then
   echo $1 > /etc/.nems_hw_model_identifier

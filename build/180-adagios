@@ -1,10 +1,28 @@
 #!/bin/bash
+
 echo $0 > /var/www/html/userfiles/nems-build.cur
+
+if [[ ! -e /usr/lib/python3.9 ]]; then
+  cd /tmp/
+  wget https://www.python.org/ftp/python/3.9.2/Python-3.9.2.tgz
+  tar xzvf Python-3.9.2.tgz
+  cd Python-3.9.2
+  ./configure --enable-optimizations --prefix=/usr/lib/python3.9
+  make
+  make install
+fi
 
 # Reset old install
 if [[ -e /opt/adagios/ ]]; then
   rm -rf /opt/adagios
 fi
+if [[ -e /etc/adagios/ ]]; then
+  rm -rf /etc/adagios
+fi
+if [[ -e /opt/okconfig/ ]]; then
+  rm -rf /opt/okconfig
+fi
+python -m pip cache purge
 
 # Add var folder if didn't get created in 050
 if [[ ! -e /var/lib/nagios/ ]]; then
@@ -18,7 +36,7 @@ pipcommand=pip3
 pythoncommand=python3
 
 # the number in /usr/local/lib/python${pythondir}
-pythondir=3.11
+pythondir=3.9
 
 # Install dependencies
 
@@ -52,6 +70,9 @@ fi
 # Install Adagios
 git clone -b master --depth 1 https://github.com/opinkerfi/adagios.git /opt/adagios
 
+# Enforce gunicorn version 20.1.0
+sed -i '/gunicorn/c\gunicorn==20.1.0' /opt/adagios/requirements.txt
+
 groupadd --system adagios
 adduser --no-create-home --system --group adagios
 usermod -aG nagios adagios
@@ -74,7 +95,9 @@ chown --recursive adagios:adagios /etc/adagios /var/lib/adagios
 
 # Activate Python virtualenv
 source /opt/adagios/venv/bin/activate
+python -m pip cache purge
 pynag config --append cfg_dir=/etc/adagios
+pynag config --append "broker_module=/usr/local/lib/mk-livestatus/livestatus.o'"
 
 ## Install Adagios as systemd service
 cp /opt/adagios/contrib/gunicorn.py /opt/adagios/gunicorn.py
@@ -133,7 +156,7 @@ fi
 
 
 ## Import templates
-# Need to addapt these for NEMS Linux 1.6 before they will work
+# Need to adapt these for NEMS Linux 1.6+ before they will work
 #cp -f /root/nems/nems-migrator/data/adagios/templates/403.html /opt/adagios/adagios/templates/
 #cp -f /root/nems/nems-migrator/data/adagios/templates/base.html /opt/adagios/adagios/templates/
 

@@ -24,7 +24,7 @@ fi
 #   https://www.nagios.org/downloads/nagios-core/thanks/?product_download=nagioscore-source
 # and place on repos packages
 
-ver=4.5.0
+ver=4.4.14
 
   cd /tmp
   wget https://packages.nemslinux.com/nagios/nagios-${ver}.tar.gz
