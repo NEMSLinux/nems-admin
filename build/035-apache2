@@ -31,6 +31,17 @@ a2enconf security
 /bin/sed -i~ '/SecServerSignature/d' /etc/apache2/conf-available/security.conf
 echo "SecServerSignature NEMS_Linux/$ver" >> /etc/apache2/conf-available/security.conf
 
+# Allow Apache to work with select services as root
+if ! grep -q "# Apache" /etc/sudoers; then
+echo '
+# Apache
+Defaults:www-data    !requiretty
+www-data ALL = (root) NOPASSWD: /usr/sbin/service nagios *
+www-data ALL = (root) NOPASSWD: /usr/local/nagios/bin/nagios -v *
+www-data ALL = (root) NOPASSWD: /usr/sbin/reboot
+' | sudo EDITOR='tee -a' visudo
+fi
+
 /bin/systemctl start apache2
 
 exit 0

@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Pause installing Adagios for now, till we get a stable build with the rest
-exit
-
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 if [[ ! -e /usr/lib/python3.9 ]]; then
@@ -61,15 +58,6 @@ Defaults:%nagios !requiretty
 ' | sudo EDITOR='tee -a' visudo
 fi
 
-if ! grep -q "# Adagios" /etc/sudoers; then
-echo '
-# Adagios
-Defaults:www-data    !requiretty
-www-data ALL = (root) NOPASSWD: /usr/sbin/service nagios *
-www-data ALL = (root) NOPASSWD: /usr/local/nagios/bin/nagios -v *
-' | sudo EDITOR='tee -a' visudo
-fi
-
 # Install Adagios
 git clone -b master --depth 1 https://github.com/opinkerfi/adagios.git /opt/adagios
 
@@ -100,7 +88,7 @@ chown --recursive adagios:adagios /etc/adagios /var/lib/adagios
 source /opt/adagios/venv/bin/activate
 python -m pip cache purge
 pynag config --append cfg_dir=/etc/adagios
-pynag config --append "broker_module=/usr/local/lib/mk-livestatus/livestatus.o'"
+pynag config --append "broker_module=/usr/local/lib/mk-livestatus/livestatus.o /usr/local/nagios/var/rw/live.sock"
 
 ## Install Adagios as systemd service
 cp /opt/adagios/contrib/gunicorn.py /opt/adagios/gunicorn.py
