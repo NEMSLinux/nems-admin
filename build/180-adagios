@@ -12,6 +12,8 @@ fi
 if [[ -e /opt/okconfig/ ]]; then
   rm -rf /opt/okconfig
 fi
+
+# Purge pip cache
 python -m pip cache purge
 
 # Add var folder if didn't get created in 050
@@ -19,11 +21,6 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   mkdir /var/lib/nagios/
   chown -R nagios:nagios /var/lib/nagios/
 fi
-
-pipcommand=pip3
-
-#pythoncommand=python
-pythoncommand=python3
 
 # Ensure update-alternatives is configured with Python 3.9
 /root/nems/nems-admin/build/038-python
@@ -39,6 +36,9 @@ apt-get install -y python3-dev
 apt-get install -y python3-paramiko
 apt-get install -y python3-venv
 
+# Install pynag
+pip install pynag
+
 # Prepare sudo permissions
 if ! grep -q "# Adagios" /etc/sudoers; then
 echo '
@@ -51,10 +51,13 @@ Defaults:%nagios !requiretty
 fi
 
 # Install Adagios
-git clone -b master --depth 1 https://github.com/opinkerfi/adagios.git /opt/adagios
+git clone -b master https://github.com/opinkerfi/adagios.git /opt/adagios
 
 # Enforce gunicorn version 20.1.0
 sed -i '/gunicorn/c\gunicorn==20.1.0' /opt/adagios/requirements.txt
+
+# Include setuptools in venv
+echo "setuptools==58.2.0" >> /opt/adagios/requirements.txt
 
 groupadd --system adagios
 adduser --no-create-home --system --group adagios
@@ -74,7 +77,7 @@ cp /opt/adagios/adagios/etc/sudoers.d/adagios /etc/sudoers.d/
 chown --recursive adagios:adagios /etc/adagios /var/lib/adagios
 
 # The following script will create a new Python virtual environment where Adagios is located.
-/opt/adagios/upgrade.sh
+PYTHON=/usr/lib/python3.9/bin/python3 && /opt/adagios/upgrade.sh
 
 # Activate Python virtualenv
 source /opt/adagios/venv/bin/activate
