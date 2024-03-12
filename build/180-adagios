@@ -219,7 +219,9 @@ a2enmod proxy_http
 ## Restart services
 systemctl restart nagios adagios apache2
 
-# Restore Python to auto mode
+# Restore Python
+rm /usr/bin/python3
+/root/nems/nems-admin/build/038-python
 update-alternatives --auto python
 
 # Echo so we don't exit when systemctl fails to restart apache2
