@@ -38,7 +38,6 @@ echo '
 Defaults:www-data    !requiretty
 www-data ALL = (root) NOPASSWD: /usr/sbin/service nagios *
 www-data ALL = (root) NOPASSWD: /usr/local/nagios/bin/nagios -v *
-www-data ALL = (root) NOPASSWD: /usr/sbin/reboot
 ' | sudo EDITOR='tee -a' visudo
 fi
 

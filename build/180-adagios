@@ -2,16 +2,6 @@
 
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
-if [[ ! -e /usr/lib/python3.9 ]]; then
-  cd /tmp/
-  wget https://www.python.org/ftp/python/3.9.2/Python-3.9.2.tgz
-  tar xzvf Python-3.9.2.tgz
-  cd Python-3.9.2
-  ./configure --enable-optimizations --prefix=/usr/lib/python3.9
-  make
-  make install
-fi
-
 # Reset old install
 if [[ -e /opt/adagios/ ]]; then
   rm -rf /opt/adagios
