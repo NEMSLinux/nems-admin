@@ -30,6 +30,7 @@ apt-get install -y libgmp3-dev
 apt-get install -y python3-dev
 apt-get install -y python3-paramiko
 apt-get install -y python3-venv
+apt-get install -y libsqlite3-dev
 
 # Ensure update-alternatives is configured with Python 3.9
 /root/nems/nems-admin/build/038-python
@@ -56,6 +57,9 @@ sed -i '/gunicorn/c\gunicorn==20.1.0' /opt/adagios/requirements.txt
 # Include setuptools in venv
 echo "setuptools==58.2.0" >> /opt/adagios/requirements.txt
 
+# Include sqlite3 in venv
+echo "pysqlite3" >> /opt/adagios/requirements.txt
+
 groupadd --system adagios
 adduser --no-create-home --system --group adagios
 usermod -aG nagios adagios
@@ -78,11 +82,44 @@ sleep 5
 
 # The following script will create a new Python virtual environment where Adagios is located.
   # Enable login as adagios user
-    chsh -s /bin/bash adagios
+#    chsh -s /bin/bash adagios
   # Run installer as adagios user
-    su -c "PYTHON=/usr/lib/python3.9/bin/python3 && /opt/adagios/upgrade.sh" adagios
+#    su -c "PYTHON=/usr/lib/python3.9/bin/python3 && /opt/adagios/upgrade.sh" adagios
+
+  cd /opt/adagios
+
+     # Create a new virtual environment
+     COMMAND="/usr/lib/python3.9/bin/python3 -m venv /opt/adagios/venv"
+     echo "Creating a new virtual environment..."
+     eval $COMMAND || {
+       echo "------------------------------------------------"
+       echo "ERROR: Failed to create the virtual environment."
+       echo "------------------------------------------------"
+       exit 1
+     }
+
+# Activate the virtual environment
+source "/opt/adagios/venv/bin/activate"
+
+# Upgrade pip
+COMMAND="pip install --upgrade pip"
+echo "Updating pip ($COMMAND)..."
+eval $COMMAND || exit 1
+pip -V
+
+# Install necessary system packages
+COMMAND="pip install wheel"
+echo "Installing Python system packages ($COMMAND)..."
+eval $COMMAND || exit 1
+
+# Install required Python packages
+COMMAND="pip install -r requirements.txt"
+echo "Installing core dependencies ($COMMAND)..."
+eval $COMMAND || exit 1
+
+
   # Disable login as adagios user
-    chsh -s /bin/false adagios
+#    chsh -s /bin/false adagios
 
 if [[ ! -d /opt/adagios/venv ]]; then
   echo
