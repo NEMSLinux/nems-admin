@@ -14,7 +14,7 @@ if [[ -e /opt/okconfig/ ]]; then
 fi
 
 # Purge pip cache
-python -m pip cache purge
+python3 -m pip cache purge
 
 # Add var folder if didn't get created in 050
 if [[ ! -e /var/lib/nagios/ ]]; then
@@ -22,19 +22,19 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   chown -R nagios:nagios /var/lib/nagios/
 fi
 
-# Ensure update-alternatives is configured with Python 3.9
-/root/nems/nems-admin/build/038-python
-# Set Python 3.9 as the default for this installation
-update-alternatives --set python /usr/lib/python3.9/bin/python3
-
 # Install dependencies
-
+apt-get update
 apt-get install -y libapache2-mod-wsgi-py3
 apt-get install -y python3-simplejson
 apt-get install -y libgmp3-dev
 apt-get install -y python3-dev
 apt-get install -y python3-paramiko
 apt-get install -y python3-venv
+
+# Ensure update-alternatives is configured with Python 3.9
+/root/nems/nems-admin/build/038-python
+# Set Python 3.9 as the default for this installation
+update-alternatives --set python /usr/lib/python3.9/bin/python3
 
 # Prepare sudo permissions
 if ! grep -q "# Adagios" /etc/sudoers; then
@@ -73,17 +73,33 @@ cp /opt/adagios/adagios/etc/adagios/conf.d/okconfig.conf /etc/adagios/conf.d/
 cp /opt/adagios/adagios/etc/sudoers.d/adagios /etc/sudoers.d/
 chown --recursive adagios:adagios /etc/adagios /var/lib/adagios
 
-echo "Adagios Virtual Environment prepped. Ready to proceed..."
+echo "Ready to build virtual environment..."
 sleep 5
 
 # The following script will create a new Python virtual environment where Adagios is located.
-su -c "PYTHON=/usr/lib/python3.9/bin/python3 && /opt/adagios/upgrade.sh" adagios
+  # Enable login as adagios user
+    chsh -s /bin/bash adagios
+  # Run installer as adagios user
+    su -c "PYTHON=/usr/lib/python3.9/bin/python3 && /opt/adagios/upgrade.sh" adagios
+  # Disable login as adagios user
+    chsh -s /bin/false adagios
+
+if [[ ! -d /opt/adagios/venv ]]; then
+  echo
+  echo "FAILED to create virtual environment."
+  echo
+  exit 1
+else
+  echo
+  echo "Virtual environment created successfully."
+  echo
+fi
 
 # Activate Python virtualenv
 source /opt/adagios/venv/bin/activate
 python -m pip cache purge
 pynag config --append cfg_dir=/etc/adagios
-pynag config --append "broker_module=/usr/local/lib/mk-livestatus/livestatus.o /usr/local/nagios/var/rw/live.sock"
+#pynag config --append "broker_module=/usr/local/lib/mk-livestatus/livestatus.o /usr/local/nagios/var/rw/live.sock"
 
 ## Install Adagios as systemd service
 cp /opt/adagios/contrib/gunicorn.py /opt/adagios/gunicorn.py
