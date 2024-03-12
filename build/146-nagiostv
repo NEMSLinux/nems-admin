@@ -17,8 +17,8 @@ if [[ -e /var/www/nagiostv ]]; then
   rm -rf /var/www/nagiostv
 fi
 
-# Obtain NagiosTV
-nagiostv_ver="0.8.5"
+# Obtain NagiosTV from Chris Carey
+nagiostv_ver="0.8.7"
 wget https://github.com/chriscareycode/nagiostv-react/releases/download/v${nagiostv_ver}/nagiostv-${nagiostv_ver}.tar.gz
 tar xvfz nagiostv-${nagiostv_ver}.tar.gz
 mv nagiostv /var/www/
@@ -44,6 +44,9 @@ if [[ -d /var/www/nagiostv ]]; then
 #  sed -i 's|<\/body>|<script src="/js/jquery.min.js"></script><script src="/js/jquery.backstretch.min.js"></script><?php require_once("/var/www/html/inc/wallpaper.php"); ?><style>.App { background: none; } .Base { background: rgba(0,0,0,.4); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding: 2px 8px; } .highcharts-legend-item tspan { fill: #aaa !important; }</style>' /var/www/nagiostv/index.php
   sed -i 's|</body>|<script src="/js/jquery.min.js"></script><script src="/js/jquery.backstretch.min.js"></script><?php require_once("/var/www/html/inc/wallpaper.php"); ?><style>.App { background: none; } .Base { background: rgba(0,0,0,.4); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding: 2px 8px; } .highcharts-legend-item tspan { fill: #aaa !important; }</style>&|' /var/www/nagiostv/index.php
   sed -i 's|./favicon.png|/favicon.ico|' /var/www/nagiostv/index.php
+
+  # Fix PHP 8.2 compatibility. See https://github.com/chriscareycode/nagiostv-react/issues/80#issuecomment-1992264128
+  sed -i 's|join($query_arr, "\\n");|implode("\\n", $query_arr);|' /var/www/nagiostv/connectors/livestatus.php
 
   # Generate livestatus connector config NagiosTV 0.6.5+ / NEMS Linux 1.6+
   socket=`/usr/local/bin/nems-info socket`
