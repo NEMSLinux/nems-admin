@@ -36,9 +36,6 @@ apt-get install -y python3-dev
 apt-get install -y python3-paramiko
 apt-get install -y python3-venv
 
-# Install pynag
-pip install pynag
-
 # Prepare sudo permissions
 if ! grep -q "# Adagios" /etc/sudoers; then
 echo '
@@ -50,7 +47,7 @@ Defaults:%nagios !requiretty
 ' | sudo EDITOR='tee -a' visudo
 fi
 
-# Install Adagios
+# Download Adagios source code
 git clone -b master https://github.com/opinkerfi/adagios.git /opt/adagios
 
 # Enforce gunicorn version 20.1.0
@@ -76,8 +73,11 @@ cp /opt/adagios/adagios/etc/adagios/conf.d/okconfig.conf /etc/adagios/conf.d/
 cp /opt/adagios/adagios/etc/sudoers.d/adagios /etc/sudoers.d/
 chown --recursive adagios:adagios /etc/adagios /var/lib/adagios
 
+echo "Adagios Virtual Environment prepped. Ready to proceed..."
+sleep 5
+
 # The following script will create a new Python virtual environment where Adagios is located.
-PYTHON=/usr/lib/python3.9/bin/python3 && /opt/adagios/upgrade.sh
+su -c "PYTHON=/usr/lib/python3.9/bin/python3 && /opt/adagios/upgrade.sh" adagios
 
 # Activate Python virtualenv
 source /opt/adagios/venv/bin/activate
