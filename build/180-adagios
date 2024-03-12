@@ -25,8 +25,10 @@ pipcommand=pip3
 #pythoncommand=python
 pythoncommand=python3
 
-# the number in /usr/local/lib/python${pythondir}
-pythondir=3.9
+# Ensure update-alternatives is configured with Python 3.9
+/root/nems/nems-admin/build/038-python
+# Set Python 3.9 as the default for this installation
+update-alternatives --set python /usr/lib/python3.9/bin/python3
 
 # Install dependencies
 
@@ -160,6 +162,9 @@ a2enmod proxy_http
 
 ## Restart services
 systemctl restart nagios adagios apache2
+
+# Restore Python to auto mode
+update-alternatives --auto python
 
 # Echo so we don't exit when systemctl fails to restart apache2
 echo "Done."

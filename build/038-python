@@ -12,9 +12,9 @@ if [[ ! -e /usr/lib/python3.9 ]]; then
   make install
 fi
 
-# Switch the default to Python 3.9.2
-update-alternatives --install /usr/bin/python3 python $(which python3) 1
-update-alternatives --install /usr/bin/python3 python /usr/lib/python3.9/bin/python3 2
+# Configure Python alts, with latest as the default
+update-alternatives --install /usr/bin/python3 python /usr/lib/python3.9/bin/python3 1
+update-alternatives --install /usr/bin/python3 python /usr/bin/python3.11 2
 yes '' | update-alternatives --config python
 
 if [[ -e /usr/lib/python*/EXTERNALLY-MANAGED ]]; then
