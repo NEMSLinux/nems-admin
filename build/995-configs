@@ -1,0 +1,8 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+apt-get install -y nems-configs
+
+
+
+
