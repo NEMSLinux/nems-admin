@@ -259,8 +259,8 @@ nameserver 2001:4860:4860::8844
      fi
   fi
   if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( $platform <= 159 )); then
-    # Raspberry Pi
-     addition="/root/nems/nems-admin/resize_rootfs/raspi\n"
+    # Raspberry Pi - now uses the universal resize tool
+     addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize\n"
      if grep -q "exit" /etc/rc.local; then
        # This file contains an exit command, so make sure our new command comes before it
        /bin/sed -i -- 's,exit,'"$addition"'exit,g' /etc/rc.local
