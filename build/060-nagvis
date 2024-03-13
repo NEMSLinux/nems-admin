@@ -6,8 +6,12 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # NOTE: I am NOT removing the old install since the install script will upgrade in-place.
 #       This is to prevent loss of existing NagVis user maps.
 
-# Since this is run as a patch, I want to be able to upgrade the software WITHOUT damaging the user's config:
-if [[ ! -e /usr/local/nagvis ]]; then
+# Run with --force to clobber everything
+# Note - IF you remove /usr/local/nagvis, you'll lose your auth database. You can fix this by running nems-passwd
+
+# Since this is run as a patch, I want to be able to upgrade the software WITHOUT damaging the user's config.
+# Only problem with this approach is that if NagVis includes demo maps, they'll get added, so only use upgrade mode if needed.
+if [[ ! -e /usr/local/nagvis ]] || [[ $1 == "--force" ]]; then
   freshinstall=1
   echo "Installing NagVis..."
 else
@@ -17,7 +21,7 @@ fi
 
 # Go git 'er
 tmpdir=`mktemp -d -p /usr/src/`
-wget -O $tmpdir/nv.tar.gz https://github.com/NagVis/nagvis/archive/refs/tags/nagvis-1.9.27.tar.gz
+wget -O $tmpdir/nv.tar.gz https://github.com/NagVis/nagvis/archive/refs/tags/nagvis-1.9.40.tar.gz
 cd $tmpdir
 tar zxvf nv.tar.gz
 cd nagvis*
@@ -38,14 +42,26 @@ if [[ $freshinstall == 1 ]]; then
   cp -f /root/nems/nems-migrator/data/nagvis/nagvis.ini.php /etc/nagvis/etc/
 fi
 
+# Replace the default Apache config with our modified virtualhost from nems-migrator-data
+# Clobbering this config is only needed since NagVis may, for upgrade purposes, be installed after migrator
+if [[ -e /root/nems/nems-migrator/data/apache2/conf-available/nagvis.conf ]]; then
+  echo "Installing NagVis Apache config from NEMS Migrator..."
+  cp -f /root/nems/nems-migrator/data/apache2/conf-available/nagvis.conf /etc/apache2/conf-available/nagvis.conf
+  sleep 1
+  echo "Done."
+fi
+
 # Set permissions
 chown -R www-data:www-data /etc/nagvis/etc/
 
 # Turn me on!
 if [[ ! -e /etc/apache2/conf-enabled/nagvis.conf ]]; then
   a2enconf nagvis
-  /bin/systemctl restart apache2
 fi
+
+echo "Restarting Apache..."
+/bin/systemctl restart apache2
+echo "Done."
 
 # Remove the tmp files
 cd /tmp
