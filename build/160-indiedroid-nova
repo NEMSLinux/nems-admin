@@ -1,9 +1,10 @@
 #!/bin/bash
-echo $0 > /var/www/html/userfiles/nems-build.cur
-
 platform=$(/usr/local/bin/nems-info platform)
 
 if (( $platform >= 200 )) && (( $platform <= 202 )); then
+
+# Doing this inside the platform detection to avoid non-Indiedroid boards from getting this set on filesystem resize at first boot
+echo $0 > /var/www/html/userfiles/nems-build.cur
 
 pat='^/dev/mmcblk1p2.* UUID="([^"]+)".* PARTUUID="([^"]+)"'
 while IFS= read -r line; do
