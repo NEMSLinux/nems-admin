@@ -23,7 +23,8 @@ platform=$(/usr/local/bin/nems-info platform)
 
 # Delete any default users and remove their home folders
   userdel -f -r baldnerd # Bald Nerd's Base Images
-  userdel -f -r pi
+  userdel -f -r robbief # Bald Nerd's development user
+  userdel -f -r pi # Old Raspberry Pi
   userdel -f -r test #armbian
   userdel -f -r odroid
   userdel -f -r rock64

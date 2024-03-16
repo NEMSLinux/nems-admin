@@ -38,11 +38,13 @@ else
   
   platform=$(/usr/local/bin/nems-info platform)
 
-  # Check if nemsadmin exists, and create it if not
-  if [ ! -d /home/nemsadmin ]; then
-    # Create the nemsadmin user
-    /root/nems/nems-admin/build/030-user
-  fi
+  # Create (or re-activate) the nemsadmin user
+  # Not checking for existence first because the
+  # user may exist in a disabled state during
+  # development. adduser will simply report the
+  # user already exists in that case, but account
+  # and password will be configured by the script.
+  /root/nems/nems-admin/build/030-user
 
   # Ensure all upgrades have been performed
   /usr/local/bin/nems-upgrade
