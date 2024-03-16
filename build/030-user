@@ -3,7 +3,8 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 platform=$(/usr/local/bin/nems-info platform)
 
 # Create skeleton user data
-  wget -O /etc/skel/license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+#  wget -O /etc/skel/license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+  wget -O /etc/skel/license.txt https://www.gnu.org/licenses/gpl-3.0.txt
   cp /root/nems/nems-migrator/data/nems/changelog.txt /etc/skel/
 
 # Create nemsadmin user
