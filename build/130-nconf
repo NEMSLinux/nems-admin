@@ -3,6 +3,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # nConf
 cd /var/www/
+rm -rf nconf
 apt update
 # Need to be able to use the MySQL database from PHP
 apt install -y libdbi-perl libdbd-mysql-perl
