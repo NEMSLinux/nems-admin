@@ -1,6 +1,12 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+# Force a particular commit for testing
+if [[ $1 == '-t' ]]; then
+  tree=641bcb5a9cea18d44bc57003b12e611866e1cb92
+  echo "Compiling from tree ${tree}..."
+fi
+
 # nConf
 cd /var/www/
 rm -rf nconf
@@ -10,6 +16,11 @@ apt install -y libdbi-perl libdbd-mysql-perl
 /bin/systemctl restart apache2
 git clone --branch 1.6 https://github.com/NEMSLinux/nconf && chown -R www-data:www-data nconf
 cd nconf
+
+if [[ ! -z $tree ]]; then
+  git checkout -b testing ${tree}
+fi
+
 git config --global --add safe.directory /var/www/nconf
 git config pull.rebase false
 
