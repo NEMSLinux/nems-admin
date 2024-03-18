@@ -6,12 +6,32 @@ platform=$(/usr/local/bin/nems-info platform)
 if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( $platform <= 199 )); then
 
   # Hide the Raspberry Pi logo from the boot screen
-  if ! grep -q "logo.nologo" /boot/cmdline.txt; then
-    sed -i '1!b;s/$/ logo.nologo/g' /boot/cmdline.txt
+  if [[ -e /boot/firmware/cmdline.txt ]]; then
+    if ! grep -q "logo.nologo" /boot/firmware/cmdline.txt; then
+      sed -i '1!b;s/$/ logo.nologo/g' /boot/firmware/cmdline.txt
+    fi
+  else
+    if ! grep -q "logo.nologo" /boot/cmdline.txt; then
+      sed -i '1!b;s/$/ logo.nologo/g' /boot/cmdline.txt
+    fi
   fi
 
   # Contains vcgencmd
   apt-get -y install libraspberrypi-bin
+
+  echo "Installing raspi-config... "
+  apt update
+  apt -y install raspi-config
+
+  apt -y install libnewt0.52
+  apt -y install parted
+  apt -y install triggerhappy
+
+  # Update the firmware to the latest
+  echo "Ensuring the latest Raspberry Pi firmware is included."
+  rm /boot/firmware/.firmware_revision
+  rm /boot/firmware/.bootloader_revision
+  yes | rpi-update
 
 fi
 

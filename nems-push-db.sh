@@ -186,9 +186,22 @@ chown -R mysql:mysql /var/lib/mysql
 systemctl start mysql
 systemctl start nagios
 
+user=`/usr/local/bin/nems-info username`
+home="/home/${user}"
+transfer="${home}/migrator-package-update"
+if [[ -d ${transfer} ]]; then
+  rm -rf ${transfer}
+fi
+mkdir $transfer
+cp -R /root/nems/nems-migrator/data/nagios/conf $transfer/
+cp -R /root/nems/nems-migrator/data/mysql $transfer/
+
 echo
 echo "Done."
 echo ""
 echo "Remember to migrate the following folders to debpack on repos and build nems-migrator-data:"
 echo "/root/nems/nems-migrator/data/nagios/conf"
 echo "/root/nems/nems-migrator/data/mysql"
+echo ""
+echo "I've placed these in ${transfer} which you can access via samba."
+echo ""
