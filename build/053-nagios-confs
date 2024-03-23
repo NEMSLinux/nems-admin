@@ -33,6 +33,9 @@ fi
 
 # Create NEMS configuration folder
   mkdir -p /etc/nems/conf
+# Create Event Handlers folder
+  mkdir -p /etc/nems/eventhandlers
+  chown -R nagios:nagios /etc/nems/eventhandlers
 # Copy sample data
   cp -R /root/nems/nems-migrator/data/nagios/conf/global /etc/nems/conf/
   cp -R /root/nems/nems-migrator/data/nagios/conf/Default_collector /etc/nems/conf/
