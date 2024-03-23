@@ -146,6 +146,9 @@ mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=544
 mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5305 OR id_item=5307 OR id_item=5306"
 
 # Delete all Hostgroups
+# Note that a nems-restore will only restore hostgroups that the user's backup contains (I.e., hostgroups they used).
+# Therefore, need to write an additinoal command to restore these sample hostgroups after nems-restore operation to give them back to the user.
+# NEMS hostgroup is 5445
 mysql -u nconf -pnagiosadmin nconf -e "DELETE FROM ConfigItems WHERE id_item=5449 OR id_item=5347 OR id_item=5445 OR id_item=5346 OR id_item=5422 OR id_item=5423 OR id_item=5345 OR id_item=5344 OR id_item=5489 OR id_item=5514 OR id_item=5516 OR id_item=5515 OR id_item=5517"
 
 # Delete all Advanced Services
