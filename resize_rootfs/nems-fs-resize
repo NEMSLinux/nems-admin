@@ -40,8 +40,16 @@ fi
 
 resize() {
 
+  if [[ -e /dev/${rootdev}p${rootpart} ]]; then
+    # This one is a mmc device (with p in the name)
+    datapartpath="/dev/${rootdev}p${rootpart}"
+  else
+    # This one is a sd device (with no p in the name)
+    datapartpath="/dev/${rootdev}${rootpart}"
+  fi
+
   # Check if bootable bit is set
-  boot=$(fdisk -l -o device,boot /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
+  boot=$(fdisk -l -o device,boot /dev/${rootdev}|grep ${datapartpath}|awk '{print $2}')
   if [[ $boot == "*" ]]; then
     bootbit=1
   else
@@ -49,13 +57,7 @@ resize() {
   fi
 
   # Re-create the partition using all available space
-  if [[ -e /dev/${rootdev}p${rootpart} ]]; then
-    # This one is a mmc device (with p in the name)
-    start=$(fdisk -l -o device,start,end /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
-  else
-    # This one is a sd device (with no p in the name)
-    start=$(fdisk -l -o device,start,end /dev/${rootdev}|grep /dev/${rootdev}${rootpart}|awk '{print $2}')
-  fi
+  start=$(fdisk -l -o device,start,end /dev/${rootdev}|grep ${datapartpath}|awk '{print $2}')
   echo "Starting Sector: ${start}"
   set +e
   fdisk /dev/${rootdev} <<EOF
@@ -73,7 +75,7 @@ EOF
   # Set the boot bit if it was set previously
   if (( $bootbit == 1 )); then
     # Check if bootable bit is set right now, after partition creation. Don't change it if it is (else 'a' will disable boot bit)
-    boot=$(fdisk -l -o device,boot /dev/${rootdev}|grep /dev/${rootdev}p${rootpart}|awk '{print $2}')
+    boot=$(fdisk -l -o device,boot /dev/${rootdev}|grep ${datapartpath}|awk '{print $2}')
     if [[ $boot != "*" ]]; then
   fdisk /dev/${rootdev} <<EOF
 a
@@ -85,7 +87,7 @@ EOF
 
   set -e
   partx -u /dev/${rootdev}
-  resize2fs /dev/${rootdev}p${rootpart}
+  resize2fs ${datapartpath}
   set +x
 }
 
