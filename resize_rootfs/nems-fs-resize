@@ -53,9 +53,6 @@ resize() {
   echo "Starting Sector: ${start}"
   set +e
   fdisk /dev/${rootdev} <<EOF
-x
-f
-r
 p
 d
 $rootpart
