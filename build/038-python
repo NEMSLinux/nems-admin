@@ -17,10 +17,8 @@ update-alternatives --install /usr/bin/python3 python /usr/lib/python3.9/bin/pyt
 update-alternatives --install /usr/bin/python3 python /usr/bin/python3.11 2
 yes '' | update-alternatives --config python
 
-if [[ -e /usr/lib/python*/EXTERNALLY-MANAGED ]]; then
-  echo "Clearing Externally Managed flag from Python..."
-  rm /usr/lib/python*/EXTERNALLY-MANAGED
-  echo "Done."
-fi
+echo "Clearing Externally Managed flag from Python..."
+find /usr/lib/python*/ -name 'EXTERNALLY-MANAGED' -delete
+echo "Done."
 
 exit 0
