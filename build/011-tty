@@ -1,6 +1,8 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+ver=$(cat /root/nems/nems-admin/build-version | tr -d '[:space:]')
+
 platform=$(/usr/local/bin/nems-info platform)
 if (( $platform != 21 )); then
 
@@ -21,13 +23,13 @@ setterm -blank 0
 chvt 7
 
 # Distro Note
-printf "NEMS Linux 1.6 - "
+echo "NEMS Linux '$ver' by Robbie Ferguson (nemslinux.com)"
 uname -a
 
 # Print the IP address
 _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
-  printf "My IP address is %s\n" "$_IP"
+  printf "IP Address: $_IP"
 fi
 
 # Load Swap into ZRAM NEMS0000
