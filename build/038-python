@@ -7,7 +7,7 @@ if [[ ! -e /usr/lib/python3.9 ]]; then
   wget https://www.python.org/ftp/python/3.9.2/Python-3.9.2.tgz
   tar xzvf Python-3.9.2.tgz
   cd Python-3.9.2
-  ./configure --enable-optimizations --prefix=/usr/lib/python3.9
+  ./configure --enable-optimizations --enable-loadable-sqlite-extensions --prefix=/usr/lib/python3.9
   make
   make install
 fi

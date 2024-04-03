@@ -31,6 +31,7 @@ apt-get install -y python3-dev
 apt-get install -y python3-paramiko
 apt-get install -y python3-venv
 apt-get install -y libsqlite3-dev
+apt-get install -y sqlite3
 
 # Ensure update-alternatives is configured with Python 3.9
 /root/nems/nems-admin/build/038-python
