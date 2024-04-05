@@ -6,7 +6,8 @@
     - Halt the machine
     - Remove Optical drive and USB 2.0 controller
   - Export to OVA using [OVF Tool](https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742)
-    - Simply run [ova-create](ova-create)
+    - x64: Simply run [ova-create](ova-create)
+    - Aarch64: Manually export the VMDK, MF and OVF from ESXi, then run the commands found in [ova-create](ova-create) manually.
 - VHD:
   - Extract VMDK file from OVA.
   - With VirtualBox installed, convert the VMDK file with the following command: `"c:\Program Files\Oracle\VirtualBox\VBoxManage.exe" clonemedium --format vhd NEMS-disk1.vmdk NEMS.vhd`
