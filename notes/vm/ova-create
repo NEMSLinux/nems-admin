@@ -30,6 +30,9 @@ sed -i "/\.ovf/s/= .*/= $(sha1sum *.ovf |cut -d " " -f 1)/;/nvram/d" *.mf
 tar -cf /tmp/NEMS.ova *.ovf
 tar -rf /tmp/NEMS.ova *.mf
 tar -rf /tmp/NEMS.ova *.vmdk
+if [[ -e *.nvram ]]; then
+  tar -rf /tmp/NEMS.ova *.nvram
+fi
 
 # Remove the tmp files
 cd /tmp
