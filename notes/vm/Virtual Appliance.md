@@ -1,6 +1,7 @@
 - OVA:
   - Build on ESXi as per normal.
     - See [this page](https://kb.vmware.com/s/article/2007240) for virtual hardware version compatibility.
+    - Ensure boot is set to BIOS (not EFI).
     - Ensure non-free repo is enabled!
     - Use MAC address: 080027C75EC1
     - Halt the machine
