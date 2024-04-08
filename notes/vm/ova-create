@@ -15,9 +15,6 @@ tar -xf ../NEMS.ova
 # This one is critical: will cause OVA to not import on older versions
 sed -i -E "/nvram/d" *.ovf
 
-# Change the VMX version to work on ARM
-sed -i 's\vmx-10\vmx-14\g' *.ovf
-
 # Purge other settings from 6.7 that will cause warnings in older versions of ESXi
 # These won't halt the deployment of an OVA, but will cause misleading warnings
 sed -i -E "/vbsEnabled/d" *.ovf
