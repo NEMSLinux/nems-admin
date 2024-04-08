@@ -3,7 +3,7 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 platform=$(/usr/local/bin/nems-info platform)
 
-if (( $platform == 20 )); then
+if (( $platform == 20 )) || (( $platform == 26 )); then
 
   # VMWare Open Source implementation
     apt-get install -y open-vm-tools
@@ -17,5 +17,8 @@ if (( $platform == 20 )); then
   if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
     echo "PATCH-000002" >> /var/log/nems/patches.log
   fi
+
+  # Disable 1-Wire, since a virtual machine doesn't have GPIO
+  find /etc/rc*.d/ -exec grep -q 'owfs' '{}' \; -delete
 
 fi
