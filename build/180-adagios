@@ -5,6 +5,10 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # Reset old install
 if [[ -e /opt/adagios/ ]]; then
   rm -rf /opt/adagios
+  # We know this is a RE-install, so purge Python 3.9 as well to reinstall it below
+  if [[ -e /usr/lib/python3.9 ]]; then
+    rm -rf /usr/lib/python3.9
+  fi
 fi
 if [[ -e /etc/adagios/ ]]; then
   rm -rf /etc/adagios
@@ -35,6 +39,8 @@ apt-get install -y sqlite3
 
 # Ensure update-alternatives is configured with Python 3.9
 /root/nems/nems-admin/build/038-python
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
 # Set Python 3.9 as the default for this installation
 update-alternatives --set python /usr/lib/python3.9/bin/python3
 
