@@ -2,6 +2,7 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 platform=$(/usr/local/bin/nems-info platform)
+nemsver=$(/usr/local/bin/nems-info nemsver)
 
 if (( $platform == 21 )); then
 
@@ -30,9 +31,12 @@ else
     # Delete current settings
     sed -i '/GRUB_HIDDEN_TIMEOUT/d' /etc/default/grub
     sed -i '/GRUB_TIMEOUT/d' /etc/default/grub
+    sed -i '/GRUB_DISTRIBUTOR/d' /etc/default/grub
 
     # Add NEMS settings
     echo "
+    GRUB_DISTRIBUTOR="NEMS Linux ${nemsver}"
+
     # Hide GRUB Menu
     GRUB_HIDDEN_TIMEOUT=0
     GRUB_TIMEOUT=0" >> /etc/default/grub
