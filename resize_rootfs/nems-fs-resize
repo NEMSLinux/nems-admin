@@ -95,18 +95,19 @@ resize
 
 echo ""
 
-# Log that patch (resize) has been applied to this system
-# Activates features such as bootscreen.sh
+# NEMS Linux-specific things to do
 if [[ -d /var/log/nems ]]; then
+
+  # Log that patch (resize) has been applied to this system
+  # Activates features such as bootscreen.sh
   if ! grep -q "PATCH-000002" /var/log/nems/patches.log; then
     echo "PATCH-000002" >> /var/log/nems/patches.log
   fi
+
+  # NEMS runs this script on first boot, so if this is NEMS, this entry will be removed
+  sed -i "s,/root/nems/nems-admin/resize_rootfs/nems-fs-resize,,g" /etc/rc.local
+  
+  # PARTUUID has changed, so allow the Indiedroid Nova to update its kernel params
+  /root/nems/nems-admin/build/160-indiedroid-nova
 fi
-
-# NEMS runs this script on first boot, so if this is NEMS, this entry will be removed
-sed -i "s,/root/nems/nems-admin/resize_rootfs/nems-fs-resize,,g" /etc/rc.local
-
-# PARTUUID has changed, so allow the Indiedroid Nova to update its kernel params
-/root/nems/nems-admin/build/160-indiedroid-nova
-
 echo "Done! If you don't see the free space, reboot."
