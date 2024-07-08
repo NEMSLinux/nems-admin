@@ -17,10 +17,11 @@ apt update
 apt install --yes git screen dialog gnupg nano apt-utils sudo
 
 # Add NEMS Linux Repositories
-echo "# NEMS Linux 1.6 Repositories
-deb https://repos.nemslinux.com/ 1.6 main
-deb https://repos.nemslinux.com/ 1.6 migrator
-deb https://repos.nemslinux.com/ 1.6 plugins" > /etc/apt/sources.list.d/nemslinux.list
+if [[ ! -d /etc/apt/keyrings/ ]]; then
+  sudo mkdir -m 0755 -p /etc/apt/keyrings/
+fi
+curl -fsSL https://repos.nemslinux.com/nemslinux.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nemslinux.gpg.key
+echo "deb [signed-by=/etc/apt/keyrings/nemslinux.gpg.key] https://repos.nemslinux.com/ 1.6 main migrator plugins" | sudo tee /etc/apt/sources.list.d/nemslinux.list > /dev/null
 
 # Add the public key [expires: 2024-07-05]
 wget -O - https://repos.nemslinux.com/nemslinux.gpg.key | apt-key add -
