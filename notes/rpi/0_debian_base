@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# NOTE: Before building, extend GPG key for repos as many years as support will be provided for this build. See repos/setup
+
 # 2024-03-09 - Debian Bookworm still doesn't have official support for Raspberry Pi 5.
 # To expedite release, try https://github.com/byte4RR4Y/rpi5-image-builder/tree/main
 # Add to credits if used.
