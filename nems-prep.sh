@@ -23,7 +23,7 @@ fi
 curl -fsSL https://repos.nemslinux.com/nemslinux.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nemslinux.gpg.key
 echo "deb [signed-by=/etc/apt/keyrings/nemslinux.gpg.key] https://repos.nemslinux.com/ 1.6 main migrator plugins" | sudo tee /etc/apt/sources.list.d/nemslinux.list > /dev/null
 
-# Add the public key [expires: 2024-07-05]
+# Add the public key [expires: 2032-07-06]
 wget -O - https://repos.nemslinux.com/nemslinux.gpg.key | apt-key add -
 
 # Base OS won't necessarily have these key components yet
