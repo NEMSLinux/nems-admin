@@ -1,0 +1,95 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# Output the default configuration
+echo '{
+  "titleString": "NagiosTV",
+  "dataSource": "livestatus",
+  "baseUrl": "/nagios/cgi-bin/",
+  "livestatusPath": "connectors/livestatus.php",
+  "fetchHostFrequency": 30,
+  "fetchServiceFrequency": 30,
+  "fetchAlertFrequency": 60,
+  "fetchHostGroupFrequency": 3600,
+  "fetchCommentFrequency": 120,
+  "alertDaysBack": 14,
+  "alertHoursBack": 24,
+  "alertMaxItems": 50,
+  "hostsAndServicesSideBySide": false,
+  "hideSummarySection": true,
+  "hideServiceSection": false,
+  "hideServicePending": false,
+  "hideServiceWarning": false,
+  "hideServiceUnknown": false,
+  "hideServiceCritical": false,
+  "hideServiceAcked": false,
+  "hideServiceScheduled": false,
+  "hideServiceFlapping": false,
+  "hideServiceSoft": false,
+  "hideServiceNotificationsDisabled": false,
+  "serviceSortOrder": "newest",
+  "hideHostSection": false,
+  "hideHostPending": false,
+  "hideHostDown": false,
+  "hideHostUnreachable": false,
+  "hideHostAcked": false,
+  "hideHostScheduled": false,
+  "hideHostFlapping": false,
+  "hideHostSoft": false,
+  "hideHostNotificationsDisabled": false,
+  "hostSortOrder": "newest",
+  "hideHistory": false,
+  "hideHistoryTitle": false,
+  "hideHistory24hChart": false,
+  "hideHistoryChart": true,
+  "hideAlertSoft": false,
+  "hostgroupFilter": "",
+  "servicegroupFilter": "",
+  "versionCheckDays": 0,
+  "language": "English",
+  "locale": "en",
+  "dateFormat": "llll",
+  "clockDateFormat": "ll",
+  "clockTimeFormat": "LTS",
+  "fontSizeEm": "0.8em",
+  "customLogoEnabled": true,
+  "customLogoUrl": "/img/nems_logo.png",
+  "doomguyEnabled": false,
+  "doomguyConcernedAt": 1,
+  "doomguyAngryAt": 2,
+  "doomguyBloodyAt": 4,
+  "showEmoji": false,
+  "speakItems": true,
+  "speakItemsVoice": "Microsoft Mark - English (United States)",
+  "playSoundEffects": true,
+  "soundEffectCritical": "./sample-audio/critical.mp3",
+  "soundEffectWarning": "./sample-audio/warning.mp3",
+  "soundEffectOk": "./sample-audio/ok.mp3",
+  "showNextCheckInProgressBar": true,
+  "hideHamburgerMenu": true,
+  "hideBottomMenu": true,
+  "automaticScroll": false,
+  "automaticScrollTimeMultiplier": 4,
+  "automaticScrollWaitSeconds": 10,
+  "showMiniMap": false,
+  "miniMapWidth": 120,
+  "flynnEnabled": false,
+  "flynnConcernedAt": 1,
+  "flynnAngryAt": 4,
+  "flynnBloodyAt": 8,
+  "flynnCssScale": "0.8"
+}' > /var/www/nagiostv/client-settings.json
+
+# Set the Tactical Overview to include the NEMS Server Alias, if applicable
+NEMSAlias=$(/usr/local/bin/nems-info alias | xargs)
+NEMSAlias=$(echo $NEMSAlias | tr -d '\r')
+NEMSAlias=$(echo $NEMSAlias | sed 's/"/\\"/g')
+if [[ -z "$NEMSAlias" || "$NEMSAlias" == "NEMS" ]]; then
+  titleString="NEMS Tactical Overview"
+else
+  # Set the titleString but escape any double quotes so it can be safely saved to the config
+  titleString="NEMS Tactical Overview - ${NEMSAlias}"
+fi
+
+# Change the titleString variable in the config file
+jq --arg new_title "$titleString" '.titleString = $new_title' /var/www/nagiostv/client-settings.json > tmp.$$.json && mv tmp.$$.json /var/www/nagiostv/client-settings.json
