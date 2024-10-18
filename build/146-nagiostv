@@ -18,7 +18,7 @@ if [[ -e /var/www/nagiostv ]]; then
 fi
 
 # Obtain NagiosTV from Chris Carey
-nagiostv_ver="0.8.7"
+nagiostv_ver="0.9.2"
 wget https://github.com/chriscareycode/nagiostv-react/releases/download/v${nagiostv_ver}/nagiostv-${nagiostv_ver}.tar.gz
 tar xvfz nagiostv-${nagiostv_ver}.tar.gz
 mv nagiostv /var/www/
@@ -33,15 +33,92 @@ if [[ -d /var/www/nagiostv ]]; then
    # Account for the Migrator differences between 1.6 and 1.5.x. In 1.5 the migrator data folder contained version.
     cp -f /root/nems/nems-migrator/data/1.6/nagiostv.conf /etc/apache2/conf-available/
   fi
-#  echo '{"titleString":"NEMS Tactical Overview","baseUrl":"/nagios/cgi-bin/","alertDaysBack":14,"alertMaxItems":1000,"hideServicePending":false,"hideServiceWarning":false,"hideServiceUnknown":false,"hideServiceCritical":false,"hideServiceAcked":false,"hideServiceScheduled":false,"hideServiceFlapping":false,"serviceSortOrder":"newest","hideHostPending":false,"hideHostDown":false,"hideHostUnreachable":false,"hideHostAcked":false,"hideHostScheduled":false,"hideHostFlapping":false,"hideHistory":false,"hideHistoryTitle":false,"hideHistoryChart":false,"hostSortOrder":"newest","versionCheckDays":0,"language":"English","flynnEnabled":false,"flynnConcernedAt":1,"flynnAngryAt":4,"flynnBloodyAt":8,"flynnCssScale":"0.8","showEmoji":false,"speakItems":true,"speakItemsVoice":"","playSoundEffects":true,"soundEffectCritical":"./sample-audio/critical.mp3","soundEffectWarning":"./sample-audio/warning.mp3","soundEffectOk":"./sample-audio/ok.mp3"}' > /var/www/nagiostv/client-settings.json
-  echo '{"titleString":"NEMS Tactical Overview","dataSource":"livestatus","baseUrl":"/nagios/cgi-bin/","livestatusPath":"connectors/livestatus.php","alertDaysBack":14,"alertMaxItems":1000,"hideServiceSection":false,"hideServicePending":false,"hideServiceWarning":false,"hideServiceUnknown":false,"hideServiceCritical":false,"hideServiceAcked":false,"hideServiceScheduled":false,"hideServiceFlapping":false,"hideServiceSoft":false,"hideHostNotificationsDisabled":false,"serviceSortOrder":"newest","hideHostSection":false,"hideHostPending":false,"hideHostDown":false,"hideHostUnreachable":false,"hideHostAcked":false,"hideHostScheduled":false,"hideHostFlapping":false,"hideHostSoft":false,"hideServiceNotificationsDisabled":false,"hideHistory":false,"hideHistoryTitle":false,"hideHistoryChart":false,"hideAlertSoft":false,"hostSortOrder":"newest","hostgroupFilter":"","versionCheckDays":0,"language":"English","locale":"en","dateFormat":"llll","clockDateFormat":"ll","clockTimeFormat":"LTS","fontSizeEm":"1em","customLogoEnabled":true,"customLogoUrl":"/img/nems_logo.png","flynnEnabled":false,"flynnConcernedAt":1,"flynnAngryAt":4,"flynnBloodyAt":8,"flynnCssScale":"0.8","showEmoji":false,"speakItems":true,"speakItemsVoice":"","playSoundEffects":true,"soundEffectCritical":"./sample-audio/critical.mp3","soundEffectWarning":"./sample-audio/warning.mp3","soundEffectOk":"./sample-audio/ok.mp3"}' > /var/www/nagiostv/client-settings.json
+# Output the default configuration
+# Can be modified in NEMS SST
+echo '{
+  "titleString": "NEMS Tactical Overview",
+  "dataSource": "livestatus",
+  "baseUrl": "/nagios/cgi-bin/",
+  "livestatusPath": "connectors/livestatus.php",
+  "fetchHostFrequency": 30,
+  "fetchServiceFrequency": 30,
+  "fetchAlertFrequency": 60,
+  "fetchHostGroupFrequency": 3600,
+  "fetchCommentFrequency": 120,
+  "alertDaysBack": 14,
+  "alertHoursBack": 24,
+  "alertMaxItems": 50,
+  "hostsAndServicesSideBySide": false,
+  "hideSummarySection": true,
+  "hideServiceSection": false,
+  "hideServicePending": false,
+  "hideServiceWarning": false,
+  "hideServiceUnknown": false,
+  "hideServiceCritical": false,
+  "hideServiceAcked": false,
+  "hideServiceScheduled": false,
+  "hideServiceFlapping": false,
+  "hideServiceSoft": false,
+  "hideServiceNotificationsDisabled": false,
+  "serviceSortOrder": "newest",
+  "hideHostSection": false,
+  "hideHostPending": false,
+  "hideHostDown": false,
+  "hideHostUnreachable": false,
+  "hideHostAcked": false,
+  "hideHostScheduled": false,
+  "hideHostFlapping": false,
+  "hideHostSoft": false,
+  "hideHostNotificationsDisabled": false,
+  "hostSortOrder": "newest",
+  "hideHistory": false,
+  "hideHistoryTitle": false,
+  "hideHistory24hChart": false,
+  "hideHistoryChart": true,
+  "hideAlertSoft": false,
+  "hostgroupFilter": "",
+  "servicegroupFilter": "",
+  "versionCheckDays": 0,
+  "language": "English",
+  "locale": "en",
+  "dateFormat": "llll",
+  "clockDateFormat": "ll",
+  "clockTimeFormat": "LTS",
+  "fontSizeEm": "0.8em",
+  "customLogoEnabled": true,
+  "customLogoUrl": "/img/nems_logo.png",
+  "doomguyEnabled": false,
+  "doomguyConcernedAt": 1,
+  "doomguyAngryAt": 2,
+  "doomguyBloodyAt": 4,
+  "showEmoji": false,
+  "speakItems": true,
+  "speakItemsVoice": "Microsoft Mark - English (United States)",
+  "playSoundEffects": true,
+  "soundEffectCritical": "./sample-audio/critical.mp3",
+  "soundEffectWarning": "./sample-audio/warning.mp3",
+  "soundEffectOk": "./sample-audio/ok.mp3",
+  "showNextCheckInProgressBar": true,
+  "hideHamburgerMenu": true,
+  "hideBottomMenu": true,
+  "automaticScroll": false,
+  "automaticScrollTimeMultiplier": 4,
+  "automaticScrollWaitSeconds": 10,
+  "showMiniMap": false,
+  "miniMapWidth": 120,
+  "flynnEnabled": false,
+  "flynnConcernedAt": 1,
+  "flynnAngryAt": 4,
+  "flynnBloodyAt": 8,
+  "flynnCssScale": "0.8"
+}' > /var/www/nagiostv/client-settings.json
+
   # CSS Overrides for NEMS Linux
-  echo '.BottomPanel, .SettingsBox, .FooterAreaRight, .FooterAreaMiddle, .softIcon, .NavBottomBar, .hot-dog-menu, .sound-icon, .hamburger-menu { display:none !important; } .CustomLogo img { max-height: 36px !important; } .header-application-name { margin-left: 10px !important; }' >> /var/www/nagiostv/static/css/main.*.css
+  echo '.filter-icon, .generic-icon, .BottomPanel, .SettingsBox, .FooterAreaRight, .FooterAreaMiddle, .softIcon, .NavBottomBar, .hot-dog-menu, .sound-icon, .hamburger-menu { display:none !important; } .CustomLogo img { max-height: 36px !important; } .header-application-name { margin-left: 10px !important; }' >> /var/www/nagiostv/assets/*.css
   # Set permissions
   chown -R www-data:www-data /var/www/nagiostv
   chown root:root /etc/apache2/conf-available/nagiostv.conf
   mv /var/www/nagiostv/index.html /var/www/nagiostv/index.php
-#  sed -i 's|<\/body>|<script src="/js/jquery.min.js"></script><script src="/js/jquery.backstretch.min.js"></script><?php require_once("/var/www/html/inc/wallpaper.php"); ?><style>.App { background: none; } .Base { background: rgba(0,0,0,.4); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding: 2px 8px; } .highcharts-legend-item tspan { fill: #aaa !important; }</style>' /var/www/nagiostv/index.php
   sed -i 's|</body>|<script src="/js/jquery.min.js"></script><script src="/js/jquery.backstretch.min.js"></script><?php require_once("/var/www/html/inc/wallpaper.php"); ?><style>.App { background: none; } .Base { background: rgba(0,0,0,.4); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding: 2px 8px; } .highcharts-legend-item tspan { fill: #aaa !important; }</style>&|' /var/www/nagiostv/index.php
   sed -i 's|./favicon.png|/favicon.ico|' /var/www/nagiostv/index.php
 
