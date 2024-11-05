@@ -40,7 +40,14 @@ if [[ -d /var/www/nagiostv ]]; then
   chown -R www-data:www-data /var/www/nagiostv
   chown root:root /etc/apache2/conf-available/nagiostv.conf
   mv /var/www/nagiostv/index.html /var/www/nagiostv/index.php
+
+  ## Auto-refresh the browser once every day (in case it's left on 24/7)
+  sed -i 's|</head>|<meta http-equiv="refresh" content="<?= strtotime("tomorrow 2:00 am") - time(); ?>" >&|' /var/www/nagiostv/index.php
+  ## Use the NEMS background according to NEMS SST settings
   sed -i 's|</body>|<script src="/js/jquery.min.js"></script><script src="/js/jquery.backstretch.min.js"></script><?php require_once("/var/www/html/inc/wallpaper.php"); ?><style>.App { background: none; } .Base { background: rgba(0,0,0,.4); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; padding: 2px 8px; } .highcharts-legend-item tspan { fill: #aaa !important; }</style>&|' /var/www/nagiostv/index.php
+  ## Hide the mouse cursor and scrollbar when inactive, show them when mouse moves
+  sed -i 's|</body>|<script>jQuery(document).ready(function() { let timer; $(document).mousemove(function() { clearTimeout(timer); $("body, html").css({ cursor: "default" }); $(".vertical-scroll").css("overflow-y", "scroll"); timer = setTimeout(function() { $("body, html").css({ cursor: "none" }); $(".vertical-scroll").css("overflow-y", "hidden"); }, 5000); }); });</script>&|' /var/www/nagiostv/index.php
+  ## Add the proper Favicon ref.
   sed -i 's|./favicon.png|/favicon.ico|' /var/www/nagiostv/index.php
 
   # Fix PHP 8.2 compatibility. See https://github.com/chriscareycode/nagiostv-react/issues/80#issuecomment-1992264128
