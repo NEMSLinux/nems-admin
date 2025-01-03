@@ -95,7 +95,7 @@ make install-config
 if [[ $isnems == 1 ]]; then
   cp -f /root/nems/nems-migrator/data/nagios/misc/nrpe.cfg /usr/local/nagios/etc/nrpe.cfg
 else
-  wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/NEMSLinux/nems-migrator/main/debpack/root/nems/nems-migrator/data/nagios/misc/nrpe.cfg
+  wget -O /usr/local/nagios/etc/nrpe.cfg https://raw.githubusercontent.com/NEMSLinux/nems-migrator-data/refs/heads/main/debpack/root/nems/nems-migrator/data/nagios/misc/nrpe.cfg
 fi
 
 systemctl daemon-reload
