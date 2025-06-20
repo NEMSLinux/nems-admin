@@ -11,6 +11,9 @@ if (( $platform == 20 )) || (( $platform == 26 )); then
   # Proxmox VE / QEMU-based Virtualization
     apt-get install -y qemu-guest-agent
 
+  # VirtualBox
+    apt-get install -y virtualbox-guest-utils
+
   # Log that patch (resize) has been applied to this system.
   # Doesn't apply to VM so just do it here.
   # Activates features such as bootscreen.sh
