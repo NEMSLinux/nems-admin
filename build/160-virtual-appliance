@@ -12,7 +12,13 @@ if (( $platform == 20 )) || (( $platform == 26 )); then
     apt-get install -y qemu-guest-agent
 
   # VirtualBox
-    apt-get install -y virtualbox-guest-utils
+    apt-get install -y virtualbox-guest-additions-iso dkms build-essential linux-headers-$(uname -r)
+    mkdir -p /mnt/vbox
+    mount -o loop /usr/share/virtualbox/VBoxGuestAdditions.iso /mnt/vbox
+    yes | sh /mnt/vbox/VBoxLinuxAdditions.run --nox11 || true
+    umount /mnt/vbox && rm -rf /mnt/vbox
+    apt-get purge -y virtualbox-guest-additions-iso
+    apt-get autoremove -y
 
   # Log that patch (resize) has been applied to this system.
   # Doesn't apply to VM so just do it here.
