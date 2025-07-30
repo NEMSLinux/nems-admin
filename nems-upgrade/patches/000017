@@ -1,0 +1,239 @@
+#!/bin/bash
+# Version 1.0
+# Automated InnoDB recovery script to fix and prevent a corrupt nconf database
+# By Robbie Ferguson // NEMS Linux - https://nemslinux.com/
+# © 2025 Robbie Ferguson – Licensed under Apache 2.0
+
+# During the NEMS Linux 1.7 lifecycle, an upstream update to MariaDB broke the
+# database compatibility, causing several systems to lose MySQL. This patch
+# fixes that, and since it also runs at NEMS build time, it should no longer
+# be an issue moving forward: It will be applied to every new NEMS Linux
+# release at build time.
+
+
+if grep -q "PATCH-000017" /var/log/nems/patches.log; then
+  echo "This patch is already applied."
+  exit
+fi
+
+DB_NAME="nconf"
+DUMP_FILE="/tmp/${DB_NAME}_recovery.sql"
+RECOVERY_CNF="/etc/mysql/conf.d/recovery.cnf"
+MYSQL_USER="root"
+MYSQL_PASS="nagiosadmin"
+
+echo "Starting MariaDB recovery patch for database: $DB_NAME"
+
+# 0. The step before all steps
+backup_file="mysql-backup-$(date '+%Y-%m-%d_%H-%M-%S').tar.gz"
+echo "Backing up your MySQL database folder to /root/$backup_file"
+
+# Create the tar.gz archive of /var/lib/mysql
+tar -czf "/root/$backup_file" /var/lib/mysql
+
+# 1. Try normal startup
+echo "Attempting to start MariaDB normally..."
+systemctl start mariadb
+sleep 3
+
+if systemctl is-active --quiet mariadb; then
+  echo "MariaDB started normally. No recovery mode needed."
+else
+  echo "Normal startup failed. Trying InnoDB recovery mode..."
+
+  # Try increasing recovery levels up to 4
+  for level in {1..4}; do
+    echo "Trying innodb_force_recovery = $level"
+
+    mkdir -p "$(dirname "$RECOVERY_CNF")"
+    cat <<EOF > "$RECOVERY_CNF"
+[mysqld]
+innodb_force_recovery = $level
+EOF
+
+    echo "Restarting MariaDB in recovery mode..."
+    systemctl restart mariadb
+    sleep 3
+
+    if systemctl is-active --quiet mariadb; then
+      echo "MariaDB started with innodb_force_recovery = $level"
+      RECOVERY_LEVEL=$level
+      break
+    fi
+  done
+
+  if ! systemctl is-active --quiet mariadb; then
+    echo "All recovery attempts failed up to level 4. Aborting to prevent data loss."
+    exit 1
+  fi
+fi
+
+# 2. Run mariadb-upgrade
+echo "Running mariadb-upgrade..."
+if mariadb-upgrade -u "$MYSQL_USER" -p"$MYSQL_PASS"; then
+  echo "mariadb-upgrade completed successfully."
+else
+  echo "mariadb-upgrade encountered errors. Continuing anyway."
+fi
+
+# 3. Remove recovery config and try clean restart
+if [[ -n "$RECOVERY_LEVEL" ]]; then
+  echo "Removing recovery mode config (level $RECOVERY_LEVEL)..."
+  rm -f "$RECOVERY_CNF"
+
+  echo "Restarting MariaDB in normal mode..."
+  systemctl restart mariadb
+  sleep 3
+fi
+
+# 4. Check if MariaDB starts cleanly and InnoDB engine is OK
+if ! systemctl is-active --quiet mariadb; then
+  echo "MariaDB failed to start in normal mode. Proceeding to dump-and-recover."
+  GO_FULL_RECOVERY=true
+else
+  echo "MariaDB started normally. Checking InnoDB engine..."
+
+  # Check InnoDB engine availability
+  ENGINE_STATUS=$(mysql -u "$MYSQL_USER" -p"$MYSQL_PASS" -e "SHOW ENGINES\G" 2>/dev/null | grep -A1 "Engine: InnoDB")
+  if echo "$ENGINE_STATUS" | grep -Eq "Support: (YES|DEFAULT)"; then
+    echo "InnoDB engine is functional. Attempting in-place table check..."
+
+    # Try running a basic query against the target DB
+    if mysql -u "$MYSQL_USER" -p"$MYSQL_PASS" "$DB_NAME" -e "SHOW TABLES;" >/dev/null 2>&1; then
+      echo "In-place database recovery succeeded. No dump/import required."
+      echo "Recovery complete."
+      exit 0
+    else
+      echo "InnoDB engine is OK, but $DB_NAME has access issues. Will proceed with full dump."
+      GO_FULL_RECOVERY=true
+    fi
+  else
+    echo "InnoDB engine is not available. Will proceed with full dump recovery."
+    GO_FULL_RECOVERY=true
+  fi
+fi
+
+# 5. Dump structure and data after recovery mode is removed
+
+echo "Dumping clean schema and data from $DB_NAME..."
+
+STRUCTURE_ORIG="/tmp/${DB_NAME}_structure.sql"
+STRUCTURE_RELAXED="/tmp/${DB_NAME}_structure_nokeys.sql"
+DATA_FILE="/tmp/${DB_NAME}_data.sql"
+
+# Dump structure (includes constraints)
+mysqldump --no-data -u "$MYSQL_USER" -p"$MYSQL_PASS" "$DB_NAME" > "$STRUCTURE_ORIG"
+if [ $? -ne 0 ]; then
+  echo "Failed to dump database structure. Aborting."
+  exit 1
+fi
+
+# Copy and strip constraints and AUTO_INCREMENT safely
+cp "$STRUCTURE_ORIG" "$STRUCTURE_RELAXED"
+
+sed -i \
+  -e '/PRIMARY KEY/d' \
+  -e '/UNIQUE KEY/d' \
+  -e '/FOREIGN KEY/d' \
+  -e 's/\s*AUTO_INCREMENT[ =]*[0-9]*//' \
+  "$STRUCTURE_RELAXED"
+
+# Fix dangling commas before closing CREATE TABLE statements
+sed -i -E ':a;N;$!ba;s/,\n\)/\n)/g' "$STRUCTURE_RELAXED"
+
+# Dump data without CREATE statements, one-row-per-insert
+mysqldump --skip-extended-insert --no-create-info -u "$MYSQL_USER" -p"$MYSQL_PASS" "$DB_NAME" > "$DATA_FILE"
+if [ $? -ne 0 ]; then
+  echo "Failed to dump data. Aborting."
+  exit 1
+fi
+
+echo "Rebuilding database $DB_NAME with relaxed schema..."
+
+echo "Dropping database $DB_NAME..."
+mysql -u "$MYSQL_USER" -p"$MYSQL_PASS" -e "DROP DATABASE IF EXISTS \`$DB_NAME\`;"
+
+DB_DIR="/var/lib/mysql/$DB_NAME"
+if [ -d "$DB_DIR" ]; then
+  echo "Warning: $DB_DIR still exists after DROP. Attempting manual cleanup..."
+  systemctl stop mariadb
+  sleep 2
+  rm -rf "$DB_DIR"
+  systemctl start mariadb
+  sleep 3
+fi
+
+echo "Recreating database $DB_NAME..."
+mysql -u "$MYSQL_USER" -p"$MYSQL_PASS" -e "CREATE DATABASE \`$DB_NAME\`;"
+
+# Import relaxed schema
+mysql -u "$MYSQL_USER" -p"$MYSQL_PASS" "$DB_NAME" < "$STRUCTURE_RELAXED"
+if [ $? -ne 0 ]; then
+  echo "Failed to import relaxed schema. Aborting."
+  exit 1
+fi
+
+# Verify expected table count
+ACTUAL_TABLES=$(grep -ci "CREATE TABLE" "$STRUCTURE_RELAXED")
+LOADED_TABLES=$(mysql -u "$MYSQL_USER" -p"$MYSQL_PASS" "$DB_NAME" -e "SHOW TABLES;" | tail -n +2 | wc -l)
+
+if [ "$LOADED_TABLES" -lt "$ACTUAL_TABLES" ]; then
+  echo "Mismatch in table count: expected $ACTUAL_TABLES, found $LOADED_TABLES. Aborting to prevent bad import."
+  exit 1
+fi
+
+# Import data
+echo "Importing data into relaxed schema..."
+mysql --force -u "$MYSQL_USER" -p"$MYSQL_PASS" "$DB_NAME" < "$DATA_FILE" 2> /tmp/mysql_import_errors.log
+
+if grep -q "ERROR" /tmp/mysql_import_errors.log; then
+  echo "Import completed with errors. See /tmp/mysql_import_errors.log for details."
+  exit 1
+else
+  echo "Data import completed successfully with relaxed schema."
+fi
+
+# 6. Reapply constraints one at a time
+CONSTRAINT_SQL="/tmp/${DB_NAME}_restore_constraints.sql"
+CONSTRAINT_LOG="/tmp/${DB_NAME}_constraint_errors.log"
+
+echo "Generating constraint reapplication script..."
+echo "-- Constraints for $DB_NAME" > "$CONSTRAINT_SQL"
+
+awk -v out="$CONSTRAINT_SQL" '
+BEGIN {table=""}
+/^CREATE TABLE/ {
+  table=$3
+  gsub("`", "", table)
+}
+/^[[:space:]]*(PRIMARY KEY|UNIQUE KEY|KEY|FOREIGN KEY)/ {
+  if (table != "") {
+    sub(/^[[:space:]]*/, "")
+    sub(/,$/, "")
+    gsub(/AUTO_INCREMENT/, "")
+    print "ALTER TABLE `" table "` ADD " $0 ";" >> out
+  }
+}
+/^)/ {table=""}
+' "$STRUCTURE_ORIG"
+
+echo "Reapplying constraints to rebuilt database..."
+> "$CONSTRAINT_LOG"
+grep -v '^--' "$CONSTRAINT_SQL" | while IFS= read -r stmt; do
+  echo -n "Applying: ${stmt:0:80}..."
+  echo "$stmt" | mysql -u "$MYSQL_USER" -p"$MYSQL_PASS" "$DB_NAME" 2>&1 | tee -a "$CONSTRAINT_LOG" | grep -q "Duplicate key name" && {
+    echo "Already exists, skipping."
+    continue
+  }
+  if [ $? -eq 0 ]; then
+    echo "OK"
+  else
+    echo "FAILED (see $CONSTRAINT_LOG)"
+  fi
+done
+
+echo "Constraint reapplication complete. Review $CONSTRAINT_LOG for any issues."
+
+echo "If all else fails, remember: I backed up your original mysql folder to /root/$backup_file"
+
+echo "PATCH-000017" >> /var/log/nems/patches.log
