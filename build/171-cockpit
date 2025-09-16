@@ -44,6 +44,24 @@ if (( $platform != 21 )); then
   fi
 fi
 
+# Remove Package Management from Cockpit
+# Novice Linux Users tend to push "Upgrade all" when
+# they see upstream software, thereby breaking their appliance.
+if [[ -e /usr/share/cockpit/packagekit/ ]]; then
+  rm -rf /usr/share/cockpit/packagekit/
+fi
+
+# User management on NEMS Linux involves much more than just
+# Linux users, so prevent novice users from breaking access.
+if [[ -e /usr/share/cockpit/users/ ]]; then
+  rm -rf /usr/share/cockpit/users/
+fi
+
+# Needless clutter
+if [[ -e /usr/share/cockpit/apps/ ]]; then
+  rm -rf /usr/share/cockpit/apps/
+fi
+
 if [[ -e /var/www/html/userfiles/nems-build.cur ]]; then
   rm /var/www/html/userfiles/nems-build.cur
 fi
