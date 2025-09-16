@@ -28,8 +28,10 @@ DUMPDIR="${BACKUP_ROOT}/dumps-${TS}"
 RECOVERY_CNF="/etc/mysql/mariadb.conf.d/zz-innodb-recovery.cnf"
 
 MYSQL_SOCK_DEFAULT="/var/run/mysqld/mysqld.sock"
-MYSQL="mysql"
-MYSQLDUMP="mysqldump"
+MYSQL_USER="root"
+MYSQL_PWD="nagiosadmin"
+MYSQL="mysql -u$MYSQL_USER -p$MYSQL_PWD"
+MYSQLDUMP="mysqldump -u$MYSQL_USER -p$MYSQL_PWD"
 MARIADB_INSTALL_DB="mariadb-install-db"
 
 # =======================
