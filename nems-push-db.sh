@@ -17,13 +17,27 @@ function clearlogs {
   mysql -t -u root -pnagiosadmin nconf -e "shutdown"
   systemctl stop mysql
   rm -f /var/lib/mysql/ib_logfile*
-  touch /var/lib/mysql/ib_logfile0
-  touch /var/lib/mysql/ib_logfile1
-  chown mysql:mysql /var/lib/mysql/ib_*
   if [[ -e /var/lib/mysql/queries.log ]]; then
     rm /var/lib/mysql/queries.log
   fi
-  # Don't restart MySQL until after the backup is created, else the large logs will be re-created and included in the backup
+  chown -R mysql:mysql /var/lib/mysql
+  chmod 750 /var/lib/mysql
+  # Generate new ib_logfile* (required by newer versions of MariaDB)
+
+  # start fresh and remove old redo logs once
+  systemctl stop mariadb
+  rm -f /var/lib/mysql/ib_logfile*
+
+  # start once in the most permissive recovery mode
+  printf "[mysqld]\ninnodb_force_recovery=6\n" > /etc/mysql/mariadb.conf.d/zz-recovery.cnf
+  systemctl start mariadb
+
+  # wait briefly for non-zero ib_logfile0 to appear
+  for i in {1..40}; do [ -s /var/lib/mysql/ib_logfile0 ] && break; sleep 0.5; done
+
+  # immediately go back to normal
+  systemctl stop mariadb
+  rm -f /etc/mysql/mariadb.conf.d/zz-recovery.cnf
 }
 echo ""
 echo "You must have UI access in order to proceed."
@@ -106,7 +120,10 @@ tar cvfz /root/nems/nems-migrator/data/mysql/NEMS-Sample.tar.gz -C /var/lib/ mys
 
 # Create the clean database (used for NEMS Migrator Restore)
 
+echo "Creating clean database..."
 systemctl start mysql
+systemctl status mysql
+sleep 5
 
 # Delete commands obtained by manually doing this while having General Query Log enabled in MariaDB and monitoring the log file for DELETE queries
 # https://mariadb.com/kb/en/library/general-query-log/
