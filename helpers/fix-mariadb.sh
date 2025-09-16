@@ -11,7 +11,8 @@
 # License : (c) 2025 Robbie Ferguson — Released under the Apache License 2.0
 # =============================================================================
 
-# Step 1: Restore Sample database
+# Step 1: init as dev user
+#         (which restores sample DB and grants access to nconf)
 # Step 2: Run Patch #17
 # Step 3: Run this script
 
@@ -33,7 +34,8 @@ RECOVERY_CNF="/etc/mysql/mariadb.conf.d/zz-innodb-recovery.cnf"
 
 MYSQL_SOCK_DEFAULT="/var/run/mysqld/mysqld.sock"
 MYSQL_USER="root"
-MYSQL_PWD="nagiosadmin"
+MYSQL_ROOT_PWD='nagiosadmin'
+export MYSQL_PWD="$MYSQL_ROOT_PWD"   # used by mysql/mysqldump; hides from ps
 MYSQL="mysql -u$MYSQL_USER -p$MYSQL_PWD"
 MYSQLDUMP="mysqldump -u$MYSQL_USER -p$MYSQL_PWD"
 MARIADB_INSTALL_DB="mariadb-install-db"
@@ -47,9 +49,12 @@ start_db()  { systemctl start "$SERVICE" || true; }
 wait_ready() {
   local tries=60
   while (( tries-- )); do
-    [[ -S "$MYSQL_SOCK_DEFAULT" ]] && $MYSQL -e "SELECT 1;" >/dev/null 2>&1 && return 0
+    if [[ -S "$MYSQL_SOCK_DEFAULT" ]] && mysql --protocol=SOCKET -uroot -p"${MYSQL_PWD}" -e "SELECT 1;" >/dev/null 2>&1; then
+      return 0
+    fi
     sleep 0.3
-  done; return 1
+  done
+  return 1
 }
 write_recovery_cnf() {
   local lvl="$1"
@@ -113,6 +118,14 @@ else
   done
 fi
 
+# Dump users/roles/grants from the mysql schema (MariaDB 10.4+)
+# Uses REPLACE so it overwrites defaults on import without duplicate-key errors.
+PRIV_DUMP="${DUMPDIR}/_mysql_privileges.sql"
+$MYSQLDUMP --skip-lock-tables --skip-triggers --no-create-info --replace \
+  mysql global_priv db tables_priv columns_priv procs_priv proxies_priv roles_mapping \
+  > "$PRIV_DUMP"
+
+
 # =======================
 # 3) Stop and remove recovery mode
 # =======================
@@ -144,7 +157,6 @@ SELECT VERSION();
 SQL
 IS_MARIADB=$?
 set -e
-
 # Preferred path for MariaDB 10.4+ (works on 10.11.x)
 if mysql --protocol=SOCKET -uroot -e \
   "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('${MYSQL_PWD}');"; then
@@ -161,6 +173,23 @@ else
   fi
 fi
 
+log "Restoring users"
+PRIV_DUMP="${DUMPDIR}/_mysql_privileges.sql"
+if [[ -s "$PRIV_DUMP" ]]; then
+  log "Importing saved user accounts and grants (socket auth)"
+  mysql --protocol=SOCKET -uroot mysql < "$PRIV_DUMP"
+  mysql --protocol=SOCKET -uroot -e "FLUSH PRIVILEGES;"
+
+  # Re-assert root plugin+password so passworded logins keep working
+  mysql --protocol=SOCKET -uroot -e \
+    "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('${MYSQL_PWD}'); FLUSH PRIVILEGES;"
+
+  # Sanity: passworded login
+  mysql -uroot -p"${MYSQL_PWD}" -e "SELECT 1;"
+else
+  log "WARNING: No privilege dump found at $PRIV_DUMP; user accounts cannot be auto-restored."
+fi
+
 
 # =======================
 # 5) Import dumps
@@ -168,6 +197,7 @@ fi
 if compgen -G "$DUMPDIR/*.sql" > /dev/null; then
   log "Importing dumps"
   for f in "$DUMPDIR"/*.sql; do
+    [[ "$(basename "$f")" == "_mysql_privileges.sql" ]] && continue
     log "  -> $(basename "$f")"
     $MYSQL < "$f"
   done
