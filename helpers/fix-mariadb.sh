@@ -11,6 +11,10 @@
 # License : (c) 2025 Robbie Ferguson — Released under the Apache License 2.0
 # =============================================================================
 
+# Step 1: Restore Sample database
+# Step 2: Run Patch #17
+# Step 3: Run this script
+
 set -euo pipefail
 
 # =======================
@@ -131,6 +135,32 @@ $MARIADB_INSTALL_DB --user=mysql --basedir=/usr --datadir="$DATADIR"
 log "Starting MariaDB normally"
 start_db
 wait_ready || { echo "FATAL: Fresh MariaDB failed to start." >&2; exit 3; }
+
+
+log "Setting MySQL root password"
+set +e
+mysql --protocol=SOCKET -uroot <<'SQL'
+SELECT VERSION();
+SQL
+IS_MARIADB=$?
+set -e
+
+# Preferred path for MariaDB 10.4+ (works on 10.11.x)
+if mysql --protocol=SOCKET -uroot -e \
+  "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('${MYSQL_PWD}');"; then
+  :
+else
+  # Fallbacks for older servers or edge configs
+  # Try generic SET PASSWORD (MariaDB understands PASSWORD() function)
+  if ! mysql --protocol=SOCKET -uroot -e \
+    "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${MYSQL_PWD}'); FLUSH PRIVILEGES;"; then
+    # Old-style table update (MySQL 5.7 era). Won't run on MariaDB 10.4+, but kept as last resort.
+    mysql --protocol=SOCKET -uroot -e \
+      "UPDATE mysql.user SET plugin='mysql_native_password', Password=PASSWORD('${MYSQL_PWD}')
+       WHERE User='root' AND Host='localhost'; FLUSH PRIVILEGES;"
+  fi
+fi
+
 
 # =======================
 # 5) Import dumps
