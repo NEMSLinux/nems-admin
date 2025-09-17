@@ -15,6 +15,8 @@
 #         (which restores sample DB and grants access to nconf)
 # Step 2: Run Patch #17
 # Step 3: Run this script
+# Step 4: Test and verify success
+# Step 5: Push db
 
 set -euo pipefail
 
