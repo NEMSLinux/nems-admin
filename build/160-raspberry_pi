@@ -33,5 +33,10 @@ if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( 
   rm /boot/firmware/.bootloader_revision
   yes | rpi-update
 
+  # Remove passwordless login (from default Pi config)
+  if [[ -e /etc/sudoers.d/010_pi-nopasswd ]]; then
+    rm -f /etc/sudoers.d/010_pi-nopasswd
+  fi
+
 fi
 
