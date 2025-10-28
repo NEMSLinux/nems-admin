@@ -38,5 +38,8 @@ if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( 
     rm -f /etc/sudoers.d/010_pi-nopasswd
   fi
 
+  # Activate the built-in watchdog
+  grep -q '^dtparam=watchdog=' /boot/firmware/config.txt || echo 'dtparam=watchdog=on' | sudo tee -a /boot/firmware/config.txt
+
 fi
 
