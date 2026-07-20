@@ -36,7 +36,7 @@ if [[ ! $PATH == *"/usr/sbin"* ]]; then
   export PATH=$PATH:/usr/sbin
 fi
 
-ver=$(cat /root/nems/nems-admin/build-version)
+ver=$(cat /root/nems/nems-admin/build-version | tr -d '[:space:]')
 
 echo ""
 echo "#########"
