@@ -23,7 +23,7 @@ bash-completion
 cron
 whiptail
 sudo
-ntp
+ntpsec
 ntfs-3g
 dosfstools
 parted
