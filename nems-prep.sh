@@ -1,10 +1,7 @@
 #!/bin/bash
 # Prepare a deployment for NEMS Installation
 # This is the firstrun script which simply installs the needed repositories
-
-# Run like this:
-# wget -O /tmp/nems-prep.sh https://raw.githubusercontent.com/Cat5TV/nems-admin/master/nems-prep.sh && chmod +x /tmp/nems-prep.sh && /tmp/nems-prep.sh
-
+# This is NOT A USER SCRIPT
 
 if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
@@ -13,23 +10,9 @@ else
 
 PATH=$PATH:/sbin
 
-apt update
-apt install --yes git screen dialog gnupg nano apt-utils sudo
-
-ver=$(cat /root/nems/nems-admin/build-version | tr -d '[:space:]')
-
-# Add NEMS Linux Repositories
-if [[ ! -d /etc/apt/keyrings/ ]]; then
-  sudo mkdir -m 0755 -p /etc/apt/keyrings/
-fi
-curl -fsSL https://repos.nemslinux.com/nemslinux.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nemslinux.gpg.key
-echo "deb [signed-by=/etc/apt/keyrings/nemslinux.gpg.key] https://repos.nemslinux.com/ $ver main migrator plugins" | sudo tee /etc/apt/sources.list.d/nemslinux.list > /dev/null
-
-# Add the public key [expires: 2032-07-06]
-wget -O - https://repos.nemslinux.com/nemslinux.gpg.key | apt-key add -
-
 # Base OS won't necessarily have these key components yet
 apt-get update
+apt-get install --yes git screen dialog gnupg nano apt-utils sudo
 apt-get install -y wget python3
 
 printf "RTC reports date/time as: "
@@ -49,7 +32,7 @@ sleep 5
 # Tell apt to retry up to 10 times before giving up. This should
 # help for all the times the Raspberry Pi repos are down during
 # a build...
-echo "APT::Acquire::Retries \"3\";" > /etc/apt/apt.conf.d/80-retries && chmod 644 /etc/apt/apt.conf.d/80-retries
+echo "APT::Acquire::Retries \"10\";" > /etc/apt/apt.conf.d/80-retries && chmod 644 /etc/apt/apt.conf.d/80-retries
 
 # Give apt-get a fancy progress bar like apt
 echo "Dpkg::Progress-Fancy \"1\";
@@ -69,7 +52,7 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
 #        deb http://deb.debian.org/debian/ stretch-updates non-free main contrib
 #       deb-src http://deb.debian.org/debian/ stretch-updates non-free main contrib
 #  " > /etc/apt/sources.list
-  
+
   # Make absolutely certain sudo is installed (as we'll be removing root login)
   command -v sudo >/dev/null 2>&1 || { echo "sudo could not be installed.  Aborting." >&2; exit 1; }
 
@@ -77,17 +60,34 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   git config --global user.email "nems@baldnerd.com"
   git config --global user.name "NEMS Linux"
 
-  cd /root
-  mkdir nems
-  cd nems
+  mkdir -p /root/nems
+  cd /root/nems
 
+  if [[ -e /root/nems/nems-admin ]]; then
+    rm -rf /root/nems/nems-admin
+  fi
   git -c http.sslVerify=false clone https://github.com/NEMSLinux/nems-admin
-  
+
   cd /root/nems/nems-admin
   git config pull.rebase false
 
+  ver=$(cat /root/nems/nems-admin/build-version | tr -d '[:space:]')
+
+  # Setup NEMS Linux Repositories
+  if [[ ! -d /etc/apt/keyrings/ ]]; then
+    mkdir -m 0755 -p /etc/apt/keyrings/
+  fi
+
+  # Add the public key [expires: 2034-07-18]
+  curl -fsSL https://repos.nemslinux.com/nemslinux.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nemslinux.gpg
+  chmod 644 /etc/apt/keyrings/nemslinux.gpg
+
+  # Add it to apt
+  echo "deb [signed-by=/etc/apt/keyrings/nemslinux.gpg] https://repos.nemslinux.com/ $ver main migrator plugins" | tee /etc/apt/sources.list.d/nemslinux.list > /dev/null
+  apt-get update
+
   # Configure default locale
-  apt install -y locales
+  apt-get install -y locales
   if grep -q "# en_US.UTF-8" /etc/locale.gen; then
     /bin/sed -i -- 's,# en_US.UTF-8,en_US.UTF-8,g' /etc/locale.gen
   fi
@@ -100,10 +100,12 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
 
   # Make it so SSH does not load the locale from the connecting machine (causes problems on Pine64)
   # This requires the user to re-connect
-  sed -i -e 's/    SendEnv LANG LC_*/#   SendEnv LANG LC_*/g' /etc/ssh/ssh_config
+  sed -i -E 's/^[[:space:]]*SendEnv LANG LC_*/#   SendEnv LANG LC_*/g' /etc/ssh/ssh_config
 
   # Create nemsadmin user
-  adduser --disabled-password --gecos "" nemsadmin
+  if ! id "nemsadmin" &>/dev/null; then
+    adduser --disabled-password --gecos "" nemsadmin
+  fi
 
   # Allow user to become super-user
   usermod -aG sudo nemsadmin
@@ -118,6 +120,7 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   cd /home/nemsadmin
   wget -O license.txt https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
   wget -O changelog.txt https://raw.githubusercontent.com/NEMSLinux/nems-migrator-data/main/debpack/root/nems/nems-migrator/data/nems/changelog.txt
+  chown -R nemsadmin:nemsadmin /home/nemsadmin
 
   # Setup log folder so hw-detect can run. Permissions will be setup later.
   if [[ ! -e /var/log/nems ]]; then
@@ -135,8 +138,10 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   fi
 
   # Simple workaround to move old keyring to new
-  cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d/
-  
+  if [[ -f /etc/apt/trusted.gpg ]]; then
+    cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d/
+  fi
+
   # Install any NEMS components that are required immediately
   apt-get install -y hw-detect
 
@@ -147,7 +152,7 @@ Dpkg::Progress-Fancy::Progress-Bg \"%1b[40m\";
   if [[ -e /etc/default/armbian-ramlog ]]; then
     echo "ENABLED=false" > /etc/default/armbian-ramlog
   fi
-  
+
   echo "System Prepped. Please restart, re-connect as nemsadmin, run screen, then run your build script (see ./notes)."
 
   if [[ -e /sbin/reboot ]]; then
