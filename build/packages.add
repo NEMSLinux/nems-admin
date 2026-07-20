@@ -4,7 +4,7 @@ build-essential
 ca-certificates
 cifs-utils
 cpanminus
-cpufrequtils
+linux-cpupower
 git
 hdparm
 htop
@@ -56,7 +56,7 @@ php-xml
 
 # For MOTD
 tcl
-hddtemp
+smartmontools
 
 # For Nagios Core
 libgd-dev

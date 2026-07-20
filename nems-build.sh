@@ -12,6 +12,10 @@
 ###########
 ####
 
+# Set non-interactive environment for all sub-scripts
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+
 if [[ $EUID -ne 0 ]]; then
   echo "ERROR: This script must be run as root" 2>&1
   exit 1
@@ -190,6 +194,12 @@ echo "Usage after cruft removal:"
 df -hT /etc
 sleep 5
 
+# Pre-install Node.js and NPM to prevent dpkg ordering issues in Debian Trixie
+echo "Pre-installing Node.js ecosystem..."
+apt-get install -y nodejs npm
+# Ensure dpkg finishes configuration before moving to the next build scripts
+dpkg --configure -a
+
 # Install base packages
 echo ""
 echo "***** BUILDING NEMS LINUX *****"
@@ -229,7 +239,7 @@ if [[ -e /etc/init.d/firstrun ]]; then
 fi
 
 # Configure default timezone
-printf 'tzdata tzdata/Areas select America\ntzdata tzdata/Zones/America select Toronto\n' | sudo debconf-set-selections
+printf 'tzdata tzdata/Areas select America\ntzdata tzdata/Zones/America select Toronto\n' | debconf-set-selections
 rm -f /etc/timezone
 rm -f /etc/localtime
 dpkg-reconfigure -f noninteractive tzdata
@@ -242,7 +252,7 @@ echo "------------------------------"
 if [[ ! -d /var/log/nems/ ]]; then
   mkdir /var/log/nems
 fi
-run-parts --exit-on-error -v build 2> /var/log/nems/build-parts.log | tee /var/log/nems/build-parts.log
+run-parts --exit-on-error -v build 2>&1 | tee /var/log/nems/build-parts.log
 
 # If build is not completing, run parts manually to find out which script
 # is dying and stopping the installation
