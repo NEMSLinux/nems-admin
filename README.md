@@ -25,7 +25,7 @@ chmod +x prep
 
 - Convert Debian to NEMS Linux (as root):
 ```bash
-/root/nems/nems-admin/nems-build.sh
+/root/nems/nems-admin/nems-build.sh | tee /var/log/nems-build.log
 ```
 
 - Reboot
