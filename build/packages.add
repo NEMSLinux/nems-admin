@@ -35,7 +35,7 @@ tzdata
 unzip
 vim
 w3m
-ntp
+ntpsec
 locate
 
 # WiFi
