@@ -2,7 +2,7 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 apt update
-apt -y install unattended-upgrades apt-listchanges
+apt -y install unattended-upgrades
 
 # try to clean up kernels (in case /boot gets full)
 apt -y autoremove
