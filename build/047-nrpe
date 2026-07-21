@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# NRPE is deprecated. NEMS includes the 4.1.0 (final) release,
+# NRPE is deprecated. NEMS includes the 4.1.3 (final) release,
 # but you should investigate the recommended tools in NEMS Linux.
 # ---------------------------------------------------------------
 
 # Set the version (see git releases)
 # Need to auto-detect NEMS version. 4.0.3 for 1.6, 3.2.1 for 1.5.x
-nrpeVer="4.1.0"
+nrpeVer="4.1.3"
 
 # Detect whether this is DEB- or RPM-based system
 if [[ -f /etc/debian_version ]]; then
@@ -60,7 +60,7 @@ if [[ -e /var/log/nems/ ]]; then
 else
   isnems=0
   # Run the prep script before continuing since this is not NEMS Linux
-  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/046-plugins-prep | bash
+  wget -O - https://raw.githubusercontent.com/NEMSLinux/nems-admin/master/build/046-plugins-prep | bash
 fi
 
 /bin/systemctl stop nrpe
@@ -77,7 +77,7 @@ $pm_install libwrap0-dev
 $pm_install autotools-dev
 $pm_install build-essential
 
-file="https://github.com/NagiosEnterprises/nrpe/archive/nrpe-$nrpeVer.tar.gz"
+file="https://github.com/NagiosEnterprises/nrpe/releases/download/nrpe-${nrpeVer}/nrpe-${nrpeVer}.tar.gz"
 wget -O $tmpdir/nrpe.tar.gz $file
 tar xvzf nrpe.tar.gz
 cd nrpe-*
@@ -111,8 +111,8 @@ if [[ $isnems == 1 ]]; then
   /root/nems/nems-admin/build/051-monitoring-plugins
   /root/nems/nems-admin/build/052-nems-nagios-plugins
 else
-  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/051-monitoring-plugins | bash
-  wget -O - https://raw.githubusercontent.com/Cat5TV/nems-admin/master/build/052-nems-nagios-plugins | bash
+  wget -O - https://raw.githubusercontent.com/NEMSLinux/nems-admin/master/build/051-monitoring-plugins | bash
+  wget -O - https://raw.githubusercontent.com/NEMSLinux/nems-admin/master/build/052-nems-nagios-plugins | bash
 fi
 
 # Remove the tmp files
