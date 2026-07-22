@@ -4,55 +4,79 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # Get the platform before removing php (as it requires PHP)
 platform=$(/usr/local/bin/nems-info platform)
 
-# Install and configure check-mk-livestatus
-
-# Need to do an update because a lot of time has passed by now
+# Install standard build prerequisites
 apt-get update
+apt-get install -y build-essential gcc g++ make autoconf automake libtool
 apt-get install -y php-net-socket
 apt-get install -y sqlite3
 apt-get install -y graphviz
 apt-get install -y rrdtool
 apt-get install -y librrd-dev
-apt-get install -y libboost-all-dev
 apt-get install -y libncurses5-dev
 apt-get install -y libreadline-dev
 apt-get install -y libxml2-dev
 apt-get install -y libssl-dev
-apt-get install -y clang
-apt-get install -y chrpath
-apt-get install -y libkrb5-dev
-apt-get install -y librust-pangocairo-dev
-apt-get install -y libperl-dev
-apt-get install -y apache2-dev
-apt-get install -y virtualenv
-apt-get install -y freetds-dev # pymssql
-apt-get install -y libsasl2-dev
-apt-get install -y libxslt1-dev
-
-pip install wheel
-pip install pipenv
-pip install setuptools
 
 tmpdir=`mktemp -d -p /tmp/`
 
-# Package is located on repos server
-ver="2.1.0p37"
-wget -O ${tmpdir}/mk.tar.gz https://packages.nemslinux.com/livestatus/check-mk-raw-${ver}.cre.tar.gz
-cd $tmpdir
-tar xzf mk.tar.gz
-cd check-mk-raw-${ver}.cre
+# --- DYNAMIC NAGIOS VERSION & SOURCE DETECTION ---
+nagios_src=""
 
-# --- DEBIAN 13 FIX ---
-# Provide missing DEBIAN_13 build configuration file using DEBIAN_12 preset
-cp omd/distros/DEBIAN_12.mk omd/distros/DEBIAN_13.mk 2>/dev/null
-# ---------------------
+# Try binary execution to detect version
+if [[ -x /usr/local/nagios/bin/nagios ]]; then
+  detected_ver=$(/usr/local/nagios/bin/nagios -h 2>&1 | grep -oP 'Nagios Core \K[0-9.]+' | head -n 1)
+  if [[ -n "${detected_ver}" && -d "/usr/src/nagios-${detected_ver}" ]]; then
+    nagios_src="/usr/src/nagios-${detected_ver}"
+    nagios_ver="${detected_ver}"
+  fi
+fi
+
+# Fallback: Search /usr/src/ for the latest nagios-* source directory
+if [[ -z "${nagios_src}" ]]; then
+  nagios_src=$(find /usr/src -maxdepth 1 -type d -name "nagios-*" | sort -V | tail -n 1)
+  if [[ -n "${nagios_src}" ]]; then
+    nagios_ver=$(basename "${nagios_src}" | sed 's/nagios-//')
+  fi
+fi
+
+# Final validation check
+if [[ -z "${nagios_src}" || ! -d "${nagios_src}" ]]; then
+  echo "Error: Unable to locate Nagios source tree in /usr/src! Aborting Livestatus build."
+  exit 1
+fi
+
+echo "Building MK-Livestatus against Nagios Core ${nagios_ver} (${nagios_src})"
+# --------------------------------------------------
+
+ver="1.5.0p25"
+
+# Download standalone MK-Livestatus tarball
+wget -O ${tmpdir}/mk-livestatus.tar.gz https://packages.nemslinux.com/livestatus/mk-livestatus-${ver}.tar.gz
+cd $tmpdir
+tar xzf mk-livestatus.tar.gz
+cd mk-livestatus-${ver}
+
+# --- DYNAMIC HEADER PATCH FOR NAGIOS 4.5+ ---
+# This makes mk-livestatus compatible with modern Nagios Core
+cp -f ${nagios_src}/lib/*.h nagios4/
+cp -f ${nagios_src}/include/*.h nagios4/
+cp -f ${nagios_src}/base/*.h nagios4/
+
+# Direct shared.h to use libnagios.h locally
+sed -i '5s/.*/#include "libnagios.h"/' nagios4/shared.h
+# ---------------------------------------------
 
 ./configure --with-nagios4
-cd livestatus
 make
 make install
 
-cd ..
+# Place compiled livestatus.o binary where Nagios expects it
+if [[ -f src/livestatus.o ]]; then
+  mkdir -p /usr/local/nagios/bin
+  cp -f src/livestatus.o /usr/local/nagios/bin/livestatus.o
+  mkdir -p /usr/local/lib
+  cp -f src/livestatus.o /usr/local/lib/livestatus.o
+fi
 
 # Create log for livestatus
 touch /var/log/nagios/livestatus.log
@@ -70,9 +94,7 @@ do
 done
 echo " done."
 
-# nagvis can read the socket since www-data is a member of the nagios group
-
-# /usr/local/nagios/var/rw
-
-# Clean up
+# Clean up build temp directory
 rm -rf $tmpdir
+
+exit 0

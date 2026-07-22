@@ -7,11 +7,11 @@ if [[ -L /usr/local/nagios/share ]]; then
 fi
 
 # Install Nagios Core
-  useradd nagios
-  groupadd nagcmd
-  usermod -a -G nagios www-data
-  usermod -a -G nagcmd nagios
-  usermod -a -G nagcmd www-data
+useradd nagios
+groupadd nagcmd
+usermod -a -G nagios www-data
+usermod -a -G nagcmd nagios
+usermod -a -G nagcmd www-data
 
 # Add var folder
 if [[ ! -e /var/lib/nagios/ ]]; then
@@ -20,25 +20,29 @@ if [[ ! -e /var/lib/nagios/ ]]; then
   dpkg-statoverride --update --add nagios nagios 751 /var/lib/nagios
 fi
 
-# Download from:
-#   https://www.nagios.org/downloads/nagios-core/thanks/?product_download=nagioscore-source
-# and place on repos packages
-
 ver=4.5.13
+NAGIOS_SRC_DIR="/usr/src/nagios-${ver}"
 
-  cd /tmp
-  wget https://packages.nemslinux.com/nagios/nagios-${ver}.tar.gz
-  tar -zxvf nagios-${ver}.tar.gz
-  cd /tmp/nagios-${ver}/
-  ./configure --with-nagios-group=nagios --with-command-group=nagcmd --with-httpd_conf=/etc/apache2/conf-available/
-  make all
-  make install
-  make install-init
-  make install-config
-  make install-commandmode
-  make install-webconf
+# Ensure /usr/src exists
+mkdir -p /usr/src
 
-# Finished installing Nagios Core
+# Download and extract to persistent source directory
+cd /usr/src
+wget -O nagios-${ver}.tar.gz https://packages.nemslinux.com/nagios/nagios-${ver}.tar.gz
+rm -rf "${NAGIOS_SRC_DIR}"
+tar -zxvf nagios-${ver}.tar.gz
+rm -f nagios-${ver}.tar.gz
+
+cd "${NAGIOS_SRC_DIR}"
+./configure --with-nagios-group=nagios --with-command-group=nagcmd --with-httpd_conf=/etc/apache2/conf-available/
+make all
+make install
+make install-init
+make install-config
+make install-commandmode
+make install-webconf
+
+# Note: We intentionally preserve /usr/src/nagios-${ver} so Livestatus can grab headers dynamically
 
 # Set the nagios user shell
 usermod -s /bin/bash nagios
@@ -83,6 +87,5 @@ if [[ ! -d /var/log/nagios/archives ]]; then
   chmod ug+x /var/log/nagios/archives
   chmod g+ws /var/log/nagios/archives
 fi
-
 
 exit 0
