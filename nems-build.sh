@@ -23,7 +23,7 @@ else
 
 if [[ -e /usr/local/share/nems ]]; then
   echo "NEMS is already built. Aborting.";
-  exit 1
+#  exit 1
 fi
 
 # Create the log folder
