@@ -15,8 +15,15 @@ apt-get install -y libxml-simple-perl
 apt-get install -y libhttp-server-simple-perl
 apt-get install -y libconfig-general-perl
 apt-get install -y libio-socket-ssl-perl
-apt-get install -y xfonts-terminus # This gets broken during other builds, so reinstalled at stage 990
-apt-get install -y fonts-inconsolata fonts-freefont-otf fonts-freefont-ttf fonts-jura fonts-tlwg-mono
+
+# Purge any legacy bitmap font packages if present
+apt-get purge -y xfonts-terminus
+
+# Install TrueType/OpenType fonts compatible with Pango & RRDtool
+apt-get install -y fontconfig fonts-dejavu fonts-dejavu-mono fonts-terminus fonts-liberation fonts-inconsolata fonts-freefont-ttf fonts-jura fonts-tlwg-mono
+
+# Rebuild fontconfig cache
+fc-cache -fv
 
 # Install Monitorix
 apt-get install -y monitorix
@@ -26,9 +33,9 @@ apt-get install -y monitorix
 cp -f /root/nems/nems-migrator/data/monitorix/monitorix.conf /etc/monitorix/
 cp -f /root/nems/nems-migrator/data/monitorix/raspberrypi.rrd /var/lib/monitorix/
 
-# Remove old images
-rm /var/lib/monitorix/www/imgs/*.png
+# Remove old rendered images with missing text
+rm -f /var/lib/monitorix/www/imgs/*.png
 
-# Make it so
-# /bin/systemctl start monitorix
+# Enable and start Monitorix
 /bin/systemctl enable monitorix
+/bin/systemctl start monitorix
