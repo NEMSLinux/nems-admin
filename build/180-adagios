@@ -2,13 +2,12 @@
 
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+# Define path to the isolated Python 3.9 binary built by 038-python
+ADAGIOS_PY_BIN="/opt/python3.9/bin/python3"
+
 # Reset old install
 if [[ -e /opt/adagios/ ]]; then
   rm -rf /opt/adagios
-  # We know this is a RE-install, so purge Python 3.9 as well to reinstall it below
-  if [[ -e /usr/lib/python3.9 ]]; then
-    rm -rf /usr/lib/python3.9
-  fi
 fi
 if [[ -e /etc/adagios/ ]]; then
   rm -rf /etc/adagios
@@ -22,11 +21,11 @@ python3 -m pip cache purge
 
 # Add var folder if didn't get created in 050
 if [[ ! -e /var/lib/nagios/ ]]; then
-  mkdir /var/lib/nagios/
+  mkdir -p /var/lib/nagios/
   chown -R nagios:nagios /var/lib/nagios/
 fi
 
-# Install dependencies
+# Install system dependencies
 apt-get update
 apt-get install -y libapache2-mod-wsgi-py3
 apt-get install -y python3-simplejson
@@ -37,12 +36,20 @@ apt-get install -y python3-venv
 apt-get install -y libsqlite3-dev
 apt-get install -y sqlite3
 
-# Ensure update-alternatives is configured with Python 3.9
-/root/nems/nems-admin/build/038-python
+# Ensure isolated Python 3.9 is compiled and available
+if [[ -x /root/nems/nems-admin/build/038-python ]]; then
+  /root/nems/nems-admin/build/038-python
+fi
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
-# Set Python 3.9 as the default for this installation
-update-alternatives --set python /usr/lib/python3.9/bin/python3
+# Verify isolated Python exists before proceeding
+if [[ ! -x "$ADAGIOS_PY_BIN" ]]; then
+  echo "--------------------------------------------------"
+  echo "ERROR: $ADAGIOS_PY_BIN does not exist!"
+  echo "Make sure 038-python runs successfully first."
+  echo "--------------------------------------------------"
+  exit 1
+fi
 
 # Prepare sudo permissions
 if ! grep -q "# Adagios" /etc/sudoers; then
@@ -67,8 +74,8 @@ echo "setuptools==58.2.0" >> /opt/adagios/requirements.txt
 # Include sqlite3 in venv
 echo "pysqlite3" >> /opt/adagios/requirements.txt
 
-groupadd --system adagios
-adduser --no-create-home --system --group adagios
+groupadd --system adagios 2>/dev/null || true
+id -u adagios &>/dev/null || adduser --no-create-home --system --group adagios
 usermod -aG nagios adagios
 chown --recursive adagios:adagios /opt/adagios/
 
@@ -85,65 +92,50 @@ cp /opt/adagios/adagios/etc/sudoers.d/adagios /etc/sudoers.d/
 chown --recursive adagios:adagios /etc/adagios /var/lib/adagios
 
 echo "Ready to build virtual environment..."
-sleep 5
+sleep 2
 
-# The following script will create a new Python virtual environment where Adagios is located.
-  # Enable login as adagios user
-#    chsh -s /bin/bash adagios
-  # Run installer as adagios user
-#    su -c "PYTHON=/usr/lib/python3.9/bin/python3 && /opt/adagios/upgrade.sh" adagios
+cd /opt/adagios
 
-  cd /opt/adagios
-
-     # Create a new virtual environment
-     COMMAND="/usr/lib/python3.9/bin/python3 -m venv /opt/adagios/venv"
-     echo "Creating a new virtual environment..."
-     eval $COMMAND || {
-       echo "------------------------------------------------"
-       echo "ERROR: Failed to create the virtual environment."
-       echo "------------------------------------------------"
-       exit 1
-     }
+# Build virtual environment with isolated Python 3.9 if missing
+if [[ ! -d /opt/adagios/venv ]]; then
+  echo "Creating new virtual environment using $ADAGIOS_PY_BIN..."
+  "$ADAGIOS_PY_BIN" -m venv /opt/adagios/venv || {
+    echo "------------------------------------------------"
+    echo "ERROR: Failed to create the virtual environment."
+    echo "------------------------------------------------"
+    exit 1
+  }
+else
+  echo "Virtual environment /opt/adagios/venv already exists."
+fi
 
 # Activate the virtual environment
 source "/opt/adagios/venv/bin/activate"
 
-# Upgrade pip
-COMMAND="pip install --upgrade pip"
-echo "Updating pip ($COMMAND)..."
-eval $COMMAND || exit 1
+# Upgrade pip inside the venv
+echo "Updating pip inside venv..."
+pip install --upgrade pip || exit 1
 pip -V
 
-# Install necessary system packages
-COMMAND="pip install wheel"
-echo "Installing Python system packages ($COMMAND)..."
-eval $COMMAND || exit 1
+# Install build dependencies inside venv
+echo "Installing Python system packages inside venv..."
+pip install wheel || exit 1
 
-# Install required Python packages
-COMMAND="pip install -r requirements.txt"
-echo "Installing core dependencies ($COMMAND)..."
-eval $COMMAND || exit 1
-
-
-  # Disable login as adagios user
-#    chsh -s /bin/false adagios
+# Install required Python packages inside venv
+echo "Installing core dependencies inside venv..."
+pip install -r requirements.txt || exit 1
 
 if [[ ! -d /opt/adagios/venv ]]; then
-  echo
-  echo "FAILED to create virtual environment."
-  echo
+  echo "FAILED to locate virtual environment."
   exit 1
 else
-  echo
-  echo "Virtual environment created successfully."
-  echo
+  echo "Virtual environment created and configured successfully."
 fi
 
-# Activate Python virtualenv
+# Configure pynag inside venv
 source /opt/adagios/venv/bin/activate
 python -m pip cache purge
 pynag config --append cfg_dir=/etc/adagios
-#pynag config --append "broker_module=/usr/local/lib/mk-livestatus/livestatus.o /usr/local/nagios/var/rw/live.sock"
 
 ## Install Adagios as systemd service
 cp /opt/adagios/contrib/gunicorn.py /opt/adagios/gunicorn.py
@@ -153,7 +145,6 @@ systemctl start adagios
 systemctl enable adagios
 
 ## Install into apache2
-# This is essentially the same as /opt/adagios/contrib/apache_gunicorn_adagios.conf but it has password protection
 cat << EOF > /etc/apache2/conf-available/adagios.conf
 ProxyPreserveHost On
 
@@ -190,25 +181,18 @@ Alias /media /opt/adagios/adagios/media
   Require valid-user
 </Location>
 EOF
-# Activate the new config
-a2enconf adagios
 
-#cp -f /root/nems/nems-migrator/data/adagios/adagios.conf /etc/adagios/
+# Activate the apache config
+a2enconf adagios
 
 # Remove old symlink if it exists
 if [[ -L /var/www/adagios ]]; then
   rm -f /var/www/adagios
 fi
 
-
-## Import templates
-# Need to adapt these for NEMS Linux 1.6+ before they will work
-#cp -f /root/nems/nems-migrator/data/adagios/templates/403.html /opt/adagios/adagios/templates/
-#cp -f /root/nems/nems-migrator/data/adagios/templates/base.html /opt/adagios/adagios/templates/
-
 ## Install OKconfig from Github
 source /opt/adagios/venv/bin/activate
-sudo git clone -b master --depth 1 https://github.com/opinkerfi/okconfig.git /opt/okconfig
+git clone -b master --depth 1 https://github.com/opinkerfi/okconfig.git /opt/okconfig
 cd /opt/okconfig
 pip install -r requirements.txt
 python setup.py install
@@ -224,12 +208,6 @@ a2enmod headers
 a2enmod proxy_http
 
 ## Restart services
-systemctl restart nagios adagios apache2
+systemctl restart nagios adagios apache2 || true
 
-# Restore Python
-rm /usr/bin/python3
-/root/nems/nems-admin/build/038-python
-update-alternatives --auto python
-
-# Echo so we don't exit when systemctl fails to restart apache2
 echo "Done."
