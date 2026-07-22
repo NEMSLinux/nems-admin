@@ -41,6 +41,12 @@ wget -O ${tmpdir}/mk.tar.gz https://packages.nemslinux.com/livestatus/check-mk-r
 cd $tmpdir
 tar xzf mk.tar.gz
 cd check-mk-raw-${ver}.cre
+
+# --- DEBIAN 13 FIX ---
+# Provide missing DEBIAN_13 build configuration file using DEBIAN_12 preset
+cp omd/distros/DEBIAN_12.mk omd/distros/DEBIAN_13.mk 2>/dev/null
+# ---------------------
+
 ./configure --with-nagios4
 cd livestatus
 make
