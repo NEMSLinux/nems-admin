@@ -1,6 +1,11 @@
 #!/bin/bash
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
+apt-get update
+apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev \
+                   libnss3-dev libssl-dev libreadline-dev libffi-dev \
+                   libsqlite3-dev sqlite3 wget
+
 # Install Python 3.9.2 into an isolated directory for Adagios
 ADAGIOS_PY_DIR="/opt/python3.9"
 

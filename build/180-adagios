@@ -69,7 +69,8 @@ git clone -b master https://github.com/opinkerfi/adagios.git /opt/adagios
 sed -i '/gunicorn/c\gunicorn==20.1.0' /opt/adagios/requirements.txt
 
 # Include setuptools in venv
-echo "setuptools==58.2.0" >> /opt/adagios/requirements.txt
+# Force setuptools to stay under v82
+echo "setuptools<82" >> /opt/adagios/requirements.txt
 
 # Include sqlite3 in venv
 echo "pysqlite3" >> /opt/adagios/requirements.txt
@@ -112,14 +113,10 @@ fi
 # Activate the virtual environment
 source "/opt/adagios/venv/bin/activate"
 
-# Upgrade pip inside the venv
-echo "Updating pip inside venv..."
-pip install --upgrade pip || exit 1
+# Upgrade core packaging tools inside the venv (pin setuptools < 82 due to removal of pkg_resources)
+echo "Updating pip, setuptools (<82), and wheel inside venv..."
+pip install --upgrade pip "setuptools<82" wheel || exit 1
 pip -V
-
-# Install build dependencies inside venv
-echo "Installing Python system packages inside venv..."
-pip install wheel || exit 1
 
 # Install required Python packages inside venv
 echo "Installing core dependencies inside venv..."
@@ -195,7 +192,7 @@ source /opt/adagios/venv/bin/activate
 git clone -b master --depth 1 https://github.com/opinkerfi/okconfig.git /opt/okconfig
 cd /opt/okconfig
 pip install -r requirements.txt
-python setup.py install
+pip install .
 cp -f /root/nems/nems-migrator/data/adagios/okconfig.conf /etc/okconfig.conf
 echo 'export PYTHONPATH=$PYTHONPATH:/opt/okconfig' > /etc/profile.d/okconfig.sh
 ln -sf /opt/okconfig/usr/share/okconfig /usr/share/
