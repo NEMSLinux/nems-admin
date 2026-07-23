@@ -7,12 +7,13 @@ platform=$(/usr/local/bin/nems-info platform)
 # Install standard build prerequisites
 apt-get update
 apt-get install -y build-essential gcc g++ make autoconf automake libtool
+apt-get install -y libboost-dev libboost-system-dev libboost-filesystem-dev
 apt-get install -y php-net-socket
 apt-get install -y sqlite3
 apt-get install -y graphviz
 apt-get install -y rrdtool
 apt-get install -y librrd-dev
-apt-get install -y libncurses5-dev
+apt-get install -y libncurses-dev
 apt-get install -y libreadline-dev
 apt-get install -y libxml2-dev
 apt-get install -y libssl-dev
