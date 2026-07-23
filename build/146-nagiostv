@@ -18,7 +18,7 @@ if [[ -e /var/www/nagiostv ]]; then
 fi
 
 # Obtain NagiosTV from Chris Carey
-nagiostv_ver="0.9.11"
+nagiostv_ver="0.9.3"
 wget https://github.com/chriscareycode/nagiostv-react/releases/download/v${nagiostv_ver}/nagiostv-${nagiostv_ver}.tar.gz
 tar xvfz nagiostv-${nagiostv_ver}.tar.gz
 mv nagiostv /var/www/
@@ -35,7 +35,7 @@ if [[ -d /var/www/nagiostv ]]; then
   fi
 
   # CSS Overrides for NEMS Linux
-  echo '.filter-icon, .generic-icon, .BottomPanel, .SettingsBox, .FooterAreaRight, .FooterAreaMiddle, .softIcon, .NavBottomBar, .hot-dog-menu, .sound-icon, .hamburger-menu { display:none !important; } .CustomLogo img { max-height: 36px !important; } .header-application-name { margin-left: 10px !important; }' >> /var/www/nagiostv/assets/*.css
+#  echo '.filter-icon, .generic-icon, .BottomPanel, .SettingsBox, .FooterAreaRight, .FooterAreaMiddle, .softIcon, .NavBottomBar, .hot-dog-menu, .sound-icon, .hamburger-menu { display:none !important; } .CustomLogo img { max-height: 36px !important; } .header-application-name { margin-left: 10px !important; }' >> /var/www/nagiostv/assets/*.css
   # Set permissions
   chown -R www-data:www-data /var/www/nagiostv
   chown root:root /etc/apache2/conf-available/nagiostv.conf
