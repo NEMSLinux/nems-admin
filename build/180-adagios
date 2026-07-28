@@ -170,12 +170,13 @@ Alias /media /opt/adagios/adagios/media
 
 <Location /adagios/>
   RequestHeader set "X-Forwarded-Proto" expr=%{REQUEST_SCHEME}
+
+  # Unified NEMS SSO hook (enforces admin-level access or higher)
+  LuaHookAccessChecker /etc/apache2/nems_sso.lua nems_require_admin
+
+  # Proxy to backend Adagios
   ProxyPass http://127.0.0.1:8001/
   ProxyPassReverse http://127.0.0.1:8001/
-  AuthName "Adagios Access"
-  AuthType Basic
-  AuthUserFile /var/www/htpasswd
-  Require valid-user
 </Location>
 EOF
 
@@ -201,6 +202,7 @@ okconfig init
 okconfig verify
 
 ## Enable needed apache2 mods
+a2enmod lua
 a2enmod headers
 a2enmod proxy_http
 
