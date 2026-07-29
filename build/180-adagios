@@ -206,6 +206,41 @@ a2enmod lua
 a2enmod headers
 a2enmod proxy_http
 
+## Patch Adagios' WSGI file to allow passing username via NEMS SSO
+## This ensures the actual username is used rather than "anonymous"
+WSGI_FILE="/opt/adagios/adagios/wsgi.py"
+
+# Guard: Ensure file exists
+if [ ! -f "$WSGI_FILE" ]; then
+    echo "[!] Error: $WSGI_FILE not found." >&2
+    exit 1
+fi
+
+# Guard: Check if already patched
+if grep -q "RemoteUserHeaderFix" "$WSGI_FILE"; then
+    echo "[*] Adagios wsgi.py is already patched. Skipping."
+else
+    echo "[+] Patching $WSGI_FILE for NEMS SSO..."
+    cat << 'EOF' >> "$WSGI_FILE"
+
+# --- NEMS Linux SSO Proxy Header Fix ---
+class RemoteUserHeaderFix(object):
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        user = environ.get('HTTP_X_REMOTE_USER') or environ.get('HTTP_REMOTE_USER')
+        if user:
+            environ['REMOTE_USER'] = user
+        return self.app(environ, start_response)
+
+application = RemoteUserHeaderFix(application)
+# ----------------------------------------
+EOF
+
+    echo "[+] Patch successfully applied."
+fi
+
 ## Restart services
 systemctl restart nagios adagios apache2 || true
 
