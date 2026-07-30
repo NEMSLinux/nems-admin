@@ -47,6 +47,11 @@ if [[ ! -d /var/lib/monit ]]; then
   mkdir -m 0750 -p /var/lib/monit
 fi
 
+# Enable the reverse proxy (used by NEMS ULA SSO)
+cp /root/nems/nems-migrator/data/apache2/conf-available/monit.conf /etc/apache2/conf-available/
+a2enconf monit.conf
+/bin/systemctl restart apache2
+
 /bin/systemctl enable monit
 /bin/systemctl start monit
 
