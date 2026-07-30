@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Version to install corresponding to the tar.gz file from their mmonit.com
-ver=5.26.0
+# Version to install corresponding to the tar.gz file from https://mmonit.com/monit/#download
+ver=6.0.0
 
 # stop it if it is already running from a previous apt task
 /bin/systemctl stop monit.service
