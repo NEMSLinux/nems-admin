@@ -172,7 +172,7 @@ Alias /media /opt/adagios/adagios/media
   RequestHeader set "X-Forwarded-Proto" expr=%{REQUEST_SCHEME}
 
   # Unified NEMS SSO hook (enforces admin-level access or higher)
-  LuaHookAccessChecker /etc/apache2/nems_sso.lua nems_require_admin
+  LuaHookAccessChecker /etc/apache2/nems_sso.lua nems_require_operator
 
   # Proxy to backend Adagios
   ProxyPass http://127.0.0.1:8001/
