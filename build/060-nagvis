@@ -21,7 +21,7 @@ fi
 
 # Go git 'er
 tmpdir=`mktemp -d -p /usr/src/`
-wget -O $tmpdir/nv.tar.gz https://github.com/NagVis/nagvis/archive/refs/tags/nagvis-1.9.40.tar.gz
+wget -O $tmpdir/nv.tar.gz https://github.com/NagVis/nagvis/releases/download/nagvis-1.10.6/nagvis-1.10.6.tar.gz
 cd $tmpdir
 tar zxvf nv.tar.gz
 cd nagvis*
