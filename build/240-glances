@@ -32,3 +32,5 @@ EOF
 
 systemctl daemon-reload
 systemctl enable --now glancesweb.service
+
+systemctl restart glancesweb
