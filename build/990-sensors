@@ -1,0 +1,12 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+apt-get update && apt-get install -y smartmontools lm-sensors
+
+# Enable drive and system sensors
+modprobe drivetemp 2>/dev/null || true
+echo "drivetemp" > /etc/modules-load.d/drivetemp.conf
+sensors-detect --auto > /dev/null 2>&1 || true
+
+# Refresh Glances to pick up new sensor interfaces if running
+systemctl is-active --quiet glancesweb && systemctl restart glancesweb || true
