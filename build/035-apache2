@@ -41,6 +41,10 @@ www-data ALL = (root) NOPASSWD: /usr/local/nagios/bin/nagios -v *
 ' | sudo EDITOR='tee -a' visudo
 fi
 
+# Activate the proxy used by NEMS ULA SSO
+a2enmod proxy proxy_http
+systemctl restart apache2
+
 /bin/systemctl start apache2
 
 exit 0
