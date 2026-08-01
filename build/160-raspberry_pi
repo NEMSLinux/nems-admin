@@ -16,6 +16,9 @@ if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( 
     fi
   fi
 
+  # Set the WiFi country to US
+  raspi-config nonint do_wifi_country US
+
   # Contains vcgencmd
   apt-get -y install libraspberrypi-bin
 
