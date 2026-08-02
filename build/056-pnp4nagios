@@ -74,4 +74,10 @@ systemctl restart apache2
 cd /tmp || exit 0
 rm -rf "$BUILD_DIR"
 
+# Remove the install file that blocks the interface
+# If troubleshooting, replace this file and open /pnp4nagios/ to see the errors
+if [[ -e /usr/local/pnp4nagios/share/install.php ]]; then
+  rm -f /usr/local/pnp4nagios/share/install.php
+fi
+
 echo "Done."
