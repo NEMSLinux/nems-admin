@@ -355,6 +355,14 @@ nameserver 2001:4860:4860::8844
   # Clear all network interface configs
   /usr/local/share/nems/nems-scripts/reset-network-manager.sh
 
+  # Make sure nems-ai and its components aren't packaged in
+  apt-get remove -y --purge nems-ai nems-docs
+
+  # Remove the build log
+  if [[ -f /var/log/nems-build.log ]]; then
+    rm -f /var/log/nems-build.log
+  fi
+
   # Remove all docs except copyright
   find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true
   find /usr/share/doc -empty|xargs rmdir || true
