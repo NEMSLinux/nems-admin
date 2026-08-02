@@ -22,8 +22,11 @@ if [[ $EUID -ne 0 ]]; then
 else
 
 if [[ -e /usr/local/share/nems ]]; then
-  echo "NEMS is already built. Aborting.";
-#  exit 1
+  read -r -p "NEMS is already built. Are you sure you want to build again? [y/N] " response
+  if [[ ! "$response" =~ ^[Yy]$ ]]; then
+    echo "Aborting."
+    exit 1
+  fi
 fi
 
 # Create the log folder
