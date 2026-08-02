@@ -12,7 +12,7 @@ fi
 
 # Upgrade core pip tools and install Glances within the venv
 /opt/nems-venv/bin/pip install --upgrade pip setuptools wheel
-/opt/nems-venv/bin/pip install 'glances[action,browser,cloud,cpuinfo,docker,export,folders,gpu,graph,ip,raid,snmp,web,wifi]'
+/opt/nems-venv/bin/pip install --ignore-installed 'glances[action,browser,cloud,cpuinfo,docker,export,folders,gpu,graph,ip,raid,snmp,web,wifi]'
 
 # Ensure symlink points to the venv binary
 ln -sf /opt/nems-venv/bin/glances /usr/bin/glances
