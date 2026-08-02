@@ -6,6 +6,9 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # This has to happen AFTER 150-nems as the symlink for the nagios theme has to resolve to nems-www
 
+# NEMS Linux 1.8 replaces nagiosgraph with pnp4nagios
+exit 0
+
 # Install dependencies
 apt -y install libgd-graph-perl
 apt -y install libnagios-object-perl
