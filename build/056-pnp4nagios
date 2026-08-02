@@ -60,6 +60,12 @@ for sample in sample-config/*.cfg-sample sample-config/*/*.cfg-sample sample-con
 done
 chown -R nagios:nagios /usr/local/pnp4nagios/etc
 
+# Patch Kohana framework for PHP 8.4 E_STRICT and E_DEPRECATED handling
+if [ -d "/usr/local/pnp4nagios/share" ]; then
+    find /usr/local/pnp4nagios/share/ -type f -name "*.php" -exec sed -i 's/\bE_STRICT\b/2048/g' {} +
+    sed -i '/public static function error_handler/a \        if ($code === 8192 || $code === 16384) return TRUE;' /usr/local/pnp4nagios/share/kohana/system/core/Kohana.php
+fi
+
 # Deploy systemd unit for NPCD daemon if present
 if [ -f "scripts/npcd.service" ]; then
     cp scripts/npcd.service /etc/systemd/system/
