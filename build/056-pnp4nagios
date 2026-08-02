@@ -86,8 +86,23 @@ if [[ -e /usr/local/pnp4nagios/share/install.php ]]; then
   rm -f /usr/local/pnp4nagios/share/install.php
 fi
 
+# Copy the config that points to the NEMS-based folder structure for pnp4nagios
+cp /root/nems/nems-migrator/data/nagios/misc/npcd.cfg /usr/local/pnp4nagios/etc/npcd.cfg
+chown nagios:nagios /usr/local/pnp4nagios/etc/npcd.cfg
+chmod 644 /usr/local/pnp4nagios/etc/npcd.cfg
+
+# Ensure log directory exists and has correct permissions
+mkdir -p /usr/local/pnp4nagios/var/log/pnp4nagios
+chown -R nagios:nagios /usr/local/pnp4nagios/var
+
+# Update three required directives in process_perfdata.cfg
+sed -i 's|^RRDPATH = .*|RRDPATH = /usr/local/pnp4nagios/var/perfdata|' /usr/local/pnp4nagios/etc/process_perfdata.cfg
+sed -i 's|^LOG_FILE = .*|LOG_FILE = /usr/local/pnp4nagios/var/perfdata.log|' /usr/local/pnp4nagios/etc/process_perfdata.cfg
+sed -i 's|^LOG_LEVEL = .*|LOG_LEVEL = 2|' /usr/local/pnp4nagios/etc/process_perfdata.cfg
+
 # Start and enable the NPCD service
 systemctl enable --now npcd
+systemctl restart npcd
 
 # Restart Nagios to apply configuration changes
 systemctl restart nagios
