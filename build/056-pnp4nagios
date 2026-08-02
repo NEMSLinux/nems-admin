@@ -1,30 +1,77 @@
 #!/bin/bash
-echo $0 > /var/www/html/userfiles/nems-build.cur
+# NEMS Linux - pnp4nagios installer for NEMS Linux 1.8+
+# Maintained Fork: https://github.com/pnp4nagios/pnp4nagios
 
-platform=$(/usr/local/bin/nems-info platform)
+echo "$0" > /var/www/html/userfiles/nems-build.cur
 
-echo "Setting up pnp4nagios"
+echo "Setting up pnp4nagios..."
 
-wget -O /tmp/pnp4nagios.tar.gz https://github.com/lingej/pnp4nagios/archive/0.6.26.tar.gz
-cd /tmp
-tar xzf pnp4nagios.tar.gz
-cd pnp4nagios-0.6.26/
+# Temporary working directory setup
+BUILD_DIR="/tmp/pnp4nagios-build"
+rm -rf "$BUILD_DIR"
+mkdir -p "$BUILD_DIR"
 
-if (( $platform == 20 )); then
-  # x86/64
-  ./configure --with-httpd-conf=/etc/apache2/sites-enabled --build=x86_64-unknown-linux-gnu
-else
-  # arm64
-  ./configure --with-httpd-conf=/etc/apache2/sites-enabled --build=aarch64-unknown-linux-gnu
+# Clone latest source
+git clone --depth 1 https://github.com/pnp4nagios/pnp4nagios.git "$BUILD_DIR"
+cd "$BUILD_DIR" || exit 1
+
+# Generate configure script for Debian Trixie toolchain
+if command -v autoconf >/dev/null 2>&1; then
+    autoconf
 fi
 
+# Detect platform target
+PLATFORM=$(/usr/local/bin/nems-info platform 2>/dev/null || echo "0")
+
+if (( PLATFORM == 20 )); then
+    BUILD_TRIPLE="x86_64-unknown-linux-gnu"
+elif (( PLATFORM == 21 )) || [ "$(uname -m)" = "aarch64" ]; then
+    BUILD_TRIPLE="aarch64-unknown-linux-gnu"
+else
+    BUILD_TRIPLE=$(dpkg-architecture -qDEB_HOST_GNU_TYPE 2>/dev/null || uname -m)
+fi
+
+# Configure build
+./configure \
+    --with-httpd-conf=/etc/apache2/sites-enabled \
+    --with-nagios-user=nagios \
+    --with-nagios-group=nagios \
+    --build="$BUILD_TRIPLE"
+
+# Core compile and install
 make all
-make fullinstall
-make install-webconf
-make install-config
-make install-init
+make install
+
+# Manually install Apache web configuration
+if [ -f "sample-config/httpd.conf" ]; then
+    cp sample-config/httpd.conf /etc/apache2/sites-enabled/pnp4nagios.conf
+elif [ -f "sample-config/config_samples/apache.pnp4nagios.conf" ]; then
+    cp sample-config/config_samples/apache.pnp4nagios.conf /etc/apache2/sites-enabled/pnp4nagios.conf
+fi
+
+# Manually deploy default config files if they do not exist
+mkdir -p /usr/local/pnp4nagios/etc
+for sample in sample-config/*.cfg-sample sample-config/*/*.cfg-sample sample-config/*.php-sample; do
+    [ -f "$sample" ] || continue
+    target_file="/usr/local/pnp4nagios/etc/$(basename "${sample%-sample}")"
+    if [ ! -f "$target_file" ]; then
+        cp "$sample" "$target_file"
+    fi
+done
+chown -R nagios:nagios /usr/local/pnp4nagios/etc
+
+# Deploy systemd unit for NPCD daemon if present
+if [ -f "scripts/npcd.service" ]; then
+    cp scripts/npcd.service /etc/systemd/system/
+    systemctl enable npcd.service 2>/dev/null || true
+fi
+
+# Reload systemd and Apache
 systemctl daemon-reload
 systemctl restart apache2
 
-# so error code on failure doesn't fail run-parts
+# Cleanup build files
+cd /tmp || exit 0
+rm -rf "$BUILD_DIR"
+
 echo "Done."
