@@ -8,6 +8,17 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 # Also do this again in 999 to clean up after Cockpit installs
   rm /etc/update-motd.d/*
 
+# Disable PAM's built-in "Last Login" output, which has a strange date format
+# Thanks to MarshMan for pointing this out during Developer Lockdown v3
+# I've created a replacement in the motd.tcl file, with better formatting
+if sudo grep -qE '^[#[:space:]]*PrintLastLog' /etc/ssh/sshd_config; then
+    sudo sed -i -E 's/^[#[:space:]]*PrintLastLog.*/PrintLastLog no/' /etc/ssh/sshd_config
+else
+    echo "PrintLastLog no" | sudo tee -a /etc/ssh/sshd_config > /dev/null
+fi
+# Load the modified config - will not kick existing connections
+/bin/systemctl restart ssh
+
 # Enable NEMS MOTD
 echo > /etc/motd
 cp /root/nems/nems-migrator/data/nems/motd.tcl /etc/
