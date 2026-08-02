@@ -86,4 +86,10 @@ if [[ -e /usr/local/pnp4nagios/share/install.php ]]; then
   rm -f /usr/local/pnp4nagios/share/install.php
 fi
 
+# Start and enable the NPCD service
+systemctl enable --now npcd
+
+# Restart Nagios to apply configuration changes
+systemctl restart nagios
+
 echo "Done."
