@@ -10,3 +10,14 @@ sensors-detect --auto > /dev/null 2>&1 || true
 
 # Refresh Glances to pick up new sensor interfaces if running
 systemctl is-active --quiet glancesweb && systemctl restart glancesweb || true
+
+
+platform=$(/usr/local/bin/nems-info platform)
+
+if (( $platform >= 0 )) && (( $platform <= 9 )) || (( $platform >= 150 )) && (( $platform <= 199 )); then
+
+  # Disable smarmontools by default on Raspberry Pi (as it's pretty likely users will be running on incompatible drives)
+  # We'll still leave it installed though so a user can easily enable the service if they connect a compatible drive
+  systemctl disable --now smartmontools
+
+fi
