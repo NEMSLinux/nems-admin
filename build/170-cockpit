@@ -16,6 +16,7 @@ fi
   # Install cockpit on all but Docker
   if (( $platform != 21 )); then
     apt update
+    apt-get install -y sscg
     apt-get install -y cockpit
   fi
 

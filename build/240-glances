@@ -21,10 +21,13 @@ ln -sf /opt/nems-venv/bin/glances /usr/bin/glances
 cat <<EOF > /usr/lib/systemd/system/glancesweb.service
 [Unit]
 Description = Glances in Web Server Mode
-After = network.target
+After = network-online.target nss-lookup.target
+Wants = network-online.target
 
 [Service]
 ExecStart = /opt/nems-venv/bin/glances -w -t 5
+Restart = on-failure
+RestartSec = 5s
 
 [Install]
 WantedBy = multi-user.target
