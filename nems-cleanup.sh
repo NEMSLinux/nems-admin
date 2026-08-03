@@ -363,6 +363,10 @@ nameserver 2001:4860:4860::8844
     rm -f /var/log/nems-build.log
   fi
 
+  # Clear the RRD database containing pnp4nagios graphs
+  systemctl stop npcd
+  rm -rf /usr/local/pnp4nagios/var/perfdata/NEMS/
+
   # Remove all docs except copyright
   find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true
   find /usr/share/doc -empty|xargs rmdir || true

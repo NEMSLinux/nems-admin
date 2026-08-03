@@ -1,4 +1,7 @@
 #!/bin/bash
+# DO NOT clobber 1.8 configs!
+echo "PATCH-000015" >> /var/log/nems/patches.log
+exit 0
 
 # Move speedtest from Ookla to fast.com
     if ! grep -q "PATCH-000015" /var/log/nems/patches.log; then
