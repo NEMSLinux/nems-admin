@@ -241,6 +241,13 @@ EOF
     echo "[+] Patch successfully applied."
 fi
 
+# Ensure Nagios rw directory exists with group-write and SGID permissions
+mkdir -p /usr/local/nagios/var/rw
+chown -R nagios:nagios /usr/local/nagios/var/rw
+chmod 2775 /usr/local/nagios/var/rw
+usermod -aG nagios adagios
+usermod -aG nagios www-data
+
 ## Restart services
 systemctl restart nagios adagios apache2 || true
 
