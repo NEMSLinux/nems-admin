@@ -367,6 +367,9 @@ nameserver 2001:4860:4860::8844
   systemctl stop npcd
   rm -rf /usr/local/pnp4nagios/var/perfdata/NEMS/
 
+  # Remove backups from Migrator
+  rm -f /root/nems-*.tar.gz
+
   # Remove all docs except copyright
   find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true
   find /usr/share/doc -empty|xargs rmdir || true
