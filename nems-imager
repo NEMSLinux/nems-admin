@@ -1,0 +1,286 @@
+#!/usr/bin/env bash
+
+# ==============================================================================
+# NEMS Linux Distributable img Creator for Single Board Computers
+# By Robbie Ferguson - 2026-08-05
+# ==============================================================================
+
+set -e
+
+TITLE="NEMS Linux Distributable img Creator for Single Board Computers"
+AUTHOR="By Robbie Ferguson"
+
+if [ "$EUID" -ne 0 ]; then
+    echo "Error: This script must be run with elevated privileges (e.g., sudo)." >&2
+    exit 1
+fi
+
+REQUIRED_UTILS=(
+    "whiptail" "sfdisk" "blockdev" "lsblk" "mount" "umount" 
+    "xz" "grep" "awk" "e2fsck" "resize2fs" "tune2fs" "partprobe" "df"
+)
+
+for util in "${REQUIRED_UTILS[@]}"; do
+    if ! command -v "$util" &> /dev/null; then
+        echo "Error: Required utility '$util' is not installed." >&2
+        exit 1
+    fi
+done
+
+# Resolve real user's Desktop folder (even when invoked with sudo)
+REAL_USER=${SUDO_USER:-$USER}
+USER_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
+
+if [ -d "$USER_HOME/Desktop" ]; then
+    DEST_DIR="$USER_HOME/Desktop"
+else
+    DEST_DIR="$USER_HOME"
+fi
+
+# --- Helper Functions ---
+
+# Modular SBC Detection
+detect_sbc() {
+    local mount_path="$1"
+
+    if [ -f "$mount_path/usr/bin/raspi-config" ] || [ -f "$mount_path/etc/rpi-issue" ]; then
+        echo "RPi"
+        return
+    fi
+
+    # Future SBC Detections can later be added here.
+
+    echo "Unknown"
+}
+
+# Explicitly unmount all partitions and disable swap on selected drive
+unmount_drive() {
+    local dev="$1"
+    sync
+    swapoff ${dev}* 2>/dev/null || true
+    umount -f ${dev}* 2>/dev/null || true
+    umount -l ${dev}* 2>/dev/null || true
+    blockdev --flushbufs "$dev" 2>/dev/null || true
+}
+
+DEV_LIST=()
+while read -r type name size model; do
+    if [[ "$type" == "disk" ]]; then
+        dev_path="/dev/$name"
+        desc="$size - ${model:-Generic Storage}"
+        DEV_LIST+=("$dev_path" "$desc")
+    fi
+done < <(lsblk -d -n -o TYPE,NAME,SIZE,MODEL)
+
+if [ ${#DEV_LIST[@]} -eq 0 ]; then
+    whiptail --title "$TITLE" --msgbox "No suitable block devices found!" 8 45
+    exit 1
+fi
+
+SELECTED_DEV=$(whiptail --title "$TITLE" \
+    --menu "Select the SD Card / Storage Drive containing NEMS Linux:" 18 70 8 \
+    "${DEV_LIST[@]}" 3>&1 1>&2 2>&3)
+
+if [ -z "$SELECTED_DEV" ]; then
+    echo "Operation cancelled."
+    exit 0
+fi
+
+# Ensure drive is completely unmounted immediately after selection
+unmount_drive "$SELECTED_DEV"
+
+# --- Extract Version, Build, & Platform Metadata ---
+MOUNT_DIR=$(mktemp -d /tmp/nems_mount.XXXXXX)
+
+cleanup() {
+    sync
+    if mountpoint -q "$MOUNT_DIR" 2>/dev/null; then
+        umount "$MOUNT_DIR" 2>/dev/null || true
+    fi
+    rm -rf "$MOUNT_DIR"
+}
+trap cleanup EXIT
+
+# Locate rootfs partition
+ROOT_PART=""
+for part in "${SELECTED_DEV}2" "${SELECTED_DEV}p2" "${SELECTED_DEV}1" "${SELECTED_DEV}p1"; do
+    if [ -b "$part" ]; then
+        if mount -o ro "$part" "$MOUNT_DIR" 2>/dev/null; then
+            if [ -f "$MOUNT_DIR/usr/local/share/nems/nems.conf" ] || [ -f "$MOUNT_DIR/var/log/nems/build" ]; then
+                ROOT_PART="$part"
+                break
+            fi
+            umount "$MOUNT_DIR" 2>/dev/null || true
+        fi
+    fi
+done
+
+if [ -z "$ROOT_PART" ]; then
+    whiptail --title "$TITLE" --msgbox "Error: Could not locate a valid NEMS rootfs partition on $SELECTED_DEV." 10 65
+    exit 1
+fi
+
+# Extract Build Number
+BUILD_FILE="$MOUNT_DIR/var/log/nems/build"
+if [ -f "$BUILD_FILE" ]; then
+    buildnum=$(tr -d ' \t\r\n' < "$BUILD_FILE")
+else
+    buildnum="unknown"
+fi
+
+# Extract NEMS Version
+CONF_FILE="$MOUNT_DIR/usr/local/share/nems/nems.conf"
+if [ -f "$CONF_FILE" ]; then
+    nemsver=$(grep -i '^version=' "$CONF_FILE" | head -n1 | cut -d'=' -f2 | tr -d ' "r\r\n' | tr -d "'")
+else
+    nemsver="unknown"
+fi
+
+# Detect Platform
+platformname=$(detect_sbc "$MOUNT_DIR")
+
+cleanup
+
+IMG_NAME="NEMS_v${nemsver}-${platformname}-Build${buildnum}.img"
+IMG_PATH="$DEST_DIR/$IMG_NAME"
+
+CONFIRM_TEXT="$TITLE\n$AUTHOR\n\n"\
+"Target Device:  $SELECTED_DEV\n"\
+"Root Partition: $ROOT_PART\n"\
+"Platform:       $platformname\n"\
+"NEMS Version:   $nemsver\n"\
+"Build Number:   $buildnum\n"\
+"Output Image:   $IMG_PATH\n\n"\
+"Ready to shrink, image, and compress. Continue?"
+
+if ! whiptail --title "$TITLE" --yesno "$CONFIRM_TEXT" 20 74; then
+    echo "Operation cancelled by user."
+    exit 0
+fi
+
+# --- Check Filesystem & Perform Shrink ---
+echo "======================================================================"
+echo "$TITLE"
+echo "$AUTHOR"
+echo "======================================================================"
+
+unmount_drive "$SELECTED_DEV"
+
+echo "Checking ext4 filesystem integrity on $ROOT_PART..."
+set +e
+e2fsck -fy "$ROOT_PART"
+E2FS_EXIT=$?
+set -e
+if [ "$E2FS_EXIT" -gt 1 ]; then
+    echo "Error: e2fsck failed with exit code $E2FS_EXIT. Aborting to protect data." >&2
+    exit 1
+fi
+
+echo "Shrinking ext4 filesystem to minimal size..."
+resize2fs -M "$ROOT_PART"
+
+# Retrieve block and sector details
+SECTOR_SIZE=$(blockdev --getss "$SELECTED_DEV" 2>/dev/null || echo 512)
+BLOCK_SIZE=$(tune2fs -l "$ROOT_PART" | grep "Block size:" | awk '{print $3}')
+BLOCK_COUNT=$(tune2fs -l "$ROOT_PART" | grep "Block count:" | awk '{print $3}')
+
+# Calculate required filesystem size in sectors
+FS_BYTES=$(( BLOCK_COUNT * BLOCK_SIZE ))
+FS_SECTORS=$(( FS_BYTES / SECTOR_SIZE ))
+
+# Extract Partition Start Sector directly from Linux Kernel Sysfs
+ROOT_PART_NAME=$(basename "$ROOT_PART")
+if [ -f "/sys/class/block/$ROOT_PART_NAME/start" ]; then
+    PART_START=$(cat "/sys/class/block/$ROOT_PART_NAME/start")
+else
+    PART_START=$(sfdisk -l -o Device,Start "$SELECTED_DEV" 2>/dev/null | grep -w "$ROOT_PART" | awk '{print $2}')
+fi
+
+if [ -z "$PART_START" ]; then
+    echo "Error: Failed to determine partition start sector for $ROOT_PART." >&2
+    exit 1
+fi
+
+PART_NUM=$(echo "$ROOT_PART" | grep -o '[0-9]*$')
+
+# Add 300 MB Padding inside the partition
+PADDING_MB=300
+PADDING_BYTES=$(( PADDING_MB * 1024 * 1024 ))
+PADDING_SECTORS=$(( PADDING_BYTES / SECTOR_SIZE ))
+
+# Calculate new Partition End Sector and Total Size in Sectors
+NEW_PART_END=$(( PART_START + FS_SECTORS + PADDING_SECTORS ))
+MAX_SECTORS=$(blockdev --getsz "$SELECTED_DEV")
+if [ "$NEW_PART_END" -ge "$MAX_SECTORS" ]; then
+    NEW_PART_END=$(( MAX_SECTORS - 1 ))
+fi
+
+PART_SIZE=$(( NEW_PART_END - PART_START + 1 ))
+
+echo "Resizing partition $PART_NUM on $SELECTED_DEV (Start: $PART_START, Size: $PART_SIZE sectors)..."
+echo "start=$PART_START, size=$PART_SIZE" | sfdisk --no-reread --force -N "$PART_NUM" "$SELECTED_DEV"
+
+sync
+partprobe "$SELECTED_DEV" 2>/dev/null || true
+udevadm settle 2>/dev/null || sleep 2
+
+echo "Fitting ext4 filesystem cleanly into new partition boundary..."
+resize2fs "$ROOT_PART"
+
+# --- High-Speed Disk Image Extraction ---
+TOTAL_BYTES=$(( (NEW_PART_END + 1) * SECTOR_SIZE ))
+MB_COUNT=$(( (TOTAL_BYTES + 1048575) / 1048576 ))
+
+# Verify destination free space
+AVAILABLE_KB=$(df -k "$DEST_DIR" | tail -n1 | awk '{print $4}')
+REQUIRED_KB=$(( MB_COUNT * 1024 ))
+
+if [ "$AVAILABLE_KB" -lt "$REQUIRED_KB" ]; then
+    echo "Error: Insufficient free space on $DEST_DIR." >&2
+    echo "Required: ~$(( REQUIRED_KB / 1024 )) MB | Available: ~$(( AVAILABLE_KB / 1024 )) MB" >&2
+    exit 1
+fi
+
+echo "----------------------------------------------------------------------"
+echo "Extracting image to: $IMG_PATH"
+echo "Copying $MB_COUNT MB at high speed (bs=1M)..."
+echo "----------------------------------------------------------------------"
+
+unmount_drive "$SELECTED_DEV"
+
+dd if="$SELECTED_DEV" of="$IMG_PATH" bs=1M count="$MB_COUNT" status=progress conv=fsync
+sync
+
+chown "$REAL_USER:" "$IMG_PATH" 2>/dev/null || true
+
+# --- Restore Original Source SD Card Capacity ---
+echo "----------------------------------------------------------------------"
+echo "Restoring partition table and filesystem on original SD card ($SELECTED_DEV)..."
+
+# Syntax fix: ', +' tells sfdisk to keep the existing start sector and extend size to maximum available space
+echo ", +" | sfdisk --no-reread --force -N "$PART_NUM" "$SELECTED_DEV"
+
+sync
+partprobe "$SELECTED_DEV" 2>/dev/null || true
+udevadm settle 2>/dev/null || sleep 2
+
+resize2fs "$ROOT_PART"
+echo "Source SD card restored to full disk capacity."
+
+# --- Compress Image ---
+echo "----------------------------------------------------------------------"
+echo "Compressing image via xz..."
+echo "Executing: xz -kv -T0 -7e $IMG_PATH"
+echo "----------------------------------------------------------------------"
+
+xz -kv -T0 -7e "${IMG_PATH}"
+
+chown "$REAL_USER:" "${IMG_PATH}.xz" 2>/dev/null || true
+
+# Get rid of the interim .img file
+rm "${IMG_PATH}"
+
+# --- Done ---
+whiptail --title "$TITLE" --msgbox "Process Complete!\n\nCompressed File Created:\n${IMG_PATH}.xz\n\nImage Size: ~$MB_COUNT MB" 13 72
+
+echo "Finished successfully: ${IMG_PATH}.xz"
