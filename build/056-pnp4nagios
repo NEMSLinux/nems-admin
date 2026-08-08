@@ -100,6 +100,9 @@ sed -i 's|^RRDPATH = .*|RRDPATH = /usr/local/pnp4nagios/var/perfdata|' /usr/loca
 sed -i 's|^LOG_FILE = .*|LOG_FILE = /usr/local/pnp4nagios/var/perfdata.log|' /usr/local/pnp4nagios/etc/process_perfdata.cfg
 sed -i 's|^LOG_LEVEL = .*|LOG_LEVEL = 2|' /usr/local/pnp4nagios/etc/process_perfdata.cfg
 
+# Update the config to the correct RRD destination path
+sed -i 's|/usr/local/pnp4nagios/var/log/pnp4nagios/rrd|/usr/local/pnp4nagios/var/perfdata|g' /usr/local/pnp4nagios/etc/config.php
+
 # Start and enable the NPCD service
 systemctl enable --now npcd
 systemctl restart npcd
