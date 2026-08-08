@@ -16,8 +16,9 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 REQUIRED_UTILS=(
-    "whiptail" "sfdisk" "blockdev" "lsblk" "mount" "umount" 
+    "whiptail" "sfdisk" "blockdev" "lsblk" "mount" "umount"
     "xz" "grep" "awk" "e2fsck" "resize2fs" "tune2fs" "partprobe" "df"
+    "fsck.fat"
 )
 
 for util in "${REQUIRED_UTILS[@]}"; do
@@ -176,6 +177,22 @@ if [ "$E2FS_EXIT" -gt 1 ]; then
     exit 1
 fi
 
+# Clear FAT32 dirty bit on partition 1 to prevent Windows AutoPlay errors
+BOOT_PART=""
+for part in "${SELECTED_DEV}1" "${SELECTED_DEV}p1"; do
+    if [ -b "$part" ]; then
+        BOOT_PART="$part"
+        break
+    fi
+done
+
+if [ -n "$BOOT_PART" ]; then
+    echo "Clearing FAT32 dirty bit on $BOOT_PART..."
+    set +e
+    fsck.fat -a "$BOOT_PART" 2>/dev/null || true
+    set -e
+fi
+
 echo "Shrinking ext4 filesystem to minimal size..."
 resize2fs -M "$ROOT_PART"
 
@@ -273,12 +290,9 @@ echo "Compressing image via xz..."
 echo "Executing: xz -kv -T0 -7e $IMG_PATH"
 echo "----------------------------------------------------------------------"
 
-xz -kv -T0 -7e "${IMG_PATH}"
+xz -z -v -T0 -8e "${IMG_PATH}"
 
 chown "$REAL_USER:" "${IMG_PATH}.xz" 2>/dev/null || true
-
-# Get rid of the interim .img file
-rm "${IMG_PATH}"
 
 # --- Done ---
 whiptail --title "$TITLE" --msgbox "Process Complete!\n\nCompressed File Created:\n${IMG_PATH}.xz\n\nImage Size: ~$MB_COUNT MB" 13 72
