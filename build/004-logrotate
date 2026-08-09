@@ -22,7 +22,7 @@ echo '##
 }
 ' > /etc/logrotate.d/nems.conf
 
-chown root:root /etc/logrotate.d/nems.conf
+chown root:root /etc/logrotate.d/nems
 
 systemctl start logrotate
 systemctl enable logrotate
