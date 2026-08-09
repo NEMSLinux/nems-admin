@@ -3,6 +3,8 @@ echo $0 > /var/www/html/userfiles/nems-build.cur
 
 apt-get install -y logrotate
 
+systemctl stop logrotate
+
 echo '##
 # NEMS Linux log rotation.
 # Omit logs which are overwritten or static.
@@ -20,6 +22,7 @@ echo '##
 }
 ' > /etc/logrotate.d/nems.conf
 
-systemctl stop logrotate
+chown root:root /etc/logrotate.d/nems.conf
+
 systemctl start logrotate
 systemctl enable logrotate
