@@ -384,24 +384,32 @@ nameserver 2001:4860:4860::8844
     rm /var/swap
   fi
 
-# Schedule nems-cert to run once on next reboot
+# Generate Unique NEMS SSL and SSH Certificates on First Boot
 SERVICE_FILE="/etc/systemd/system/nems-cert-firstboot.service"
 
-# Create one-shot systemd service
 cat <<'EOF' > "$SERVICE_FILE"
 [Unit]
 Description=Generate Unique NEMS SSL and SSH Certificates on First Boot
 After=network.target
-Before=apache2.service ssh.service nagios.service
+Before=apache2.service ssh.service nagios.service rpimonitor.service
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash -c '/usr/local/bin/nems-cert && systemctl disable nems-cert-firstboot.service && rm -f /etc/systemd/system/nems-cert-firstboot.service && systemctl daemon-reload'
+ExecStart=/bin/bash -c '/usr/local/bin/nems-cert --no-restart && systemctl disable nems-cert-firstboot.service && rm -f /etc/systemd/system/nems-cert-firstboot.service && systemctl daemon-reload'
 RemainAfterExit=no
 
 [Install]
 WantedBy=multi-user.target
 EOF
+
+chmod 644 "$SERVICE_FILE"
+systemctl daemon-reload
+systemctl enable nems-cert-firstboot.service
+
+  # Remove git settings
+  if [[ -e /root/.gitconfig ]]; then
+    rm -f /root/.gitconfig
+  fi
 
   # Enable service for next boot
   chmod 644 "$SERVICE_FILE"
