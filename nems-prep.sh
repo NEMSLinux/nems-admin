@@ -14,6 +14,7 @@ PATH=$PATH:/sbin
 apt-get update
 apt-get install --yes git screen dialog gnupg nano apt-utils sudo
 apt-get install -y wget python3
+apt-get install -y curl
 
 printf "RTC reports date/time as: "
 date
