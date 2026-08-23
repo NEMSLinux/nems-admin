@@ -1,18 +1,20 @@
 #!/bin/bash
-# Glances should have been installed from packages.add, however if it was missing from the repositories on this build, install it via pip
+# Glances installation script for NEMS Linux
 
 # Install system dependencies (smartmontools replaces deprecated hddtemp)
 apt-get update
 apt-get install -y python3-venv python3-jinja2 python3-psutil smartmontools lm-sensors
 
-# Create isolated venv if it does not exist
+# Ensure shared venv exists without recreating or altering existing packages
 if [[ ! -d /opt/nems-venv ]]; then
   python3 -m venv /opt/nems-venv
 fi
 
-# Upgrade core pip tools and install Glances within the venv
+# Upgrade core pip tools in the shared venv
 /opt/nems-venv/bin/pip install --upgrade pip setuptools wheel
-/opt/nems-venv/bin/pip install --ignore-installed 'glances[action,browser,cloud,cpuinfo,docker,export,folders,gpu,graph,ip,raid,snmp,web,wifi]'
+
+# Safely install/upgrade Glances (excluding legacy cloud/export extras that break Debian 13)
+/opt/nems-venv/bin/pip install --upgrade 'glances[action,browser,cpuinfo,docker,folders,gpu,graph,ip,raid,snmp,web,wifi]'
 
 # Ensure symlink points to the venv binary
 ln -sf /opt/nems-venv/bin/glances /usr/bin/glances
@@ -35,5 +37,3 @@ EOF
 
 systemctl daemon-reload
 systemctl enable --now glancesweb.service
-
-systemctl restart glancesweb
