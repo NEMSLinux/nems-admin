@@ -2,7 +2,28 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 # Mask the SSH VSOCK service to prevent console and log bloat
-# when VSOCK host integration is not enabled in hypervisors
-# while still leaving VSOCK service enabled for systems that
-# support it.
-systemctl mask sshd-vsock.socket
+# when VSOCK host integration is not enabled in hypervisors.
+
+  # Mask the binary
+  mkdir -p /etc/systemd/system-generators
+  ln -sf /dev/null /etc/systemd/system-generators/systemd-ssh-generator
+
+  # Add systemd.ssh_auto=no to GRUB
+  GRUB_FILE="/etc/default/grub"
+
+  if [ -f "$GRUB_FILE" ]; then
+    if ! grep -q "systemd.ssh_auto=no" "$GRUB_FILE"; then
+      # Insert systemd.ssh_auto=no into GRUB_CMDLINE_LINUX_DEFAULT
+      sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT="[^\"]*\)/\1 systemd.ssh_auto=no/' "$GRUB_FILE"
+      if command -v update-grub &>/dev/null; then
+        update-grub
+      elif command -v grub2-mkconfig &>/dev/null; then
+        grub2-mkconfig -o /boot/grub2/grub.cfg
+      fi
+    else
+      echo "GRUB already configured."
+    fi
+  fi
+
+#########################
+
