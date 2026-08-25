@@ -1,0 +1,8 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# Mask the SSH VSOCK service to prevent console and log bloat
+# when VSOCK host integration is not enabled in hypervisors
+# while still leaving VSOCK service enabled for systems that
+# support it.
+systemctl mask sshd-vsock.socket
