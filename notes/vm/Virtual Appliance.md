@@ -6,8 +6,8 @@
     - Use MAC address: 080027C75EC1
     - Halt the machine
     - Remove Optical drive and USB 2.0 controller
-  - Export to OVA using [OVF Tool](https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL430&productId=742)
-    - Simply set the hypervisor IP within, and run [ova-create](ova-create)
+  - Export to OVA using [OVF Tool](https://developer.broadcom.com/tools/open-virtualization-format-ovf-tool/latest)
+    - Simply set the hypervisor IP and NEMS version within [ova-create](ova-create) and run it from the same folder as `ovftool` on Linux.
 - VHD:
   - Extract VMDK file from OVA.
   - With VirtualBox installed, convert the VMDK file with the following command: `"c:\Program Files\Oracle\VirtualBox\VBoxManage.exe" clonemedium --format vhd NEMS-disk1.vmdk NEMS.vhd`
