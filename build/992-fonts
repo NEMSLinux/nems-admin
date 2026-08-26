@@ -1,0 +1,42 @@
+#!/bin/bash
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# NEMS Linux - RRDtool & Pango Font Repair Script (Debian 13 Trixie)
+
+echo "Repairing RRDtool font rendering..."
+
+# Purge legacy X11 bitmap fonts (Pango 1.44+ rejects bitmap fonts, triggering tofu boxes)
+apt-get purge -y xfonts-terminus xfonts-75dpi xfonts-100dpi 2>/dev/null || true
+
+# Install essential TrueType vector fonts and fontconfig tools
+apt-get update
+apt-get install -y --reinstall \
+    fontconfig \
+    fonts-dejavu-core \
+    fonts-dejavu-extra \
+    fonts-dejavu-mono \
+    fonts-liberation \
+    fonts-freefont-ttf \
+    locales
+
+# Ensure a valid UTF-8 locale is generated (prevents Pango encoding failures)
+locale-gen C.UTF-8 2>/dev/null || true
+update-locale LANG=C.UTF-8
+export LANG=C.UTF-8
+
+# Clear stale caches and force a fresh system-wide Fontconfig index
+rm -rf /var/cache/fontconfig/* /root/.cache/fontconfig /var/www/.cache/fontconfig
+fc-cache -f -v
+
+# Fix permissions so www-data and nagios can access font caches
+chmod -R 755 /var/cache/fontconfig /usr/share/fonts
+
+# Set RRD default font variable in Apache environment
+if ! grep -q "RRD_DEFAULT_FONT" /etc/apache2/envvars 2>/dev/null; then
+    echo 'export RRD_DEFAULT_FONT="DejaVu Sans"' >> /etc/apache2/envvars
+fi
+
+# Restart services to apply font changes
+systemctl restart apache2
+systemctl restart monitorix 2>/dev/null || true
+systemctl restart npcd 2>/dev/null || true
