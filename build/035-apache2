@@ -15,9 +15,6 @@ apt -y install ssl-cert libapache2-mod-security2
 # Generating new Snakeoil cert
 /usr/sbin/make-ssl-cert generate-default-snakeoil --force-overwrite
 
-/bin/systemctl stop apache2
-cp -f /root/nems/nems-migrator/data/apache2/sites-available/nems-dashboard.conf /etc/apache2/sites-available
-
 if [[ -e /etc/apache2/sites-enabled/000-default.conf ]]; then
   a2dissite 000-default
 fi
@@ -44,7 +41,5 @@ fi
 # Activate the proxy used by NEMS ULA SSO
 a2enmod proxy proxy_http
 systemctl restart apache2
-
-/bin/systemctl start apache2
 
 exit 0
