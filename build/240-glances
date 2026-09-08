@@ -37,3 +37,5 @@ EOF
 
 systemctl daemon-reload
 systemctl enable --now glancesweb.service
+systemctl disable glances
+systemctl stop glances
