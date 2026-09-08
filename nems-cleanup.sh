@@ -277,7 +277,7 @@ nameserver 2001:4860:4860::8844
      addition="/root/nems/nems-admin/resize_rootfs/odroid-stage1\n"
      # nems-fs-resize supports the ODROID N2
      if (( $platform == 15 )) || (( $platform == 16 )); then
-       addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize"
+       addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize\n"
      fi
 
      if grep -q "exit" /etc/rc.local; then
@@ -344,7 +344,7 @@ nameserver 2001:4860:4860::8844
       /bin/sed -i -- 's,PLACEHERE,'"$addition"'exit 0,g' /etc/rc.local
     fi
   fi
-  
+
   # remove any package data left behind after removal
   apt-get purge $(dpkg -l | awk '/^rc/ { print $2 }')
 
