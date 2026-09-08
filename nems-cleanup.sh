@@ -248,7 +248,7 @@ nameserver 2001:4860:4860::8844
   # 120 = Khadas VIM3 Basic
   # 121 = Khadas VIM3 Pro
   # 200-202 = Indiedroid Nova
-  if (( $platform == 32 )) || (( $platform == 69 )) || (( $platform == 100 )) || (( $platform == 101 )) || (( $platform == 120 )) || (( $platform == 121 )) || (( $platform == 200 )) || (( $platform == 201 )) || (( $platform == 202 )); then
+  if  (( $platform == 32 )) || (( $platform == 69 )) || (( $platform == 100 )) || (( $platform == 101 )) || (( $platform == 120 )) || (( $platform == 121 )) || (( $platform == 200 )) || (( $platform == 201 )) || (( $platform == 202 )); then
     # NEMS Universal Filesystem Restore
      addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize\n"
      if grep -q "exit" /etc/rc.local; then
@@ -276,7 +276,7 @@ nameserver 2001:4860:4860::8844
      # ODROID
      addition="/root/nems/nems-admin/resize_rootfs/odroid-stage1\n"
      # nems-fs-resize supports the ODROID N2
-     if (( $platform == 15 )); then
+     if (( $platform == 15 )) || (( $platform == 16 )); then
        addition="/root/nems/nems-admin/resize_rootfs/nems-fs-resize"
      fi
 
@@ -445,7 +445,7 @@ echo "
 
 Run the following command to clear history and halt:
 
-> /root/.bash_history && history -c && history -w && > /home/nemsadmin/.bash_history && su - nemsadmin -c \"history -c\" && su - nemsadmin -c \"history -w\" && halt
+> /root/.bash_history && history -c && history -w && > /home/nemsadmin/.bash_history && su - nemsadmin -c \"history -c\" && su - nemsadmin -c \"history -w\" && shutdown -h now
 
 "
   exit; fi;
