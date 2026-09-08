@@ -27,3 +27,5 @@ if ! grep -q "/etc/motd.tcl" /etc/profile; then
   echo "/etc/motd.tcl" >> /etc/profile
 fi
 
+echo "NEMS Linux $(/usr/local/bin/nems-info nemsver) \l" > /etc/issue
+echo "NEMS Linux $(/usr/local/bin/nems-info nemsver)" > /etc/issue.net

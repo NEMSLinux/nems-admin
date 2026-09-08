@@ -1,0 +1,39 @@
+#!/bin/bash
+set -euo pipefail
+
+echo $0 > /var/www/html/userfiles/nems-build.cur
+
+# Fetch NEMS version and define new string
+NEMS_VER=$(/usr/local/bin/nems-info nemsver)
+NEW_PRETTY_NAME="NEMS Linux ${NEMS_VER}"
+OS_RELEASE="/etc/os-release"
+
+# Unlock the file if immutable attribute was previously set
+chattr -i "$OS_RELEASE" 2>/dev/null || true
+
+# Overwrite or create /etc/os-release using tee
+cat <<EOF | tee "$OS_RELEASE" > /dev/null
+PRETTY_NAME="${NEW_PRETTY_NAME}"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.6
+ID=debian
+HOME_URL="https://nemslinux.com"
+SUPPORT_URL="https://nemslinux.com"
+BUG_REPORT_URL="https://github.com/NEMSLinux"
+ARMBIAN_PRETTY_NAME="${NEW_PRETTY_NAME}"
+EOF
+
+# Lock the file against system package update overwrites
+chattr +i "$OS_RELEASE"
+
+echo "Updated ${OS_RELEASE} to '${NEW_PRETTY_NAME}' and locked file."
+
+
+# Create the issue files
+echo "${NEW_PRETTY_NAME} \l" > /etc/issue
+echo $NEW_PRETTY_NAME > /etc/issue.net
+
+
