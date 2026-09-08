@@ -369,6 +369,7 @@ nameserver 2001:4860:4860::8844
 
   # Remove backups from Migrator
   rm -f /root/nems-*.tar.gz
+  rm -f /root/mysql-backup-*.tar.gz
 
   # Remove all docs except copyright
   find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true
