@@ -1,6 +1,9 @@
 Ensure using a UHS-1 capable SD card: https://amzn.to/2vKMx67
 
-Install to SD Card: Debian Stretch from https://forum.odroid.com/viewtopic.php?f=96&t=30552
+Install Meveric's Debian server build to SD Card:
+
+- Debian Stretch - https://forum.odroid.com/viewtopic.php?f=96&t=30552
+- Debian Trixie - https://forum.odroid.com/viewtopic.php?t=50367
 
 Ensure the boot mode selection switch is set to SD mode (closest to HDMI port).
 
@@ -9,10 +12,10 @@ Password: odroid
 
 Verify the filesystem has been successfully resized ( df -h | grep mmcblk1p2). Distro includes a script at /root/scripts/first-boot that runs automatically at first boot via /etc/rc.local - but it doesn't always work.
 
-Check filesystem space first, then prep NEMS as per normal.
+Prep NEMS as per normal.
 
 Then build NEMS with:
 /root/nems/nems-admin/nems-build.sh 11
 
-Once SD card image is built, connect eMMC and prep with:
+Once SD card image is built, boot from it. Then, connect eMMC and prep with:
 Run: nand-sata-install and choose "Update bootloader on a special eMMC partition"
