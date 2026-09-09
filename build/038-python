@@ -2,6 +2,14 @@
 echo $0 > /var/www/html/userfiles/nems-build.cur
 
 apt-get update
+apt-get install -y python3-venv
+
+# Ensure shared venv exists without recreating or altering existing packages
+if [[ ! -d /opt/nems-venv ]]; then
+  python3 -m venv /opt/nems-venv
+fi
+
+
 apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev \
                    libnss3-dev libssl-dev libreadline-dev libffi-dev \
                    libsqlite3-dev sqlite3 wget

@@ -20,7 +20,7 @@ echo '##
     delaycompress
     notifempty
 }
-' > /etc/logrotate.d/nems.conf
+' > /etc/logrotate.d/nems
 
 chown root:root /etc/logrotate.d/nems
 
