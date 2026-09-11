@@ -19,7 +19,10 @@ if [[ $pm == 'deb' ]]; then
   pm_cleanup="apt-get -y autoremove"
   pm_update="apt-get update"
   pm_purge="apt-get remove -y --purge"
-  pm_install="apt-get install -y"
+  # Using 'reinstall' in case build process was restarted, which would result
+  # in 046 deleting all plugins and leaving the system broken since apt would
+  # believe nems-plugins and other plugins to be already installed.
+  pm_install="apt-get install -y --reinstall"
 elif [[ $pm == 'rpm' ]]; then
   echo "Detected RPM package manager..."
   pm_cleanup=""
@@ -87,7 +90,4 @@ fi
     echo "nagios ALL=(root) NOPASSWD: /usr/sbin/ipmi-sensors, /usr/sbin/ipmi-sel" >> /etc/sudoers
   fi
 
-  # Using 'reinstall' in case build process was restarted, which would result
-  # in 046 deleting all plugins and leaving the system broken since apt would
-  # believe nems-plugins to be already installed.
-  $pm_install --reinstall nems-plugins
+  $pm_install nems-plugins
