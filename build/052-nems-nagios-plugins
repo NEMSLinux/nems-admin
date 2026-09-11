@@ -87,4 +87,7 @@ fi
     echo "nagios ALL=(root) NOPASSWD: /usr/sbin/ipmi-sensors, /usr/sbin/ipmi-sel" >> /etc/sudoers
   fi
 
-  $pm_install nems-plugins
+  # Using 'reinstall' in case build process was restarted, which would result
+  # in 046 deleting all plugins and leaving the system broken since apt would
+  # believe nems-plugins to be already installed.
+  $pm_install --reinstall nems-plugins
