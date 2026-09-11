@@ -8,6 +8,7 @@ platform=$(/usr/local/bin/nems-info platform)
 apt-get update
 apt-get install -y build-essential gcc g++ make autoconf automake libtool
 apt-get install -y libboost-dev libboost-system-dev libboost-filesystem-dev
+apt-get install -y libboost-thread-dev
 apt-get install -y php-net-socket
 apt-get install -y sqlite3
 apt-get install -y graphviz
@@ -67,7 +68,12 @@ cp -f ${nagios_src}/base/*.h nagios4/
 sed -i '5s/.*/#include "libnagios.h"/' nagios4/shared.h
 # ---------------------------------------------
 
-./configure --with-nagios4
+MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || gcc -print-multiarch 2>/dev/null)
+if [[ -n "$MULTIARCH" && -d "/usr/lib/$MULTIARCH" ]]; then
+  ./configure --with-nagios4 --with-boost-libdir="/usr/lib/$MULTIARCH"
+else
+  ./configure --with-nagios4
+fi
 make
 make install
 
