@@ -6,7 +6,7 @@ if (( $platform != 21 )); then
 
 # Replace the screen with our bootscreen which shows some basic info to the user (like how to connect)
 
-apt install -y dialog
+apt-get install -y dialog
 
 if [[ ! -e /etc/systemd/system/getty.target.wants ]]; then
   echo "This platform does not have TTY"
@@ -63,5 +63,8 @@ if ! grep -q "NEMS00001" /etc/rc.local; then
   /bin/systemctl stop rc-local.service
   /bin/systemctl start rc-local.service
 fi
+
+# Install nems-hdmi-output switcher and graphical Kiosk mode
+apt-get install -y nems-kiosk
 
 fi
