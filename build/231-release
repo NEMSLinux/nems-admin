@@ -8,18 +8,25 @@ NEMS_VER=$(/usr/local/bin/nems-info nemsver)
 NEW_PRETTY_NAME="NEMS Linux ${NEMS_VER}"
 OS_RELEASE="/etc/os-release"
 
+# Load the current file
+source "$OS_RELEASE"
+
+# Unlock and remove existing file or symlink
+chattr -i "$OS_RELEASE" 2>/dev/null || true
+rm -f "$OS_RELEASE"
+
 # Unlock the file if immutable attribute was previously set
 chattr -i "$OS_RELEASE" 2>/dev/null || true
 
-# Overwrite or create /etc/os-release using tee
+# Create new file, amalgamating our branding with the original distro info
 cat <<EOF | tee "$OS_RELEASE" > /dev/null
 PRETTY_NAME="${NEW_PRETTY_NAME}"
-NAME="Debian GNU/Linux"
-VERSION_ID="13"
-VERSION="13 (trixie)"
-VERSION_CODENAME=trixie
-DEBIAN_VERSION_FULL=13.6
-ID=debian
+NAME="${NAME:-}"
+VERSION_ID="${VERSION_ID:-}"
+VERSION="${VERSION:-}"
+VERSION_CODENAME="${VERSION_CODENAME:-}"
+DEBIAN_VERSION_FULL="${DEBIAN_VERSION_FULL:-}"
+ID="${ID:-}"
 HOME_URL="https://nemslinux.com"
 SUPPORT_URL="https://nemslinux.com"
 BUG_REPORT_URL="https://github.com/NEMSLinux"
