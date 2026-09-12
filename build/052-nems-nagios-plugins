@@ -19,10 +19,7 @@ if [[ $pm == 'deb' ]]; then
   pm_cleanup="apt-get -y autoremove"
   pm_update="apt-get update"
   pm_purge="apt-get remove -y --purge"
-  # Using 'reinstall' in case build process was restarted, which would result
-  # in 046 deleting all plugins and leaving the system broken since apt would
-  # believe nems-plugins and other plugins to be already installed.
-  pm_install="apt-get install -y --reinstall"
+  pm_install="apt-get install -y"
 elif [[ $pm == 'rpm' ]]; then
   echo "Detected RPM package manager..."
   pm_cleanup=""
