@@ -31,6 +31,9 @@ ARMBIAN_PRETTY_NAME="${NEW_PRETTY_NAME}"
 EOF
 
 # Prevent the file from being overwritten by future upstream updates without breaking those updates
+if dpkg-divert --list /etc/os-release | grep -q "/etc/os-release"; then
+  sudo dpkg-divert --package base-files --remove --rename /etc/os-release
+fi
 dpkg-divert --package base-files --add --rename --divert ${OS_RELEASE}.upstream $OS_RELEASE
 
 echo "Updated ${OS_RELEASE} to '${NEW_PRETTY_NAME}' and locked file."
