@@ -15,9 +15,6 @@ source "$OS_RELEASE"
 chattr -i "$OS_RELEASE" 2>/dev/null || true
 rm -f "$OS_RELEASE"
 
-# Unlock the file if immutable attribute was previously set
-chattr -i "$OS_RELEASE" 2>/dev/null || true
-
 # Create new file, amalgamating our branding with the original distro info
 cat <<EOF | tee "$OS_RELEASE" > /dev/null
 PRETTY_NAME="${NEW_PRETTY_NAME}"
@@ -33,8 +30,8 @@ BUG_REPORT_URL="https://github.com/NEMSLinux"
 ARMBIAN_PRETTY_NAME="${NEW_PRETTY_NAME}"
 EOF
 
-# Lock the file against system package update overwrites
-chattr +i "$OS_RELEASE"
+# Prevent the file from being overwritten by future upstream updates without breaking those updates
+dpkg-divert --package base-files --add --rename --divert ${OS_RELEASE}.upstream $OS_RELEASE
 
 echo "Updated ${OS_RELEASE} to '${NEW_PRETTY_NAME}' and locked file."
 
