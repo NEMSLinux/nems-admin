@@ -19,22 +19,32 @@ cd monit-$ver
 ./configure --prefix=/usr/local/bin --bindir=/usr/local/bin --sysconfdir=/etc/monit/
 make && make install &&
 
-echo "[Unit]
- Description=Pro-active monitoring utility for unix systems
- After=network.target
- Documentation=man:monit(1) https://mmonit.com/wiki/Monit/HowTo 
+# Write to /etc/systemd/system/ to prevent APT updates from overwriting it
+cat <<EOF > /etc/systemd/system/monit.service
+[Unit]
+Description=Pro-active monitoring utility for unix systems
+After=network-online.target
+Wants=network-online.target
+Documentation=man:monit(1) https://mmonit.com/wiki/Monit/HowTo
 
- [Service]
- Type=simple
- KillMode=process
- ExecStart=/usr/local/bin/monit -I
- ExecStop=/usr/local/bin/monit quit
- ExecReload=/usr/local/bin/monit reload
- Restart = on-abnormal
- StandardOutput=null
+[Service]
+Type=simple
+KillMode=process
+ExecStart=/usr/local/bin/monit -I
+ExecStop=/usr/local/bin/monit quit
+ExecReload=/usr/local/bin/monit reload
+Restart=always
+RestartSec=5s
+StandardOutput=null
 
- [Install]
- WantedBy=multi-user.target" > /lib/systemd/system/monit.service
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Clean up any legacy file in /lib/systemd/system if it exists
+if [[ -e /lib/systemd/system/monit.service ]]; then
+  rm -f /lib/systemd/system/monit.service
+fi
 
 # Copy the base data, but note that the main nems.conf file comes from nems-configs
 cp -Rf /root/nems/nems-migrator/data/monit /etc/
