@@ -193,6 +193,7 @@ nameserver 2001:4860:4860::8844
   # This will be put back in below for non-applicable platforms such as virtual appliance
   /bin/sed -i~ '/PATCH-000002/d' /var/log/nems/patches.log
 
+  find /var/log/nems/nems-tools/ -name "*" -type f -delete
   # Move patches.log so it can persist after clear
   mv /var/log/nems/patches.log /tmp
   find /var/log/nems/ -name "*" -type f -delete
