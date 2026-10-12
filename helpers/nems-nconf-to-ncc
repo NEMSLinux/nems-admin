@@ -170,7 +170,51 @@ INSERT OR IGNORE INTO services (
     '{\"ARG1\":\"100.0,20%\",\"ARG2\":\"500.0,60%\"}'
 FROM check_commands
 WHERE command_name = 'check_ping'
-LIMIT 1;";
+LIMIT 1;
+
+-- Timeperiods
+CREATE TABLE IF NOT EXISTS timeperiods (
+    uuid TEXT PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    alias TEXT NOT NULL,
+    definition_json TEXT NOT NULL, -- Holds day/time rules
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Contacts (Prepped for ULA integration)
+CREATE TABLE IF NOT EXISTS contacts (
+    uuid TEXT PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    alias TEXT NOT NULL,
+    email TEXT DEFAULT 'root@localhost',
+    host_notification_period TEXT DEFAULT '24x7',
+    service_notification_period TEXT DEFAULT '24x7',
+    host_notification_options TEXT DEFAULT 'd,u,r',
+    service_notification_options TEXT DEFAULT 'w,u,c,r',
+    host_notification_command TEXT DEFAULT 'notify-host-by-email',
+    service_notification_command TEXT DEFAULT 'notify-service-by-email',
+    status TEXT DEFAULT 'ACTIVE',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Contact Groups
+CREATE TABLE IF NOT EXISTS contact_groups (
+    uuid TEXT PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    alias TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Contact Group Memberships
+CREATE TABLE IF NOT EXISTS contact_group_members (
+    group_uuid TEXT NOT NULL,
+    contact_uuid TEXT NOT NULL,
+    PRIMARY KEY (group_uuid, contact_uuid),
+    FOREIGN KEY (group_uuid) REFERENCES contact_groups(uuid) ON DELETE CASCADE,
+    FOREIGN KEY (contact_uuid) REFERENCES contacts(uuid) ON DELETE CASCADE
+);
+
+";
 
     file_put_contents($output_file, $sql_output . PHP_EOL . $starter);
     echo "[+] Exported {$count} check commands cleanly to: {$output_file}\n";
