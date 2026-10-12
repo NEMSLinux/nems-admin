@@ -140,7 +140,39 @@ try {
         mkdir(dirname($output_file), 0755, true);
     }
 
-    file_put_contents($output_file, $sql_output);
+    $starter = "-- Seed default NEMS Server host
+INSERT OR IGNORE INTO hosts (
+    uuid, hostname, display_name, address, os_type, icon_key, status, check_interval, retry_interval, max_check_attempts
+) VALUES (
+    '00000000-0000-4000-8000-000000000001',
+    'NEMS',
+    'NEMS Server',
+    '127.0.0.1',
+    'Linux',
+    'simple-icons:linux',
+    'ACTIVE',
+    5,
+    1,
+    10
+);
+
+-- Seed default Ping service
+INSERT OR IGNORE INTO services (
+    uuid, host_uuid, command_uuid, display_name, status, check_interval, retry_interval, arg_values
+) SELECT
+    '00000000-0000-4000-8000-000000000002',
+    '00000000-0000-4000-8000-000000000001',
+    uuid,
+    'Ping',
+    'ACTIVE',
+    5,
+    1,
+    '{\"ARG1\":\"100.0,20%\",\"ARG2\":\"500.0,60%\"}'
+FROM check_commands
+WHERE command_name = 'check_ping'
+LIMIT 1;";
+
+    file_put_contents($output_file, $sql_output . PHP_EOL . $starter);
     echo "[+] Exported {$count} check commands cleanly to: {$output_file}\n";
 
 } catch (Exception $e) {
