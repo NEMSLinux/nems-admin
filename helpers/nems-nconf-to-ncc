@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * NEMS Linux 2.0 Developer Tool - Seed Export
+ * NEMS Linux Baseline Catalog Seed Exporter
  * Converts NEMS NConf database to SQL dump for NEMS Central Command Configurator import
  * Output: /usr/share/nems-ncc/schema/base.sql
  */
@@ -20,7 +20,6 @@ $db_user = $options['u'] ?? $options['user'] ?? 'nconf';
 $db_pass = $options['p'] ?? $options['password'] ?? null;
 $db_name = $options['d'] ?? $options['database'] ?? 'nconf';
 
-// Auto-detect from NConf config files if password not set via CLI
 if (empty($db_pass)) {
     $config_paths = [
         '/var/www/html/nconf/config/mysql.php',
@@ -39,14 +38,7 @@ if (empty($db_pass)) {
 
 if (empty($db_pass)) {
     echo "Enter MySQL Password for user '{$db_user}': ";
-    if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-        system('stty -echo');
-        $db_pass = trim(fgets(STDIN));
-        system('stty echo');
-        echo "\n";
-    } else {
-        $db_pass = trim(fgets(STDIN));
-    }
+    $db_pass = trim(fgets(STDIN));
 }
 
 function generate_uuidv4() {
@@ -56,13 +48,12 @@ function generate_uuidv4() {
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
 
-// Custom SQLite string escaping helper (doubles single quotes)
 function sqlite_escape(?string $str): string {
     if ($str === null || $str === '') return "''";
     return "'" . str_replace("'", "''", $str) . "'";
 }
 
-echo "=== NEMS 2.0 Base Seed Exporter ===\n";
+echo "=== NEMS Base Seed Exporter ===\n";
 
 try {
     $mysql = new PDO("mysql:host={$db_host};dbname={$db_name};charset=utf8mb4", $db_user, $db_pass, [
@@ -70,154 +61,157 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
     ]);
 
-    $sql_output = "-- NEMS Linux 2.0 Baseline Command Catalog Seed\n";
+    $sql_output = "-- NEMS Linux Full Baseline Catalog Seed\n";
     $sql_output .= "-- Generated on " . date('Y-m-d H:i:s') . "\n\n";
+    $sql_output .= "BEGIN TRANSACTION;\n\n";
 
-    echo "[+] Parsing NConf check commands...\n";
+    // Export OS Types
+    echo "[+] Exporting OS Types...\n";
+    $os_stmt = $mysql->query("
+        SELECT i.id_item, v.attr_value AS os_name 
+        FROM ConfigItems i 
+        JOIN ConfigClasses c ON i.fk_id_class = c.id_class 
+        JOIN ConfigValues v ON i.id_item = v.fk_id_item 
+        JOIN ConfigAttrs a ON v.fk_id_attr = a.id_attr 
+        WHERE c.class_name = 'os' AND a.attr_name = 'os_name'
+    ");
+    while ($row = $os_stmt->fetch()) {
+        $uuid = generate_uuidv4();
+        $name_esc = sqlite_escape($row['os_name']);
+        $sql_output .= "INSERT OR IGNORE INTO os_types (uuid, name) VALUES ('{$uuid}', {$name_esc});\n";
+    }
 
-    $cmd_stmt = $mysql->query("
+    // Export Hostgroups
+    echo "[+] Exporting Hostgroups...\n";
+    $hg_stmt = $mysql->query("
         SELECT i.id_item, 
-               MAX(CASE WHEN v.fk_id_attr = 30 THEN v.attr_value END) AS command_name,
-               MAX(CASE WHEN v.fk_id_attr = 31 THEN v.attr_value END) AS command_line,
-               MAX(CASE WHEN v.fk_id_attr = 86 THEN v.attr_value END) AS command_syntax,
-               MAX(CASE WHEN v.fk_id_attr = 103 THEN v.attr_value END) AS friendly_name
-        FROM ConfigItems i
-        JOIN ConfigValues v ON i.id_item = v.fk_id_item
-        WHERE i.fk_id_class = 8
+               MAX(CASE WHEN a.attr_name = 'hostgroup_name' THEN v.attr_value END) AS hg_name,
+               MAX(CASE WHEN a.attr_name = 'alias' THEN v.attr_value END) AS hg_alias
+        FROM ConfigItems i 
+        JOIN ConfigClasses c ON i.fk_id_class = c.id_class 
+        JOIN ConfigValues v ON i.id_item = v.fk_id_item 
+        JOIN ConfigAttrs a ON v.fk_id_attr = a.id_attr 
+        WHERE c.class_name = 'hostgroup'
         GROUP BY i.id_item
     ");
-
-    $count = 0;
-    while ($row = $cmd_stmt->fetch()) {
-        if (empty($row['command_name']) || empty($row['command_line'])) continue;
-
+    while ($row = $hg_stmt->fetch()) {
         $uuid = generate_uuidv4();
-        $display_name = !empty($row['friendly_name']) ? $row['friendly_name'] : $row['command_name'];
-        $category = 'General Checks';
-        $icon_key = 'lucide:cpu';
-
-        if (str_contains($row['command_name'], 'fortigate')) {
-            $category = 'Firewalls & Security';
-            $icon_key = 'simple-icons:fortinet';
-        } elseif (str_contains($row['command_name'], 'mikrotik')) {
-            $category = 'Networking';
-            $icon_key = 'simple-icons:mikrotik';
-        } elseif (str_contains($row['command_name'], 'ibmi')) {
-            $category = 'IBM i Systems';
-            $icon_key = 'simple-icons:ibm';
-        } elseif (str_contains($row['command_name'], 'win') || str_contains($row['command_name'], 'wmi')) {
-            $category = 'Windows Systems';
-            $icon_key = 'simple-icons:windows';
-        } elseif (str_contains($row['command_name'], 'temp') || str_contains($row['command_name'], 'dhtxx')) {
-            $category = 'Environmental Sensors';
-            $icon_key = 'lucide:thermometer';
-        } elseif (str_contains($row['command_name'], 'disk') || str_contains($row['command_name'], 'qnap') || str_contains($row['command_name'], 'synology')) {
-            $category = 'Storage & NAS';
-            $icon_key = 'lucide:hard-drive';
-        }
-
-        $cmd_name_esc  = sqlite_escape($row['command_name']);
-        $disp_name_esc = sqlite_escape($display_name);
-        $cat_esc       = sqlite_escape($category);
-        $cmd_line_esc  = sqlite_escape($row['command_line']);
-        $syntax_esc    = sqlite_escape($row['command_syntax'] ?? '');
-
-        $sql_output .= "INSERT OR IGNORE INTO check_commands (uuid, command_name, display_name, category, icon_key, command_line, description) VALUES ('{$uuid}', {$cmd_name_esc}, {$disp_name_esc}, {$cat_esc}, '{$icon_key}', {$cmd_line_esc}, {$syntax_esc});\n";
-
-        // Parse ARG1..ARG4 labels
-        if (!empty($row['command_syntax'])) {
-            $args = explode(',', $row['command_syntax']);
-            foreach ($args as $idx => $arg_label) {
-                $arg_num = $idx + 1;
-                $label_esc = sqlite_escape(trim($arg_label));
-                $sql_output .= "INSERT INTO command_arguments (command_uuid, nagios_arg, label, required) VALUES ('{$uuid}', 'ARG{$arg_num}', {$label_esc}, 1);\n";
-            }
-        }
-        $count++;
+        $name_esc = sqlite_escape($row['hg_name']);
+        $alias_esc = sqlite_escape($row['hg_alias'] ?: $row['hg_name']);
+        $sql_output .= "INSERT OR IGNORE INTO host_groups (uuid, name, alias) VALUES ('{$uuid}', {$name_esc}, {$alias_esc});\n";
     }
+
+    // Export Servicegroups
+    echo "[+] Exporting Servicegroups...\n";
+    $sg_stmt = $mysql->query("
+        SELECT i.id_item, 
+               MAX(CASE WHEN a.attr_name = 'servicegroup_name' THEN v.attr_value END) AS sg_name,
+               MAX(CASE WHEN a.attr_name = 'alias' THEN v.attr_value END) AS sg_alias
+        FROM ConfigItems i 
+        JOIN ConfigClasses c ON i.fk_id_class = c.id_class 
+        JOIN ConfigValues v ON i.id_item = v.fk_id_item 
+        JOIN ConfigAttrs a ON v.fk_id_attr = a.id_attr 
+        WHERE c.class_name = 'servicegroup'
+        GROUP BY i.id_item
+    ");
+    while ($row = $sg_stmt->fetch()) {
+        $uuid = generate_uuidv4();
+        $name_esc = sqlite_escape($row['sg_name']);
+        $alias_esc = sqlite_escape($row['sg_alias'] ?: $row['sg_name']);
+        $sql_output .= "INSERT OR IGNORE INTO service_groups (uuid, name, alias) VALUES ('{$uuid}', {$name_esc}, {$alias_esc});\n";
+    }
+
+    // Export Commands & Misc Commands
+    echo "[+] Exporting Commands...\n";
+    $cmd_stmt = $mysql->query("
+        SELECT i.id_item, 
+               MAX(CASE WHEN a.attr_name = 'command_name' THEN v.attr_value END) AS command_name,
+               MAX(CASE WHEN a.attr_name = 'command_line' THEN v.attr_value END) AS command_line
+        FROM ConfigItems i
+        JOIN ConfigClasses c ON i.fk_id_class = c.id_class
+        JOIN ConfigValues v ON i.id_item = v.fk_id_item
+        JOIN ConfigAttrs a ON v.fk_id_attr = a.id_attr
+        WHERE c.class_name IN ('check-command', 'misccommand', 'command')
+        GROUP BY i.id_item
+    ");
+    while ($row = $cmd_stmt->fetch()) {
+        if (empty($row['command_name'])) continue;
+        $uuid = generate_uuidv4();
+        $name_esc = sqlite_escape($row['command_name']);
+        $line_esc = sqlite_escape($row['command_line']);
+        $sql_output .= "INSERT OR IGNORE INTO check_commands (uuid, command_name, command_line) VALUES ('{$uuid}', {$name_esc}, {$line_esc});\n";
+    }
+
+    // Export Advanced Services
+    echo "[+] Exporting Advanced Services...\n";
+    $adv_stmt = $mysql->query("
+        SELECT i.id_item, 
+               MAX(CASE WHEN a.attr_name = 'service_description' THEN v.attr_value END) AS service_desc,
+               MAX(CASE WHEN a.attr_name = 'check_interval' THEN v.attr_value END) AS check_interval
+        FROM ConfigItems i
+        JOIN ConfigClasses c ON i.fk_id_class = c.id_class
+        JOIN ConfigValues v ON i.id_item = v.fk_id_item
+        JOIN ConfigAttrs a ON v.fk_id_attr = a.id_attr
+        WHERE c.class_name = 'advanced-service'
+        GROUP BY i.id_item
+    ");
+    while ($row = $adv_stmt->fetch()) {
+        if (empty($row['service_desc'])) continue;
+        $uuid = generate_uuidv4();
+        $desc_esc = sqlite_escape($row['service_desc']);
+        $interval = (int)($row['check_interval'] ?: 5);
+        // We import these as global service templates in the new schema
+        $sql_output .= "INSERT OR IGNORE INTO service_templates (uuid, name, check_interval, is_advanced) VALUES ('{$uuid}', {$desc_esc}, {$interval}, 1);\n";
+    }
+
+    $sql_output .= "\nCOMMIT;\n";
 
     if (!is_dir(dirname($output_file))) {
         mkdir(dirname($output_file), 0755, true);
     }
 
-    $starter = "-- Seed default NEMS Server host
-INSERT OR IGNORE INTO hosts (
-    uuid, hostname, display_name, address, os_type, icon_key, status, check_interval, retry_interval, max_check_attempts
-) VALUES (
-    '00000000-0000-4000-8000-000000000001',
-    'NEMS',
-    'NEMS Server',
-    '127.0.0.1',
-    'Linux',
-    'simple-icons:linux',
-    'ACTIVE',
-    5,
-    1,
-    10
+    // Append Base Schema Extensions
+    $schema_extensions = "
+-- OS Types Table
+CREATE TABLE IF NOT EXISTS os_types (
+    uuid TEXT PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL
 );
 
--- Seed default Ping service
-INSERT OR IGNORE INTO services (
-    uuid, host_uuid, command_uuid, display_name, status, check_interval, retry_interval, arg_values
-) SELECT
-    '00000000-0000-4000-8000-000000000002',
-    '00000000-0000-4000-8000-000000000001',
-    uuid,
-    'Ping',
-    'ACTIVE',
-    5,
-    1,
-    '{\"ARG1\":\"100.0,20%\",\"ARG2\":\"500.0,60%\"}'
-FROM check_commands
-WHERE command_name = 'check_ping'
-LIMIT 1;
-
--- Timeperiods
-CREATE TABLE IF NOT EXISTS timeperiods (
+-- Host Templates
+CREATE TABLE IF NOT EXISTS host_templates (
     uuid TEXT PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
-    alias TEXT NOT NULL,
-    definition_json TEXT NOT NULL, -- Holds day/time rules
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    check_interval INTEGER DEFAULT 5,
+    retry_interval INTEGER DEFAULT 1,
+    max_check_attempts INTEGER DEFAULT 10
 );
 
--- Contacts (Prepped for ULA integration)
-CREATE TABLE IF NOT EXISTS contacts (
-    uuid TEXT PRIMARY KEY,
-    username TEXT UNIQUE NOT NULL,
-    alias TEXT NOT NULL,
-    email TEXT DEFAULT 'root@localhost',
-    host_notification_period TEXT DEFAULT '24x7',
-    service_notification_period TEXT DEFAULT '24x7',
-    host_notification_options TEXT DEFAULT 'd,u,r',
-    service_notification_options TEXT DEFAULT 'w,u,c,r',
-    host_notification_command TEXT DEFAULT 'notify-host-by-email',
-    service_notification_command TEXT DEFAULT 'notify-service-by-email',
-    status TEXT DEFAULT 'ACTIVE',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Contact Groups
-CREATE TABLE IF NOT EXISTS contact_groups (
+-- Service Templates (including Advanced Services)
+CREATE TABLE IF NOT EXISTS service_templates (
     uuid TEXT PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
-    alias TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    check_interval INTEGER DEFAULT 5,
+    is_advanced INTEGER DEFAULT 0
 );
 
--- Contact Group Memberships
-CREATE TABLE IF NOT EXISTS contact_group_members (
-    group_uuid TEXT NOT NULL,
-    contact_uuid TEXT NOT NULL,
-    PRIMARY KEY (group_uuid, contact_uuid),
-    FOREIGN KEY (group_uuid) REFERENCES contact_groups(uuid) ON DELETE CASCADE,
-    FOREIGN KEY (contact_uuid) REFERENCES contacts(uuid) ON DELETE CASCADE
+-- Hostgroups Table
+CREATE TABLE IF NOT EXISTS host_groups (
+    uuid TEXT PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    alias TEXT NOT NULL
 );
 
+-- Servicegroups Table
+CREATE TABLE IF NOT EXISTS service_groups (
+    uuid TEXT PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    alias TEXT NOT NULL
+);
 ";
 
-    file_put_contents($output_file, $sql_output . PHP_EOL . $starter);
-    echo "[+] Exported {$count} check commands cleanly to: {$output_file}\n";
+    file_put_contents($output_file, $schema_extensions . "\n" . $sql_output);
+    echo "[+] Exported full NEMS baseline catalog cleanly to: {$output_file}\n";
 
 } catch (Exception $e) {
     echo "[-] Error connecting to MySQL or exporting seed: " . $e->getMessage() . "\n";
