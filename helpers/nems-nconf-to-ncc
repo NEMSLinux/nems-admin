@@ -135,6 +135,8 @@ try {
             case 'contact': $identity = $a['contact_name'] ?? ''; break;
             case 'contactgroup': $identity = $a['contactgroup_name'] ?? ''; break;
             case 'host': $identity = $a['host_name'] ?? ''; break;
+            case 'host-template': $identity = $a['name'] ?? ''; break;
+            case 'service-template': $identity = $a['name'] ?? ''; break;
             case 'advanced-service': $identity = $a['advanced_service_name'] ?? ''; break;
             case 'service':
                 $host_id = $item['links']['host_name'][0] ?? null;
@@ -154,7 +156,6 @@ try {
     $sql_output .= "-- Generated on " . date('Y-m-d H:i:s') . "\n\n";
     $sql_output .= "BEGIN TRANSACTION;\n\n";
 
-    // Extract defaults dynamically from NConf
     $def_h_chk_int = (int)($defaults['host']['check_interval'] ?? 5);
     $def_h_ret_int = (int)($defaults['host']['retry_interval'] ?? 1);
     $def_h_max_chk = (int)($defaults['host']['max_check_attempts'] ?? 10);
@@ -171,8 +172,8 @@ try {
 
     $sql_output .= "
 CREATE TABLE IF NOT EXISTS os_types (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL);
-CREATE TABLE IF NOT EXISTS host_templates (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, check_interval INTEGER DEFAULT {$def_h_chk_int}, retry_interval INTEGER DEFAULT {$def_h_ret_int}, max_check_attempts INTEGER DEFAULT {$def_h_max_chk});
-CREATE TABLE IF NOT EXISTS service_templates (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, check_interval INTEGER DEFAULT {$def_s_chk_int}, is_advanced INTEGER DEFAULT 0);
+CREATE TABLE IF NOT EXISTS host_templates (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, parent_template TEXT, check_command TEXT, check_interval INTEGER DEFAULT {$def_h_chk_int}, retry_interval INTEGER DEFAULT {$def_h_ret_int}, max_check_attempts INTEGER DEFAULT {$def_h_max_chk}, notification_interval INTEGER, notification_options TEXT);
+CREATE TABLE IF NOT EXISTS service_templates (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, parent_template TEXT, check_interval INTEGER DEFAULT {$def_s_chk_int}, retry_interval INTEGER DEFAULT {$def_s_ret_int}, max_check_attempts INTEGER, notification_interval INTEGER, notification_options TEXT, is_advanced INTEGER DEFAULT 0);
 CREATE TABLE IF NOT EXISTS host_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS service_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS timeperiods (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL, definition_json TEXT NOT NULL);
@@ -180,8 +181,8 @@ CREATE TABLE IF NOT EXISTS check_commands (uuid TEXT PRIMARY KEY, command_name T
 CREATE TABLE IF NOT EXISTS contacts (uuid TEXT PRIMARY KEY, username TEXT UNIQUE NOT NULL, alias TEXT NOT NULL, email TEXT, host_notification_period TEXT DEFAULT {$def_c_h_per}, service_notification_period TEXT DEFAULT {$def_c_s_per}, host_notification_options TEXT DEFAULT {$def_c_h_opt}, service_notification_options TEXT DEFAULT {$def_c_s_opt}, host_notification_command TEXT DEFAULT {$def_c_h_cmd}, service_notification_command TEXT DEFAULT {$def_c_s_cmd}, status TEXT DEFAULT 'ACTIVE');
 CREATE TABLE IF NOT EXISTS contact_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS contact_group_members (group_uuid TEXT NOT NULL, contact_uuid TEXT NOT NULL, PRIMARY KEY (group_uuid, contact_uuid));
-CREATE TABLE IF NOT EXISTS hosts (uuid TEXT PRIMARY KEY, hostname TEXT UNIQUE NOT NULL, display_name TEXT, address TEXT, os_type TEXT, status TEXT DEFAULT 'ACTIVE', check_interval INTEGER DEFAULT {$def_h_chk_int}, retry_interval INTEGER DEFAULT {$def_h_ret_int}, max_check_attempts INTEGER DEFAULT {$def_h_max_chk});
-CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT NULL, command_uuid TEXT NOT NULL, display_name TEXT, status TEXT DEFAULT 'ACTIVE', check_interval INTEGER DEFAULT {$def_s_chk_int}, retry_interval INTEGER DEFAULT {$def_s_ret_int}, arg_values TEXT);
+CREATE TABLE IF NOT EXISTS hosts (uuid TEXT PRIMARY KEY, hostname TEXT UNIQUE NOT NULL, display_name TEXT, address TEXT, os_type TEXT, template_name TEXT, status TEXT DEFAULT 'ACTIVE', check_interval INTEGER DEFAULT {$def_h_chk_int}, retry_interval INTEGER DEFAULT {$def_h_ret_int}, max_check_attempts INTEGER DEFAULT {$def_h_max_chk});
+CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT NULL, command_uuid TEXT NOT NULL, template_name TEXT, display_name TEXT, status TEXT DEFAULT 'ACTIVE', check_interval INTEGER DEFAULT {$def_s_chk_int}, retry_interval INTEGER DEFAULT {$def_s_ret_int}, max_check_attempts INTEGER, arg_values TEXT);
 \n";
 
     foreach ($items as $id => $item) {
@@ -288,32 +289,87 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT N
             }
         }
 
+        elseif ($class === 'host-template' && !empty($a['name'])) {
+            $name = sqlite_escape($a['name']);
+            
+            $parent = '';
+            if (!empty($l['use'][0]) && isset($items[$l['use'][0]]['attrs']['name'])) {
+                $parent = $items[$l['use'][0]]['attrs']['name'];
+            }
+            $parent_esc = sqlite_escape($parent);
+
+            $cmd = '';
+            if (!empty($l['check_command'][0]) && isset($items[$l['check_command'][0]]['attrs']['command_name'])) {
+                $cmd = $items[$l['check_command'][0]]['attrs']['command_name'];
+            }
+            $cmd_esc = sqlite_escape($cmd);
+
+            $chk_int = !empty($a['check_interval']) ? (int)$a['check_interval'] : 'NULL';
+            $ret_int = !empty($a['retry_interval']) ? (int)$a['retry_interval'] : 'NULL';
+            $max_chk = !empty($a['max_check_attempts']) ? (int)$a['max_check_attempts'] : 'NULL';
+            $not_int = !empty($a['notification_interval']) ? (int)$a['notification_interval'] : 'NULL';
+            $not_opt = sqlite_escape($a['notification_options'] ?? '');
+
+            $sql_output .= "INSERT OR IGNORE INTO host_templates (uuid, name, parent_template, check_command, check_interval, retry_interval, max_check_attempts, notification_interval, notification_options) VALUES ('{$uuid}', {$name}, {$parent_esc}, {$cmd_esc}, {$chk_int}, {$ret_int}, {$max_chk}, {$not_int}, {$not_opt});\n";
+        }
+
+        elseif ($class === 'service-template' && !empty($a['name'])) {
+            $name = sqlite_escape($a['name']);
+            
+            $parent = '';
+            if (!empty($l['use'][0]) && isset($items[$l['use'][0]]['attrs']['name'])) {
+                $parent = $items[$l['use'][0]]['attrs']['name'];
+            }
+            $parent_esc = sqlite_escape($parent);
+
+            $chk_int = !empty($a['check_interval']) ? (int)$a['check_interval'] : 'NULL';
+            $ret_int = !empty($a['retry_interval']) ? (int)$a['retry_interval'] : 'NULL';
+            $max_chk = !empty($a['max_check_attempts']) ? (int)$a['max_check_attempts'] : 'NULL';
+            $not_int = !empty($a['notification_interval']) ? (int)$a['notification_interval'] : 'NULL';
+            $not_opt = sqlite_escape($a['notification_options'] ?? '');
+
+            $sql_output .= "INSERT OR IGNORE INTO service_templates (uuid, name, parent_template, check_interval, retry_interval, max_check_attempts, notification_interval, notification_options, is_advanced) VALUES ('{$uuid}', {$name}, {$parent_esc}, {$chk_int}, {$ret_int}, {$max_chk}, {$not_int}, {$not_opt}, 0);\n";
+        }
+
         elseif ($class === 'host' && !empty($a['host_name'])) {
             $hostname = sqlite_escape($a['host_name']);
             $display = sqlite_escape($a['alias'] ?? $a['host_name']);
             $address = sqlite_escape($a['address'] ?? '127.0.0.1');
-            $chk_int = (int)($a['check_interval'] ?? $defaults['host']['check_interval'] ?? 5);
-            $retry_int = (int)($a['retry_interval'] ?? $defaults['host']['retry_interval'] ?? 1);
-            $max_chk = (int)($a['max_check_attempts'] ?? $defaults['host']['max_check_attempts'] ?? 10);
             
-            $sql_output .= "INSERT OR IGNORE INTO hosts (uuid, hostname, display_name, address, check_interval, retry_interval, max_check_attempts) VALUES ('{$uuid}', {$hostname}, {$display}, {$address}, {$chk_int}, {$retry_int}, {$max_chk});\n";
+            $template = 'generic-host';
+            if (!empty($l['use'][0]) && isset($items[$l['use'][0]]['attrs']['name'])) {
+                $template = $items[$l['use'][0]]['attrs']['name'];
+            }
+            $template_esc = sqlite_escape($template);
+
+            $chk_int = !empty($a['check_interval']) ? (int)$a['check_interval'] : 'NULL';
+            $ret_int = !empty($a['retry_interval']) ? (int)$a['retry_interval'] : 'NULL';
+            $max_chk = !empty($a['max_check_attempts']) ? (int)$a['max_check_attempts'] : 'NULL';
+            
+            $sql_output .= "INSERT OR IGNORE INTO hosts (uuid, hostname, display_name, address, template_name, check_interval, retry_interval, max_check_attempts) VALUES ('{$uuid}', {$hostname}, {$display}, {$address}, {$template_esc}, {$chk_int}, {$ret_int}, {$max_chk});\n";
         }
 
         elseif ($class === 'service' && !empty($a['service_description'])) {
             $display = sqlite_escape($a['service_description']);
-            $chk_int = (int)($a['check_interval'] ?? $defaults['service']['check_interval'] ?? 5);
-            $retry_int = (int)($a['retry_interval'] ?? $defaults['service']['retry_interval'] ?? 1);
+            
+            $template = 'generic-service';
+            if (!empty($l['use'][0]) && isset($items[$l['use'][0]]['attrs']['name'])) {
+                $template = $items[$l['use'][0]]['attrs']['name'];
+            }
+            $template_esc = sqlite_escape($template);
+
+            $chk_int = !empty($a['check_interval']) ? (int)$a['check_interval'] : 'NULL';
+            $ret_int = !empty($a['retry_interval']) ? (int)$a['retry_interval'] : 'NULL';
+            $max_chk = !empty($a['max_check_attempts']) ? (int)$a['max_check_attempts'] : 'NULL';
             
             $host_uuid = '';
-            if (!empty($l['host_name'])) {
-                $host_id = $l['host_name'][0];
-                if (isset($uuid_map[$host_id])) $host_uuid = $uuid_map[$host_id];
+            if (!empty($l['host_name'][0]) && isset($uuid_map[$l['host_name'][0]])) {
+                $host_uuid = $uuid_map[$l['host_name'][0]];
             }
 
             $command_uuid = '';
-            if (!empty($l['check_command'])) {
-                $cmd_id = $l['check_command'][0];
-                if (isset($uuid_map[$cmd_id])) $command_uuid = $uuid_map[$cmd_id];
+            if (!empty($l['check_command'][0]) && isset($uuid_map[$l['check_command'][0]])) {
+                $command_uuid = $uuid_map[$l['check_command'][0]];
             }
 
             $params = $a['check_params'] ?? '';
@@ -329,7 +385,7 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT N
             $arg_json = sqlite_escape(empty($arg_values) ? '{}' : json_encode($arg_values));
 
             if (!empty($host_uuid) && !empty($command_uuid)) {
-                $sql_output .= "INSERT OR IGNORE INTO services (uuid, host_uuid, command_uuid, display_name, check_interval, retry_interval, arg_values) VALUES ('{$uuid}', '{$host_uuid}', '{$command_uuid}', {$display}, {$chk_int}, {$retry_int}, {$arg_json});\n";
+                $sql_output .= "INSERT OR IGNORE INTO services (uuid, host_uuid, command_uuid, template_name, display_name, check_interval, retry_interval, max_check_attempts, arg_values) VALUES ('{$uuid}', '{$host_uuid}', '{$command_uuid}', {$template_esc}, {$display}, {$chk_int}, {$ret_int}, {$max_chk}, {$arg_json});\n";
             }
         }
         
