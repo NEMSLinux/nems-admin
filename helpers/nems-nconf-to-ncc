@@ -114,33 +114,10 @@ try {
         if (!empty($identity)) $uuid_map[$id] = generate_uuidv3($class, $identity);
     }
 
-    echo "[+] Generating Relational SQL with Dynamic Defaults...\n";
+    echo "[+] Generating Relational SQL Exports...\n";
 
     $sql_output = "-- NEMS Linux Full Migration Export\n-- Generated on " . date('Y-m-d H:i:s') . "\n\nBEGIN TRANSACTION;\n\n";
 
-    $def_c_h_per = sqlite_escape($defaults['contact']['host_notification_period'] ?? '24x7');
-    $def_c_s_per = sqlite_escape($defaults['contact']['service_notification_period'] ?? '24x7');
-    $def_c_h_opt = sqlite_escape($defaults['contact']['host_notification_options'] ?? 'd,u,r');
-    $def_c_s_opt = sqlite_escape($defaults['contact']['service_notification_options'] ?? 'w,u,c,r');
-    $def_c_h_cmd = sqlite_escape($defaults['contact']['host_notification_commands'] ?? 'notify-host-by-email');
-    $def_c_s_cmd = sqlite_escape($defaults['contact']['service_notification_commands'] ?? 'notify-service-by-email');
-
-    $sql_output .= "
-CREATE TABLE IF NOT EXISTS os_types (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL);
-CREATE TABLE IF NOT EXISTS host_templates (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, parent_template TEXT, properties_json TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS service_templates (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, parent_template TEXT, is_advanced INTEGER DEFAULT 0, properties_json TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS host_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS service_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS timeperiods (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL, definition_json TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);
-CREATE TABLE IF NOT EXISTS check_commands (uuid TEXT PRIMARY KEY, command_name TEXT UNIQUE NOT NULL, command_line TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS contacts (uuid TEXT PRIMARY KEY, username TEXT UNIQUE NOT NULL, alias TEXT NOT NULL, email TEXT, host_notification_period TEXT DEFAULT {$def_c_h_per}, service_notification_period TEXT DEFAULT {$def_c_s_per}, host_notification_options TEXT DEFAULT {$def_c_h_opt}, service_notification_options TEXT DEFAULT {$def_c_s_opt}, host_notification_command TEXT DEFAULT {$def_c_h_cmd}, service_notification_command TEXT DEFAULT {$def_c_s_cmd}, status TEXT DEFAULT 'ACTIVE');
-CREATE TABLE IF NOT EXISTS contact_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS contact_group_members (group_uuid TEXT NOT NULL, contact_uuid TEXT NOT NULL, PRIMARY KEY (group_uuid, contact_uuid));
-CREATE TABLE IF NOT EXISTS hosts (uuid TEXT PRIMARY KEY, hostname TEXT UNIQUE NOT NULL, display_name TEXT, address TEXT, os_type TEXT, template_name TEXT, status TEXT DEFAULT 'ACTIVE', check_interval INTEGER, retry_interval INTEGER, max_check_attempts INTEGER);
-CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT NULL, command_uuid TEXT NOT NULL, template_name TEXT, display_name TEXT, status TEXT DEFAULT 'ACTIVE', check_interval INTEGER, retry_interval INTEGER, max_check_attempts INTEGER, arg_values TEXT);
-\n";
-
-    // Reusable attribute mapping array for templates
     $nagios_attrs = ['check_interval', 'retry_interval', 'max_check_attempts', 'notification_interval', 'notification_options', 'active_checks_enabled', 'passive_checks_enabled', 'notifications_enabled', 'check_freshness', 'freshness_threshold', 'event_handler_enabled', 'flap_detection_enabled', 'process_perf_data', 'retain_status_information', 'retain_nonstatus_information', 'is_volatile', 'obsess_over_service', 'parallelize_check'];
 
     foreach ($items as $id => $item) {
@@ -167,8 +144,9 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT N
         }
         elseif (($class === 'checkcommand' || $class === 'misccommand') && !empty($a['command_name'])) {
             $name = sqlite_escape($a['command_name']);
+            $disp = sqlite_escape($a['friendly_name'] ?? $a['command_name']);
             $line = sqlite_escape($a['command_line'] ?? '');
-            $sql_output .= "INSERT OR IGNORE INTO check_commands (uuid, command_name, command_line) VALUES ('{$uuid}', {$name}, {$line});\n";
+            $sql_output .= "INSERT OR IGNORE INTO check_commands (uuid, command_name, display_name, category, command_line) VALUES ('{$uuid}', {$name}, {$disp}, 'Imported Checks', {$line});\n";
         }
         elseif ($class === 'timeperiod' && !empty($a['timeperiod_name'])) {
             $name = sqlite_escape($a['timeperiod_name']);
@@ -234,7 +212,6 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT N
 
             $props = [];
             foreach ($nagios_attrs as $attr) if (isset($a[$attr])) $props[$attr] = $a[$attr];
-            
             if (!empty($l['check_period'][0]) && isset($items[$l['check_period'][0]]['attrs']['timeperiod_name'])) $props['check_period'] = $items[$l['check_period'][0]]['attrs']['timeperiod_name'];
             if (!empty($l['notification_period'][0]) && isset($items[$l['notification_period'][0]]['attrs']['timeperiod_name'])) $props['notification_period'] = $items[$l['notification_period'][0]]['attrs']['timeperiod_name'];
             if (!empty($l['check_command'][0]) && isset($items[$l['check_command'][0]]['attrs']['command_name'])) $props['check_command'] = $items[$l['check_command'][0]]['attrs']['command_name'];
@@ -256,7 +233,6 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT N
 
             $props = [];
             foreach ($nagios_attrs as $attr) if (isset($a[$attr])) $props[$attr] = $a[$attr];
-            
             if (!empty($l['check_period'][0]) && isset($items[$l['check_period'][0]]['attrs']['timeperiod_name'])) $props['check_period'] = $items[$l['check_period'][0]]['attrs']['timeperiod_name'];
             if (!empty($l['notification_period'][0]) && isset($items[$l['notification_period'][0]]['attrs']['timeperiod_name'])) $props['notification_period'] = $items[$l['notification_period'][0]]['attrs']['timeperiod_name'];
             if (!empty($l['contact_groups'])) {
@@ -277,7 +253,6 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT N
 
             $props = [];
             foreach ($nagios_attrs as $attr) if (isset($a[$attr])) $props[$attr] = $a[$attr];
-            
             if (!empty($l['check_period'][0]) && isset($items[$l['check_period'][0]]['attrs']['timeperiod_name'])) $props['check_period'] = $items[$l['check_period'][0]]['attrs']['timeperiod_name'];
             if (!empty($l['notification_period'][0]) && isset($items[$l['notification_period'][0]]['attrs']['timeperiod_name'])) $props['notification_period'] = $items[$l['notification_period'][0]]['attrs']['timeperiod_name'];
             if (!empty($l['check_command'][0]) && isset($items[$l['check_command'][0]]['attrs']['command_name'])) $props['check_command'] = $items[$l['check_command'][0]]['attrs']['command_name'];
@@ -295,7 +270,7 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT N
             $display = sqlite_escape($a['alias'] ?? $a['host_name']);
             $address = sqlite_escape($a['address'] ?? '127.0.0.1');
             
-            $template = 'generic-host';
+            $template = '';
             if (!empty($l['use'][0]) && isset($items[$l['use'][0]]['attrs']['name'])) $template = $items[$l['use'][0]]['attrs']['name'];
             $template_esc = sqlite_escape($template);
 
@@ -303,12 +278,23 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT N
             $ret_int = !empty($a['retry_interval']) ? (int)$a['retry_interval'] : 'NULL';
             $max_chk = !empty($a['max_check_attempts']) ? (int)$a['max_check_attempts'] : 'NULL';
             
-            $sql_output .= "INSERT OR IGNORE INTO hosts (uuid, hostname, display_name, address, template_name, check_interval, retry_interval, max_check_attempts) VALUES ('{$uuid}', {$hostname}, {$display}, {$address}, {$template_esc}, {$chk_int}, {$ret_int}, {$max_chk});\n";
+            $props = [];
+            foreach ($nagios_attrs as $attr) if (isset($a[$attr])) $props[$attr] = $a[$attr];
+            if (!empty($l['check_period'][0]) && isset($items[$l['check_period'][0]]['attrs']['timeperiod_name'])) $props['check_period'] = $items[$l['check_period'][0]]['attrs']['timeperiod_name'];
+            if (!empty($l['notification_period'][0]) && isset($items[$l['notification_period'][0]]['attrs']['timeperiod_name'])) $props['notification_period'] = $items[$l['notification_period'][0]]['attrs']['timeperiod_name'];
+            if (!empty($l['contact_groups'])) {
+                $cgs = [];
+                foreach ($l['contact_groups'] as $cg_id) if (isset($items[$cg_id]['attrs']['contactgroup_name'])) $cgs[] = $items[$cg_id]['attrs']['contactgroup_name'];
+                if (!empty($cgs)) $props['contact_groups'] = implode(',', $cgs);
+            }
+            $props_json = sqlite_escape(json_encode($props));
+
+            $sql_output .= "INSERT OR IGNORE INTO hosts (uuid, hostname, display_name, address, template_name, check_interval, retry_interval, max_check_attempts, properties_json) VALUES ('{$uuid}', {$hostname}, {$display}, {$address}, {$template_esc}, {$chk_int}, {$ret_int}, {$max_chk}, {$props_json});\n";
         }
         elseif ($class === 'service' && !empty($a['service_description'])) {
             $display = sqlite_escape($a['service_description']);
             
-            $template = 'generic-service';
+            $template = '';
             if (!empty($l['use'][0]) && isset($items[$l['use'][0]]['attrs']['name'])) $template = $items[$l['use'][0]]['attrs']['name'];
             $template_esc = sqlite_escape($template);
 
@@ -332,8 +318,19 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT NOT N
             }
             $arg_json = sqlite_escape(empty($arg_values) ? '{}' : json_encode($arg_values));
 
+            $props = [];
+            foreach ($nagios_attrs as $attr) if (isset($a[$attr])) $props[$attr] = $a[$attr];
+            if (!empty($l['check_period'][0]) && isset($items[$l['check_period'][0]]['attrs']['timeperiod_name'])) $props['check_period'] = $items[$l['check_period'][0]]['attrs']['timeperiod_name'];
+            if (!empty($l['notification_period'][0]) && isset($items[$l['notification_period'][0]]['attrs']['timeperiod_name'])) $props['notification_period'] = $items[$l['notification_period'][0]]['attrs']['timeperiod_name'];
+            if (!empty($l['contact_groups'])) {
+                $cgs = [];
+                foreach ($l['contact_groups'] as $cg_id) if (isset($items[$cg_id]['attrs']['contactgroup_name'])) $cgs[] = $items[$cg_id]['attrs']['contactgroup_name'];
+                if (!empty($cgs)) $props['contact_groups'] = implode(',', $cgs);
+            }
+            $props_json = sqlite_escape(json_encode($props));
+
             if (!empty($host_uuid) && !empty($command_uuid)) {
-                $sql_output .= "INSERT OR IGNORE INTO services (uuid, host_uuid, command_uuid, template_name, display_name, check_interval, retry_interval, max_check_attempts, arg_values) VALUES ('{$uuid}', '{$host_uuid}', '{$command_uuid}', {$template_esc}, {$display}, {$chk_int}, {$ret_int}, {$max_chk}, {$arg_json});\n";
+                $sql_output .= "INSERT OR IGNORE INTO services (uuid, host_uuid, command_uuid, template_name, display_name, check_interval, retry_interval, max_check_attempts, arg_values, properties_json) VALUES ('{$uuid}', '{$host_uuid}', '{$command_uuid}', {$template_esc}, {$display}, {$chk_int}, {$ret_int}, {$max_chk}, {$arg_json}, {$props_json});\n";
             }
         }
     }
