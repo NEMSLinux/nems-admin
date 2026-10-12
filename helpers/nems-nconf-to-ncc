@@ -128,8 +128,8 @@ try {
 CREATE TABLE IF NOT EXISTS os_types (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL);
 CREATE TABLE IF NOT EXISTS host_templates (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, parent_template TEXT, properties_json TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS service_templates (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, parent_template TEXT, is_advanced INTEGER DEFAULT 0, properties_json TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS host_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL);
-CREATE TABLE IF NOT EXISTS service_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS host_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL, members TEXT);
+CREATE TABLE IF NOT EXISTS service_groups (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL, members TEXT);
 CREATE TABLE IF NOT EXISTS timeperiods (uuid TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, alias TEXT NOT NULL, definition_json TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS check_commands (uuid TEXT PRIMARY KEY, command_name TEXT UNIQUE NOT NULL, display_name TEXT NOT NULL, category TEXT NOT NULL, vendor TEXT NULL, icon_key TEXT NOT NULL DEFAULT 'lucide:cpu', command_line TEXT NOT NULL, description TEXT NULL);
 CREATE TABLE IF NOT EXISTS contacts (uuid TEXT PRIMARY KEY, username TEXT UNIQUE NOT NULL, alias TEXT NOT NULL, email TEXT, host_notification_period TEXT DEFAULT {$def_c_h_per}, service_notification_period TEXT DEFAULT {$def_c_s_per}, host_notification_options TEXT DEFAULT {$def_c_h_opt}, service_notification_options TEXT DEFAULT {$def_c_s_opt}, host_notification_command TEXT DEFAULT {$def_c_h_cmd}, service_notification_command TEXT DEFAULT {$def_c_s_cmd}, status TEXT DEFAULT 'ACTIVE');
@@ -156,12 +156,44 @@ CREATE TABLE IF NOT EXISTS services (uuid TEXT PRIMARY KEY, host_uuid TEXT, comm
         elseif ($class === 'hostgroup' && !empty($a['hostgroup_name'])) {
             $name = sqlite_escape($a['hostgroup_name']);
             $alias = sqlite_escape($a['alias'] ?? $a['hostgroup_name']);
-            $sql_output .= "INSERT OR IGNORE INTO host_groups (uuid, name, alias) VALUES ('{$uuid}', {$name}, {$alias});\n";
+            
+            $members_str = '';
+            if (!empty($l['members'])) {
+                $m_arr = [];
+                foreach ($l['members'] as $m_id) {
+                    if (isset($items[$m_id]['attrs']['host_name'])) {
+                        $m_arr[] = $items[$m_id]['attrs']['host_name'];
+                    }
+                }
+                if (!empty($m_arr)) $members_str = implode(',', $m_arr);
+            }
+            $members_esc = sqlite_escape($members_str);
+
+            $sql_output .= "INSERT OR IGNORE INTO host_groups (uuid, name, alias, members) VALUES ('{$uuid}', {$name}, {$alias}, {$members_esc});\n";
         }
         elseif ($class === 'servicegroup' && !empty($a['servicegroup_name'])) {
             $name = sqlite_escape($a['servicegroup_name']);
             $alias = sqlite_escape($a['alias'] ?? $a['servicegroup_name']);
-            $sql_output .= "INSERT OR IGNORE INTO service_groups (uuid, name, alias) VALUES ('{$uuid}', {$name}, {$alias});\n";
+            
+            $members_str = '';
+            if (!empty($l['members'])) {
+                $m_arr = [];
+                foreach ($l['members'] as $m_id) {
+                    if (isset($items[$m_id])) {
+                        $svc = $items[$m_id];
+                        $h_name = '';
+                        if (!empty($svc['links']['host_name'][0]) && isset($items[$svc['links']['host_name'][0]]['attrs']['host_name'])) {
+                            $h_name = $items[$svc['links']['host_name'][0]]['attrs']['host_name'];
+                        }
+                        $s_desc = $svc['attrs']['service_description'] ?? '';
+                        if ($h_name && $s_desc) $m_arr[] = $h_name . ',' . $s_desc;
+                    }
+                }
+                if (!empty($m_arr)) $members_str = implode(',', $m_arr);
+            }
+            $members_esc = sqlite_escape($members_str);
+
+            $sql_output .= "INSERT OR IGNORE INTO service_groups (uuid, name, alias, members) VALUES ('{$uuid}', {$name}, {$alias}, {$members_esc});\n";
         }
         elseif (($class === 'checkcommand' || $class === 'misccommand') && !empty($a['command_name'])) {
             $name = sqlite_escape($a['command_name']);
