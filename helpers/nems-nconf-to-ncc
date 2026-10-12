@@ -1,0 +1,149 @@
+#!/usr/bin/env php
+<?php
+/**
+ * NEMS Linux 2.0 Developer Tool - Seed Export
+ * Converts NEMS NConf database to SQL dump for NEMS Central Command Configurator import
+ * Output: /usr/share/nems-ncc/schema/base.sql
+ */
+
+if (php_sapi_name() !== 'cli') {
+    die("This script can only be run from the command line.\n");
+}
+
+$output_file = '/usr/share/nems-ncc/schema/base.sql';
+
+// Parse CLI flags (-u, -p, -h, -d)
+$options = getopt("u:p:h:d:", ["user:", "password:", "host:", "database:"]);
+
+$db_host = $options['h'] ?? $options['host'] ?? 'localhost';
+$db_user = $options['u'] ?? $options['user'] ?? 'nconf';
+$db_pass = $options['p'] ?? $options['password'] ?? null;
+$db_name = $options['d'] ?? $options['database'] ?? 'nconf';
+
+// Auto-detect from NConf config files if password not set via CLI
+if (empty($db_pass)) {
+    $config_paths = [
+        '/var/www/html/nconf/config/mysql.php',
+        '/etc/nconf/mysql.php'
+    ];
+    foreach ($config_paths as $path) {
+        if (file_exists($path)) {
+            include_once $path;
+            if (defined('NCONF_DB_USER') && empty($options['u']) && empty($options['user'])) $db_user = NCONF_DB_USER;
+            if (defined('NCONF_DB_PASS')) $db_pass = NCONF_DB_PASS;
+            if (defined('NCONF_DB_NAME') && empty($options['d']) && empty($options['database'])) $db_name = NCONF_DB_NAME;
+            break;
+        }
+    }
+}
+
+if (empty($db_pass)) {
+    echo "Enter MySQL Password for user '{$db_user}': ";
+    if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+        system('stty -echo');
+        $db_pass = trim(fgets(STDIN));
+        system('stty echo');
+        echo "\n";
+    } else {
+        $db_pass = trim(fgets(STDIN));
+    }
+}
+
+function generate_uuidv4() {
+    $data = random_bytes(16);
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+}
+
+// Custom SQLite string escaping helper (doubles single quotes)
+function sqlite_escape(?string $str): string {
+    if ($str === null || $str === '') return "''";
+    return "'" . str_replace("'", "''", $str) . "'";
+}
+
+echo "=== NEMS 2.0 Base Seed Exporter ===\n";
+
+try {
+    $mysql = new PDO("mysql:host={$db_host};dbname={$db_name};charset=utf8mb4", $db_user, $db_pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+
+    $sql_output = "-- NEMS Linux 2.0 Baseline Command Catalog Seed\n";
+    $sql_output .= "-- Generated on " . date('Y-m-d H:i:s') . "\n\n";
+
+    echo "[+] Parsing NConf check commands...\n";
+
+    $cmd_stmt = $mysql->query("
+        SELECT i.id_item, 
+               MAX(CASE WHEN v.fk_id_attr = 30 THEN v.attr_value END) AS command_name,
+               MAX(CASE WHEN v.fk_id_attr = 31 THEN v.attr_value END) AS command_line,
+               MAX(CASE WHEN v.fk_id_attr = 86 THEN v.attr_value END) AS command_syntax,
+               MAX(CASE WHEN v.fk_id_attr = 103 THEN v.attr_value END) AS friendly_name
+        FROM ConfigItems i
+        JOIN ConfigValues v ON i.id_item = v.fk_id_item
+        WHERE i.fk_id_class = 8
+        GROUP BY i.id_item
+    ");
+
+    $count = 0;
+    while ($row = $cmd_stmt->fetch()) {
+        if (empty($row['command_name']) || empty($row['command_line'])) continue;
+
+        $uuid = generate_uuidv4();
+        $display_name = !empty($row['friendly_name']) ? $row['friendly_name'] : $row['command_name'];
+        $category = 'General Checks';
+        $icon_key = 'lucide:cpu';
+
+        if (str_contains($row['command_name'], 'fortigate')) {
+            $category = 'Firewalls & Security';
+            $icon_key = 'simple-icons:fortinet';
+        } elseif (str_contains($row['command_name'], 'mikrotik')) {
+            $category = 'Networking';
+            $icon_key = 'simple-icons:mikrotik';
+        } elseif (str_contains($row['command_name'], 'ibmi')) {
+            $category = 'IBM i Systems';
+            $icon_key = 'simple-icons:ibm';
+        } elseif (str_contains($row['command_name'], 'win') || str_contains($row['command_name'], 'wmi')) {
+            $category = 'Windows Systems';
+            $icon_key = 'simple-icons:windows';
+        } elseif (str_contains($row['command_name'], 'temp') || str_contains($row['command_name'], 'dhtxx')) {
+            $category = 'Environmental Sensors';
+            $icon_key = 'lucide:thermometer';
+        } elseif (str_contains($row['command_name'], 'disk') || str_contains($row['command_name'], 'qnap') || str_contains($row['command_name'], 'synology')) {
+            $category = 'Storage & NAS';
+            $icon_key = 'lucide:hard-drive';
+        }
+
+        $cmd_name_esc  = sqlite_escape($row['command_name']);
+        $disp_name_esc = sqlite_escape($display_name);
+        $cat_esc       = sqlite_escape($category);
+        $cmd_line_esc  = sqlite_escape($row['command_line']);
+        $syntax_esc    = sqlite_escape($row['command_syntax'] ?? '');
+
+        $sql_output .= "INSERT OR IGNORE INTO check_commands (uuid, command_name, display_name, category, icon_key, command_line, description) VALUES ('{$uuid}', {$cmd_name_esc}, {$disp_name_esc}, {$cat_esc}, '{$icon_key}', {$cmd_line_esc}, {$syntax_esc});\n";
+
+        // Parse ARG1..ARG4 labels
+        if (!empty($row['command_syntax'])) {
+            $args = explode(',', $row['command_syntax']);
+            foreach ($args as $idx => $arg_label) {
+                $arg_num = $idx + 1;
+                $label_esc = sqlite_escape(trim($arg_label));
+                $sql_output .= "INSERT INTO command_arguments (command_uuid, nagios_arg, label, required) VALUES ('{$uuid}', 'ARG{$arg_num}', {$label_esc}, 1);\n";
+            }
+        }
+        $count++;
+    }
+
+    if (!is_dir(dirname($output_file))) {
+        mkdir(dirname($output_file), 0755, true);
+    }
+
+    file_put_contents($output_file, $sql_output);
+    echo "[+] Exported {$count} check commands cleanly to: {$output_file}\n";
+
+} catch (Exception $e) {
+    echo "[-] Error connecting to MySQL or exporting seed: " . $e->getMessage() . "\n";
+    exit(1);
+}
